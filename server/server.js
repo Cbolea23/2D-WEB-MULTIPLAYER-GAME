@@ -151,6 +151,11 @@ const server = http.createServer((req, res) => {
     }
 
     let reqUrl = req.url.split('?')[0];
+    if (reqUrl === '/healthz' || reqUrl === '/health') {
+        res.writeHead(200, { 'Content-Type': 'text/plain' });
+        res.end('OK');
+        return;
+    }
     if (reqUrl === '/' || reqUrl === '') {
         reqUrl = '/index.html';
     }

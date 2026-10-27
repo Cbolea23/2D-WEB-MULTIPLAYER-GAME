@@ -17,34 +17,47 @@ html = html.replace(
 );
 
 // ============================================================================
-// 1. UPDATE GAME CONTAINER STYLING FOR AD BANNER
+// 1. GAME CONTAINER FULLSCREEN STYLING (NO FAKE AD BANNER, MAXIMUM VIEWPORT)
 // ============================================================================
-html = html.replace(
-    `#game-container {\n            position: relative;\n            flex: 1;\n            width: 100%;\n            height: calc(100vh - 54px);\n            overflow: hidden;\n            background-color: var(--bg-dark);\n        }`,
-    `#game-container {\n            position: relative;\n            flex: 1;\n            width: 100%;\n            height: calc(100vh - 54px - 50px);\n            overflow: hidden;\n            background-color: var(--bg-dark);\n            transition: height 0.2s ease;\n        }\n        #game-container.banner-hidden {\n            height: calc(100vh - 54px);\n        }`
-);
+// Retaining original full viewport height: calc(100vh - 54px)
 
 // ============================================================================
-// 2. ADD HOME, SETTINGS & CO-OP BUTTONS TO TOP HUD BAR
+// 2. STREAMLINE COMBAT TOP HUD BAR (REMOVE ALL DEBUG & CLUTTER BUTTONS)
 // ============================================================================
-const topHudButtons = `
-            <button id="btn-profile" class="pixel-button text-cyan-300 font-pixel text-[9px] px-2 py-1.5 rounded hover:border-cyan-400 flex items-center gap-1" title="Account & Cloud Save">
-                <span>👤</span> <span id="top-profile-label">GUEST</span>
+const rawHeaderRightStr = `        <!-- Right Quick-Access Buttons -->
+        <div class="flex items-center gap-1.5">
+            <div id="bgm-track-badge" class="hidden lg:flex items-center gap-1.5 pixel-panel px-2 py-1 rounded text-[8px] font-pixel text-amber-300">
+                <span class="animate-pulse text-amber-400">♪</span>
+                <span id="bgm-track-name">MOONLIT GRAVE</span>
+            </div>
+            <button id="btn-coop" class="pixel-button text-emerald-300 font-pixel text-[9px] px-2 py-1.5 rounded hover:border-emerald-400" title="Multiplayer Co-Op & Godot Export Engine">
+                🌐 CO-OP
             </button>
-            <button id="btn-home" class="pixel-button text-amber-300 font-pixel text-[9px] px-2 py-1.5 rounded hover:border-amber-400" title="Return to Home Screen">
-                🏠 HOME
+            <button id="btn-arsenal" class="pixel-button text-amber-300 font-pixel text-[9px] px-2 py-1.5 rounded" title="Switch Shovel Weapon">
+                ⛏️ ARSENAL
             </button>
-            <button id="btn-settings" class="pixel-button text-slate-200 font-pixel text-[9px] px-2 py-1.5 rounded hover:border-slate-300" title="Game Settings">
-                ⚙️
+            <button id="btn-altar" class="pixel-button text-purple-300 font-pixel text-[9px] px-2 py-1.5 rounded" title="Sanctuary Soul Altar">
+                🔮 ALTAR
             </button>
-            <button id="btn-coop" class="pixel-button text-emerald-300 font-pixel text-[9px] px-2 py-1.5 rounded hover:border-emerald-400" title="Multiplayer Co-Op Squad (Up to 6 Players)">
-                🌐 CO-OP [6P]
+            <button id="btn-music" class="pixel-button text-cyan-300 font-pixel text-[9px] px-2 py-1.5 rounded" title="Toggle 8-Bit BGM [M]">
+                🎵
             </button>
-`;
-html = html.replace(
-    `<button id="btn-coop" class="pixel-button text-emerald-300 font-pixel text-[9px] px-2 py-1.5 rounded hover:border-emerald-400" title="Multiplayer Co-Op & Godot Export Engine">\n                🌐 CO-OP\n            </button>`,
-    topHudButtons
-);
+            <button id="btn-codex" class="pixel-button text-slate-200 font-pixel text-[9px] px-2 py-1.5 rounded" title="Grave Rogue's Codex">
+                📜
+            </button>
+            <button id="btn-mute" class="pixel-button text-slate-200 font-pixel text-[9px] px-2 py-1.5 rounded" title="Mute All Audio">
+                🔊
+            </button>
+        </div>`;
+
+const cleanHeaderRightStr = `        <!-- Right Quick-Access Controls -->
+        <div class="flex items-center gap-2">
+            <button id="btn-pause" class="pixel-button-gold text-amber-200 font-pixel text-[9px] px-3 py-1.5 rounded flex items-center gap-1.5 shadow-sm active:translate-y-0.5" title="Pause Game [ESC]">
+                <span>⏸️</span> <span>PAUSE</span>
+            </button>
+        </div>`;
+
+html = html.replace(rawHeaderRightStr, cleanHeaderRightStr);
 
 // ============================================================================
 // 3. HOME SCREEN OVERLAY & EXPEDITION SETTINGS MODAL
@@ -165,12 +178,12 @@ const homeScreenAndSettingsHtml = `
 
                 <div class="flex items-center justify-between py-1 border-t border-slate-800/80">
                     <div>
-                        <div class="text-slate-200">SPONSORED AD BANNER</div>
-                        <div class="text-[7px] text-slate-500">Show bottom revenue banner</div>
+                        <div class="text-slate-200">AUTO-AIM TARGET ASSIST</div>
+                        <div class="text-[7px] text-slate-500">Smart shovel target lock</div>
                     </div>
                     <label class="relative inline-flex items-center cursor-pointer">
-                        <input id="toggle-adbanner" type="checkbox" checked class="sr-only peer">
-                        <div class="w-9 h-5 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-cyan-500"></div>
+                        <input id="toggle-autoaim" type="checkbox" checked class="sr-only peer">
+                        <div class="w-9 h-5 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-500"></div>
                     </label>
                 </div>
             </div>
@@ -274,6 +287,40 @@ const homeScreenAndSettingsHtml = `
                     </button>
                     <button id="btn-logout" class="pixel-button w-full py-2 rounded text-red-300 border-red-900/60 hover:border-red-500 flex items-center justify-center gap-1.5">
                         <span>🚪</span> LOG OUT (SWITCH TO GUEST FREEPLAY)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: IN-GAME PAUSE MENU -->
+    <div id="pause-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4 select-none">
+        <div class="pixel-panel max-w-xs w-full p-5 text-center space-y-4 border-amber-600/80 shadow-[0_0_50px_rgba(245,158,11,0.25)]">
+            <div class="space-y-1">
+                <span class="text-3xl animate-pulse block mb-1">⏸️</span>
+                <h2 class="font-pixel text-sm text-amber-400 tracking-wider font-bold">EXPEDITION PAUSED</h2>
+                <div id="pause-depth-info" class="text-[8px] font-pixel text-slate-400 tracking-wide">DEPTH 1 • SANCTUARY</div>
+            </div>
+
+            <div class="space-y-2 pt-1">
+                <button id="btn-pause-resume" class="pixel-button-gold w-full py-2.5 rounded font-pixel text-[9px] text-amber-200 tracking-wider shadow flex items-center justify-center gap-2">
+                    <span>▶</span> RESUME GAME
+                </button>
+                <button id="btn-pause-altar" class="pixel-button-purple w-full py-2 rounded font-pixel text-[8px] text-purple-200 flex items-center justify-center gap-2">
+                    <span>🔮</span> SOUL ALTAR UPGRADES
+                </button>
+                <button id="btn-pause-codex" class="pixel-button w-full py-2 rounded font-pixel text-[8px] text-slate-300 flex items-center justify-center gap-2">
+                    <span>📖</span> RELICS & BEAST CODEX
+                </button>
+                <button id="btn-pause-settings" class="pixel-button w-full py-2 rounded font-pixel text-[8px] text-cyan-300 flex items-center justify-center gap-2">
+                    <span>⚙️</span> AUDIO & CONTROLS SETTINGS
+                </button>
+                <button id="btn-pause-ad-souls" class="pixel-button-cyan w-full py-2 rounded font-pixel text-[8px] text-cyan-100 flex items-center justify-center gap-2">
+                    <span>🎬</span> FREE +50 SOULS (SHORT AD)
+                </button>
+                <div class="pt-2 border-t border-slate-800">
+                    <button id="btn-pause-abandon" class="pixel-button-red w-full py-2 rounded font-pixel text-[8px] text-red-300 flex items-center justify-center gap-2">
+                        <span>🏠</span> ABANDON RUN & RETURN TO TITLE
                     </button>
                 </div>
             </div>
@@ -404,26 +451,9 @@ html = html.replace(
 );
 
 // ============================================================================
-// 5. AD BANNER & REWARDED VIDEO MODAL & GHOST SPECTATOR HUD
+// 5. REWARDED VIDEO SIMULATION MODAL & GHOST SPECTATOR HUD
 // ============================================================================
 const adBannerHtml = `
-    <!-- BOTTOM AD BANNER BAR -->
-    <footer id="ad-banner-container" class="w-full pixel-panel px-3 py-1 flex items-center justify-between gap-3 z-30 border-b-0 border-x-0 rounded-none bg-[#090d16] text-[8px] font-pixel shrink-0 h-[50px] transition-all duration-200">
-        <div class="flex items-center gap-2.5 overflow-hidden">
-            <span class="text-amber-400 text-sm animate-bounce shrink-0">📢</span>
-            <div class="truncate">
-                <div class="text-amber-300 font-bold truncate" id="ad-banner-title">SPONSORED: DUNGEON REPUTATION</div>
-                <div class="text-slate-400 text-[7px] truncate" id="ad-banner-tagline">Support Crypt Keeper development • Ready for AdSense / Poki / CrazyGames</div>
-            </div>
-        </div>
-        <div class="flex items-center gap-2 shrink-0">
-            <button id="btn-watch-rewarded-ad" class="pixel-button-cyan px-2.5 py-1.5 rounded font-pixel text-[8px] text-cyan-100 flex items-center gap-1 shadow-md">
-                <span>🎁</span> FREE SOULS (+50)
-            </button>
-            <button id="btn-close-banner" class="text-slate-500 hover:text-slate-300 text-xs px-1" title="Hide ad banner">✕</button>
-        </div>
-    </footer>
-
     <!-- REWARDED VIDEO AD SIMULATION MODAL -->
     <div id="rewarded-ad-modal" class="hidden fixed inset-0 bg-black/95 backdrop-blur-md z-50 flex items-center justify-center p-4">
         <div class="pixel-panel max-w-sm w-full p-4 rounded text-center space-y-3 border-amber-500">
@@ -2076,6 +2106,20 @@ const clientManagersJS = `
                                 console.info('[AdManager] Ad blocker detected - simulation fallback armed.');
                             }
                         }
+                        if (window.CrazyGames.SDK.user && typeof window.CrazyGames.SDK.user.isUserAccountAvailable === 'function') {
+                            const isAvailable = await window.CrazyGames.SDK.user.isUserAccountAvailable();
+                            if (isAvailable && typeof window.CrazyGames.SDK.user.getUser === 'function') {
+                                const cgUser = await window.CrazyGames.SDK.user.getUser();
+                                if (cgUser && cgUser.username) {
+                                    console.log('[CrazyGames User Detected]:', cgUser.username);
+                                    const homeAccountUser = document.getElementById('home-account-username');
+                                    if (homeAccountUser && typeof AuthManager !== 'undefined' && AuthManager.isGuest) {
+                                        homeAccountUser.textContent = cgUser.username.toUpperCase() + ' (CrazyGames)';
+                                        homeAccountUser.className = 'text-cyan-400 font-bold';
+                                    }
+                                }
+                            }
+                        }
                     } catch (err) {
                         console.warn('[AdManager] CrazyGames SDK init warning (sandbox active):', err);
                     }
@@ -2221,23 +2265,7 @@ const clientManagersJS = `
                 }
             },
 
-            startBannerRotation() {
-                const banners = [
-                    { title: "SPONSORED: DUNGEON REPUTATION", tag: "Support Crypt Keeper development • Ready for AdSense / Poki / CrazyGames" },
-                    { title: "FORGE LEGENDARY GEAR", tag: "Upgrade shovels at the Sanctuary Altar with Soul Shards!" },
-                    { title: "MULTI-KEEPER CO-OP EXPEDITION", tag: "Invite up to 6 players to delve into procedural catacombs!" },
-                    { title: "STEAM WISHLIST AVAILABLE", tag: "Crypt Keeper: Rogue Shovel full engine release coming soon!" }
-                ];
-                let bIdx = 0;
-                setInterval(() => {
-                    bIdx = (bIdx + 1) % banners.length;
-                    const b = banners[bIdx];
-                    const t = document.getElementById('ad-banner-title');
-                    const tg = document.getElementById('ad-banner-tagline');
-                    if (t) t.textContent = b.title;
-                    if (tg) tg.textContent = b.tag;
-                }, this.config.bannerRotationIntervalSec * 1000);
-            },
+            startBannerRotation() {},
 
             showRewardedAd(onSuccess) {
                 this.onRewardSuccess = onSuccess;
@@ -3082,6 +3110,34 @@ html = html.replace(
     `${clientManagersJS}\n\n        window.onload = function () {\n            AuthManager.init();\n            SettingsManager.init();\n            AdManager.init();\n            MultiplayerManager.init();`
 );
 
+// Replace Escape key handler to toggle Pause Menu
+const rawEscapeBlock = `            } else if (e.code === 'Escape') {
+                document.getElementById('shop-modal').classList.add('hidden');
+                document.getElementById('codex-modal').classList.add('hidden');
+                document.getElementById('altar-modal').classList.add('hidden');
+                document.getElementById('arsenal-modal').classList.add('hidden');
+                if (document.getElementById('draft-modal').classList.contains('hidden')) game.paused = false;
+            }`;
+
+const pauseEscapeBlock = `            } else if (e.code === 'Escape') {
+                const subModals = ['shop-modal', 'codex-modal', 'altar-modal', 'arsenal-modal', 'settings-modal'];
+                let closedAny = false;
+                for (const mId of subModals) {
+                    const m = document.getElementById(mId);
+                    if (m && !m.classList.contains('hidden')) {
+                        m.classList.add('hidden');
+                        closedAny = true;
+                    }
+                }
+                const home = document.getElementById('home-screen');
+                const isHomeOpen = home && !home.classList.contains('hidden');
+                if (!closedAny && game.running && !isHomeOpen) {
+                    if (typeof togglePauseMenu === 'function') togglePauseMenu();
+                }
+            }`;
+
+html = html.replace(rawEscapeBlock, pauseEscapeBlock);
+
 // ============================================================================
 // 17. REMOVE OBSOLETE LEGACY EVENT LISTENERS (PREVENTS SCRIPT CRASH BEFORE ONLOAD)
 // ============================================================================
@@ -3094,6 +3150,63 @@ if (html.includes(legacyStartStr) && html.includes(legacyEndStr)) {
     const legacyBlock = html.substring(legacyStartIdx, legacyEndIdx);
 
     const safeReplacement = `// Safe Modal Controls
+        function togglePauseMenu(forceOpen = null) {
+            const pm = document.getElementById('pause-modal');
+            if (!pm) return;
+            const shouldOpen = forceOpen !== null ? forceOpen : pm.classList.contains('hidden');
+            if (shouldOpen) {
+                game.paused = true;
+                pm.classList.remove('hidden');
+                const pauseDepthInfo = document.getElementById('pause-depth-info');
+                if (pauseDepthInfo) {
+                    const depthTxt = game ? ('DEPTH ' + game.depth) : 'DEPTH 1';
+                    const roomTxt = typeof currentRoom === 'function' && currentRoom() ? currentRoom().type.toUpperCase() : 'CRYPT';
+                    pauseDepthInfo.textContent = \`\${depthTxt} • \${roomTxt}\`;
+                }
+                if (typeof AdManager !== 'undefined') AdManager.onGameplayStop();
+            } else {
+                pm.classList.add('hidden');
+                game.paused = false;
+                if (typeof AdManager !== 'undefined') AdManager.onGameplayStart();
+            }
+        }
+
+        document.getElementById('btn-pause')?.addEventListener('click', () => togglePauseMenu(true));
+        document.getElementById('btn-pause-resume')?.addEventListener('click', () => togglePauseMenu(false));
+        document.getElementById('btn-pause-altar')?.addEventListener('click', () => {
+            document.getElementById('pause-modal')?.classList.add('hidden');
+            document.getElementById('altar-modal')?.classList.remove('hidden');
+            if (typeof renderAltarBlessings === 'function') renderAltarBlessings();
+        });
+        document.getElementById('btn-pause-codex')?.addEventListener('click', () => {
+            document.getElementById('pause-modal')?.classList.add('hidden');
+            document.getElementById('codex-modal')?.classList.remove('hidden');
+        });
+        document.getElementById('btn-pause-settings')?.addEventListener('click', () => {
+            document.getElementById('pause-modal')?.classList.add('hidden');
+            if (typeof SettingsManager !== 'undefined') SettingsManager.openModal();
+        });
+        document.getElementById('btn-pause-ad-souls')?.addEventListener('click', () => {
+            if (typeof AdManager !== 'undefined') {
+                AdManager.showRewardedAd(() => {
+                    player.souls += 50;
+                    metaSave.soulShards = (metaSave.soulShards || 0) + 50;
+                    saveMeta();
+                    updateHUD();
+                    sfx.play('coin');
+                    addParticles(player.x, player.y, '#c084fc', 30, 200, 5);
+                    addFloatingText(player.x, player.y - 30, "+50 SOUL SHARDS!", "#c084fc", 18);
+                    if (typeof SettingsManager !== 'undefined') SettingsManager.updateHomeScreenMeta();
+                });
+            }
+        });
+        document.getElementById('btn-pause-abandon')?.addEventListener('click', () => {
+            document.getElementById('pause-modal')?.classList.add('hidden');
+            if (typeof AdManager !== 'undefined') {
+                AdManager.returnToMainMenu();
+            }
+        });
+
         document.getElementById('close-coop')?.addEventListener('click', () => {
             document.getElementById('coop-modal')?.classList.add('hidden');
             game.paused = false;

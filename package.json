@@ -1,0 +1,17 @@
+{
+  "name": "crypt-keeper-rogue-shovel",
+  "version": "1.0.0",
+  "description": "Crypt Keeper: Rogue Shovel - 2D Web Roguelike with Online Co-Op & Monetization",
+  "main": "server/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server/server.js",
+    "server": "node server/server.js"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "keywords": ["roguelike", "game", "canvas", "multiplayer", "websocket"],
+  "author": "",
+  "license": "MIT"
+}

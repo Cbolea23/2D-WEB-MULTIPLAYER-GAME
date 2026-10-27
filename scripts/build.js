@@ -1443,6 +1443,13 @@ const clientManagersJS = `
             isGuest: true,
             guestSessionSave: null,
 
+            getApiBase() {
+                if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                    return '';
+                }
+                return 'https://crypt-keeper-roguelike.onrender.com';
+            },
+
             init() {
                 this.token = localStorage.getItem('crypt_keeper_token');
                 this.guestSessionSave = {
@@ -1658,7 +1665,7 @@ const clientManagersJS = `
                 if (errEl) errEl.classList.add('hidden');
 
                 try {
-                    const res = await fetch('/api/login', {
+                    const res = await fetch(this.getApiBase() + '/api/login', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ username, password })
@@ -1715,7 +1722,7 @@ const clientManagersJS = `
                         };
                     }
 
-                    const res = await fetch('/api/register', {
+                    const res = await fetch(this.getApiBase() + '/api/register', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ username, password, initialSave })
@@ -1758,7 +1765,7 @@ const clientManagersJS = `
             async fetchProfile() {
                 if (!this.token) return;
                 try {
-                    const res = await fetch('/api/me', {
+                    const res = await fetch(this.getApiBase() + '/api/me', {
                         headers: { 'Authorization': 'Bearer ' + this.token }
                     });
                     if (!res.ok) {
@@ -1788,7 +1795,7 @@ const clientManagersJS = `
             async syncSave(saveObj, showVisualFeedback = false) {
                 if (this.isGuest || !this.token) return;
                 try {
-                    const res = await fetch('/api/save', {
+                    const res = await fetch(this.getApiBase() + '/api/save', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -2505,7 +2512,10 @@ const clientManagersJS = `
                     this.targetJoinRoom = roomParam.trim().toUpperCase();
                 }
 
-                const defaultUrl = (window.location.protocol === 'https:' ? 'wss://' : 'ws://') + (window.location.host || 'localhost:3000');
+                const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+                const defaultUrl = isLocal
+                    ? ((window.location.protocol === 'https:' ? 'wss://' : 'ws://') + (window.location.host || 'localhost:3000'))
+                    : 'wss://crypt-keeper-roguelike.onrender.com';
                 this.serverUrl = defaultUrl;
 
                 this.bindUI();

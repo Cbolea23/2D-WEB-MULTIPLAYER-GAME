@@ -3266,7 +3266,7 @@
             updateHUD();
         }
 
-        document.getElementById('btn-reroll-draft').addEventListener('click', () => {
+        document.getElementById('btn-reroll-draft')?.addEventListener('click', () => {
             if (player.rerollsLeft > 0) {
                 player.rerollsLeft--;
                 sfx.play('coin');
@@ -5078,7 +5078,7 @@
          * ============================================================================
          */
         let minimapExpanded = false;
-        document.getElementById('btn-toggle-map').addEventListener('click', (e) => {
+        document.getElementById('btn-toggle-map')?.addEventListener('click', (e) => {
             e.stopPropagation();
             minimapExpanded = !minimapExpanded;
             miniCanvas.width = minimapExpanded ? 140 : 76;
@@ -5337,15 +5337,15 @@
         canvas.addEventListener('touchcancel', endTouchJoystick);
 
         // Desktop & Mobile Action Buttons
-        document.getElementById('act-swing').addEventListener('click', () => { game.usingTouch = false; performAttack(); });
-        document.getElementById('act-dash').addEventListener('click', () => { game.usingTouch = false; performDash(); });
-        document.getElementById('act-dig').addEventListener('click', () => { game.usingTouch = false; triggerContextAction(); });
-        document.getElementById('act-ult').addEventListener('click', () => { game.usingTouch = false; performUltimate(); });
+        document.getElementById('act-swing')?.addEventListener('click', () => { game.usingTouch = false; performAttack(); });
+        document.getElementById('act-dash')?.addEventListener('click', () => { game.usingTouch = false; performDash(); });
+        document.getElementById('act-dig')?.addEventListener('click', () => { game.usingTouch = false; triggerContextAction(); });
+        document.getElementById('act-ult')?.addEventListener('click', () => { game.usingTouch = false; performUltimate(); });
 
-        document.getElementById('mob-strike').addEventListener('touchstart', (e) => { e.preventDefault(); game.usingTouch = true; sfx.init(); autoAimNearestEnemy(200); performAttack(); });
-        document.getElementById('mob-dash').addEventListener('touchstart', (e) => { e.preventDefault(); game.usingTouch = true; sfx.init(); performDash(); });
-        document.getElementById('mob-dig').addEventListener('touchstart', (e) => { e.preventDefault(); game.usingTouch = true; sfx.init(); triggerContextAction(); });
-        document.getElementById('mob-ult').addEventListener('touchstart', (e) => { e.preventDefault(); game.usingTouch = true; sfx.init(); performUltimate(); });
+        document.getElementById('mob-strike')?.addEventListener('touchstart', (e) => { e.preventDefault(); game.usingTouch = true; sfx.init(); autoAimNearestEnemy(200); performAttack(); });
+        document.getElementById('mob-dash')?.addEventListener('touchstart', (e) => { e.preventDefault(); game.usingTouch = true; sfx.init(); performDash(); });
+        document.getElementById('mob-dig')?.addEventListener('touchstart', (e) => { e.preventDefault(); game.usingTouch = true; sfx.init(); triggerContextAction(); });
+        document.getElementById('mob-ult')?.addEventListener('touchstart', (e) => { e.preventDefault(); game.usingTouch = true; sfx.init(); performUltimate(); });
 
         // Minimap Fast-Travel Click
         miniCanvas.addEventListener('click', (e) => {
@@ -5374,164 +5374,30 @@
             }
         });
 
-        // Top Bar & Modal Controls
-        document.getElementById('btn-coop').addEventListener('click', () => {
-            game.paused = true;
-            document.getElementById('coop-modal').classList.remove('hidden');
-            renderGodotManifest();
-        });
-        document.getElementById('close-coop').addEventListener('click', () => {
-            document.getElementById('coop-modal').classList.add('hidden');
+        // Safe Modal Controls
+        document.getElementById('close-coop')?.addEventListener('click', () => {
+            document.getElementById('coop-modal')?.classList.add('hidden');
             game.paused = false;
         });
+        function renderGodotManifest() {}
 
-        document.getElementById('tab-btn-lobby').addEventListener('click', () => {
-            document.getElementById('tab-btn-lobby').className = 'pixel-button-cyan px-3 py-1.5 rounded font-pixel text-[8px] text-cyan-100';
-            document.getElementById('tab-btn-godot').className = 'pixel-button px-3 py-1.5 rounded font-pixel text-[8px] text-amber-300';
-            document.getElementById('tab-content-lobby').classList.remove('hidden');
-            document.getElementById('tab-content-godot').classList.add('hidden');
-        });
-
-        document.getElementById('tab-btn-godot').addEventListener('click', () => {
-            document.getElementById('tab-btn-godot').className = 'pixel-button-gold px-3 py-1.5 rounded font-pixel text-[8px] text-amber-200';
-            document.getElementById('tab-btn-lobby').className = 'pixel-button px-3 py-1.5 rounded font-pixel text-[8px] text-slate-300';
-            document.getElementById('tab-content-godot').classList.remove('hidden');
-            document.getElementById('tab-content-lobby').classList.add('hidden');
-            renderGodotManifest();
-        });
-
-        document.getElementById('btn-new-code').addEventListener('click', () => {
-            game.multiplayer.roomCode = 'KEEPER-' + Math.random().toString(36).substring(2, 5).toUpperCase();
-            document.getElementById('coop-room-code').textContent = game.multiplayer.roomCode;
-            sfx.play('coin');
-        });
-
-        document.getElementById('btn-join-session').addEventListener('click', () => {
-            const val = document.getElementById('input-coop-code').value.trim().toUpperCase();
-            if (val.length > 0) {
-                game.multiplayer.roomCode = val;
-                document.getElementById('coop-room-code').textContent = val;
-                coopPartner.active = true;
-                updateCoopPartnerStatus();
-                sfx.play('levelup');
-                addFloatingText(player.x, player.y - 30, `CONNECTED TO ${val}!`, "#34d399", 16);
-            }
-        });
-
-        document.getElementById('btn-toggle-coop-bot').addEventListener('click', () => {
-            coopPartner.active = !coopPartner.active;
-            if (coopPartner.active) {
-                coopPartner.x = player.x - 45;
-                coopPartner.y = player.y;
-                coopPartner.isDowned = false;
-                coopPartner.hp = coopPartner.maxHp;
-                sfx.play('levelup');
-                addParticles(coopPartner.x, coopPartner.y, '#34d399', 20, 160, 5);
-                addFloatingText(player.x, player.y - 30, "🤝 CO-OP PARTNER JOINED!", "#34d399", 16);
-            }
-            updateCoopPartnerStatus();
-        });
-
-        function updateCoopPartnerStatus() {
-            const btn = document.getElementById('btn-toggle-coop-bot');
-            const status = document.getElementById('coop-partner-status');
-            if (coopPartner.active) {
-                btn.textContent = 'DISMISS PARTNER';
-                btn.className = 'pixel-button text-red-300 px-3 py-1.5 rounded font-pixel text-[8px]';
-                status.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 inline-block animate-pulse"></span> <span class="text-emerald-300">Partner Active: In Crypt Sector</span>`;
-            } else {
-                btn.textContent = 'ACTIVATE PARTNER';
-                btn.className = 'pixel-button-cyan px-3 py-1.5 rounded font-pixel text-[8px] text-cyan-100';
-                status.innerHTML = `<span class="w-2 h-2 rounded-full bg-slate-600 inline-block"></span> <span>Partner Status: Offline</span>`;
-            }
-        }
-
-        function renderGodotManifest() {
-            const manifest = `## =========================================================
-## CRYPT KEEPER: ROGUE SHOVEL — GODOT 4.x ANTIGRAVITY SPEC
-## =========================================================
-class_name KeeperPlayer
-extends CharacterBody2D
-
-@export var max_health: int = 120
-@export var move_speed: float = 240.0
-@export var base_damage: int = 28
-@export var selected_weapon: String = "rusty_spade"
-
-# Stacking Relics Dictionary: { "relic_id": stack_count }
-var relic_stacks: Dictionary = {
-    "spectral_wave": 0,
-    "grave_lightning": 0,
-    "vampiric_spade": 0,
-    "titanic_knockback": 0,
-    "ankh_rebirth": 0
-}
-
-# MultiplayerSynchronizer Node setup for Antigravity:
-@onready var sync: MultiplayerSynchronizer = $MultiplayerSynchronizer
-
-func _ready():
-    sync.replication_config.add_property(":global_position")
-    sync.replication_config.add_property(":rotation")
-    sync.replication_config.add_property(":health")
-
-@rpc("any_peer", "call_local", "reliable")
-func rpc_perform_shovel_swing(combo_step: int, angle: float):
-    play_swing_animation(combo_step, angle)
-    check_deflection_and_pit_knockback(combo_step, angle)
-
-@rpc("any_peer", "call_local", "reliable")
-func rpc_trigger_pit_kill(enemy_id: int):
-    # Instantly executes non-boss foes entering open pit tiles
-    EventManager.emit_signal("enemy_buried_alive", enemy_id)
-`;
-            document.getElementById('godot-manifest-code').textContent = manifest;
-        }
-
-        document.getElementById('btn-copy-godot-spec').addEventListener('click', () => {
-            const text = document.getElementById('godot-manifest-code').textContent;
-            const el = document.createElement('textarea');
-            el.value = text;
-            document.body.appendChild(el);
-            el.select();
-            document.execCommand('copy');
-            document.body.removeChild(el);
-            addFloatingText(player.x, player.y - 20, "COPIED TO CLIPBOARD!", "#34d399", 14);
-        });
-
-        document.getElementById('btn-copy-balance-json').addEventListener('click', () => {
-            const balanceData = {
-                weapons: WEAPON_ARSENAL,
-                relics: RELIC_POOL,
-                base_stats: { hp: player.maxHp, speed: player.speed, dmg: player.baseDmg },
-                multiplayer: { sync_rate_hz: 20, protocol: "ENetMultiplayerPeer" }
-            };
-            const el = document.createElement('textarea');
-            el.value = JSON.stringify(balanceData, null, 2);
-            document.body.appendChild(el);
-            el.select();
-            document.execCommand('copy');
-            document.body.removeChild(el);
-            addFloatingText(player.x, player.y - 20, "BALANCE JSON COPIED!", "#fbbf24", 14);
-        });
-
-        document.getElementById('btn-arsenal').addEventListener('click', openArsenalModal);
-        document.getElementById('close-arsenal').addEventListener('click', () => { document.getElementById('arsenal-modal').classList.add('hidden'); game.paused = false; });
-        document.getElementById('btn-altar').addEventListener('click', openAltarModal);
-        document.getElementById('close-altar').addEventListener('click', () => { document.getElementById('altar-modal').classList.add('hidden'); game.paused = false; });
-        document.getElementById('close-shop').addEventListener('click', () => { document.getElementById('shop-modal').classList.add('hidden'); game.paused = false; });
-        document.getElementById('btn-codex').addEventListener('click', () => { game.paused = true; document.getElementById('codex-modal').classList.remove('hidden'); });
-        document.getElementById('close-codex').addEventListener('click', () => { document.getElementById('codex-modal').classList.add('hidden'); game.paused = false; });
-        document.getElementById('btn-music').addEventListener('click', (e) => {
+        document.getElementById('btn-arsenal')?.addEventListener('click', openArsenalModal);
+        document.getElementById('close-arsenal')?.addEventListener('click', () => { document.getElementById('arsenal-modal').classList.add('hidden'); game.paused = false; });
+        document.getElementById('btn-altar')?.addEventListener('click', openAltarModal);
+        document.getElementById('close-altar')?.addEventListener('click', () => { document.getElementById('altar-modal').classList.add('hidden'); game.paused = false; });
+        document.getElementById('close-shop')?.addEventListener('click', () => { document.getElementById('shop-modal').classList.add('hidden'); game.paused = false; });
+        document.getElementById('btn-codex')?.addEventListener('click', () => { game.paused = true; document.getElementById('codex-modal').classList.remove('hidden'); });
+        document.getElementById('close-codex')?.addEventListener('click', () => { document.getElementById('codex-modal').classList.add('hidden'); game.paused = false; });
+        document.getElementById('btn-music')?.addEventListener('click', (e) => {
             sfx.init(); sfx.bgmMuted = !sfx.bgmMuted; sfx.setBgmMode(sfx.bgmMode);
             e.currentTarget.textContent = sfx.bgmMuted ? '🔇' : '🎵';
         });
-        document.getElementById('btn-mute').addEventListener('click', (e) => {
+        document.getElementById('btn-mute')?.addEventListener('click', (e) => {
             sfx.init(); sfx.muted = !sfx.muted; sfx.setBgmMode(sfx.bgmMode);
             e.currentTarget.textContent = sfx.muted ? '🔇' : '🔊';
         });
-        document.getElementById('btn-restart').addEventListener('click', restartRun);
-        document.getElementById('btn-gameover-altar').addEventListener('click', () => {
+        document.getElementById('btn-restart')?.addEventListener('click', restartRun);
+        document.getElementById('btn-gameover-altar')?.addEventListener('click', () => {
             document.getElementById('gameover-modal').classList.add('hidden');
             restartRun();
             openAltarModal();

@@ -2895,6 +2895,34 @@ html = html.replace(
     `${clientManagersJS}\n\n        window.onload = function () {\n            AuthManager.init();\n            SettingsManager.init();\n            AdManager.init();\n            MultiplayerManager.init();`
 );
 
+// ============================================================================
+// 17. REMOVE OBSOLETE LEGACY EVENT LISTENERS (PREVENTS SCRIPT CRASH BEFORE ONLOAD)
+// ============================================================================
+const legacyStartStr = "// Top Bar & Modal Controls\n        document.getElementById('btn-coop').addEventListener('click', () => {";
+const legacyEndStr = 'addFloatingText(player.x, player.y - 20, "BALANCE JSON COPIED!", "#fbbf24", 14);\n        });';
+
+if (html.includes(legacyStartStr) && html.includes(legacyEndStr)) {
+    const legacyStartIdx = html.indexOf(legacyStartStr);
+    const legacyEndIdx = html.indexOf(legacyEndStr) + legacyEndStr.length;
+    const legacyBlock = html.substring(legacyStartIdx, legacyEndIdx);
+
+    const safeReplacement = `// Safe Modal Controls
+        document.getElementById('close-coop')?.addEventListener('click', () => {
+            document.getElementById('coop-modal')?.classList.add('hidden');
+            game.paused = false;
+        });
+        function renderGodotManifest() {}`;
+
+    html = html.replace(legacyBlock, safeReplacement);
+    console.log('Successfully replaced obsolete legacy listeners with safe modal controls!');
+} else {
+    console.error('CRITICAL: legacy listener block not found in source!');
+    process.exit(1);
+}
+
+// Make all remaining modal event listeners null-safe with optional chaining
+html = html.replace(/document\.getElementById\('([^']+)'\)\.addEventListener/g, "document.getElementById('$1')?.addEventListener");
+
 // Write out pristine index.html
 fs.writeFileSync(destPath, html, 'utf8');
 console.log('SUCCESS: index.html compiled cleanly! Size:', html.length, 'bytes');

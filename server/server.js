@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { WebSocketServer, WebSocket } from 'ws';
+import { authStore } from './auth.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,14 +25,128 @@ const MIME_TYPES = {
     '.mp3': 'audio/mpeg'
 };
 
-// HTTP Static Server
+// Helper to parse incoming JSON request bodies
+function readJsonBody(req) {
+    return new Promise((resolve, reject) => {
+        let body = '';
+        req.on('data', chunk => {
+            body += chunk;
+            if (body.length > 1e6) { // 1MB limit
+                req.destroy();
+                reject(new Error('Payload too large'));
+            }
+        });
+        req.on('end', () => {
+            try {
+                resolve(body ? JSON.parse(body) : {});
+            } catch (err) {
+                reject(err);
+            }
+        });
+        req.on('error', reject);
+    });
+}
+
+// REST API Handler for User Accounts and Cloud Saves
+async function handleApiRequest(req, res) {
+    const url = req.url.split('?')[0];
+
+    function sendJson(status, data) {
+        res.writeHead(status, {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+        });
+        res.end(JSON.stringify(data));
+    }
+
+    const authHeader = req.headers['authorization'] || '';
+    const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : null;
+
+    if (req.method === 'POST' && url === '/api/register') {
+        try {
+            const body = await readJsonBody(req);
+            const result = authStore.register(body.username, body.password, body.initialSave);
+            if (result.error) {
+                return sendJson(400, { ok: false, error: result.error });
+            }
+            return sendJson(200, result);
+        } catch (e) {
+            return sendJson(400, { ok: false, error: 'Malformed JSON payload' });
+        }
+    }
+
+    if (req.method === 'POST' && url === '/api/login') {
+        try {
+            const body = await readJsonBody(req);
+            const result = authStore.login(body.username, body.password);
+            if (result.error) {
+                return sendJson(401, { ok: false, error: result.error });
+            }
+            return sendJson(200, result);
+        } catch (e) {
+            return sendJson(400, { ok: false, error: 'Malformed JSON payload' });
+        }
+    }
+
+    if (req.method === 'GET' && url === '/api/me') {
+        const user = authStore.getUserByToken(token);
+        if (!user) {
+            return sendJson(401, { ok: false, error: 'Unauthorized or expired session' });
+        }
+        return sendJson(200, {
+            ok: true,
+            user: {
+                username: user.username,
+                save: user.save
+            }
+        });
+    }
+
+    if (req.method === 'POST' && url === '/api/save') {
+        try {
+            const body = await readJsonBody(req);
+            const result = authStore.updateSave(token, body.save);
+            if (result.error) {
+                return sendJson(result.error.includes('Unauthorized') ? 401 : 400, { ok: false, error: result.error });
+            }
+            return sendJson(200, result);
+        } catch (e) {
+            return sendJson(400, { ok: false, error: 'Malformed JSON payload' });
+        }
+    }
+
+    if (req.method === 'POST' && url === '/api/claim-guest') {
+        try {
+            const body = await readJsonBody(req);
+            const result = authStore.register(body.username, body.password, body.guestSave);
+            if (result.error) {
+                return sendJson(400, { ok: false, error: result.error });
+            }
+            return sendJson(200, result);
+        } catch (e) {
+            return sendJson(400, { ok: false, error: 'Malformed JSON payload' });
+        }
+    }
+
+    return sendJson(404, { ok: false, error: 'API route not found' });
+}
+
+// HTTP Static & API Server
 const server = http.createServer((req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
     if (req.method === 'OPTIONS') {
         res.writeHead(204);
         res.end();
+        return;
+    }
+
+    if (req.url.startsWith('/api/')) {
+        handleApiRequest(req, res);
         return;
     }
 
@@ -66,16 +181,6 @@ const server = http.createServer((req, res) => {
 // WebSocket Multiplayer Server (Up to 6 Players per Expedition Room)
 const wss = new WebSocketServer({ server });
 
-/**
- * Room Schema:
- * {
- *   code: string,
- *   seed: number,
- *   maxPlayers: number (6),
- *   clients: Map<string, { id: string, playerIndex: number, ws: WebSocket, isHost: boolean }>,
- *   created: number
- * }
- */
 const rooms = new Map();
 
 function generateRoomCode() {
@@ -124,7 +229,6 @@ wss.on('connection', (ws) => {
         console.warn('Socket error:', err.message);
     });
 
-    // Welcome handshake
     ws.send(JSON.stringify({
         type: 'connected',
         clientId: ws.clientId,
@@ -151,6 +255,7 @@ function handleMessage(ws, msg) {
                 created: Date.now()
             };
 
+            ws.name = (msg.name || 'Keeper 1').substring(0, 20);
             ws.roomCode = code;
             ws.isHost = true;
             ws.playerIndex = 1;
@@ -159,7 +264,8 @@ function handleMessage(ws, msg) {
                 id: ws.clientId,
                 playerIndex: 1,
                 ws,
-                isHost: true
+                isHost: true,
+                name: ws.name
             });
 
             rooms.set(code, room);
@@ -172,9 +278,9 @@ function handleMessage(ws, msg) {
                 playerIndex: 1,
                 isHost: true,
                 maxPlayers: MAX_SQUAD_SIZE,
-                players: [{ id: ws.clientId, playerIndex: 1, isHost: true }]
+                players: [{ id: ws.clientId, playerIndex: 1, isHost: true, name: ws.name }]
             }));
-            console.log(`[Multiplayer] Room created: ${code} by ${ws.clientId} (Max: ${MAX_SQUAD_SIZE})`);
+            console.log(`[Multiplayer] Room created: ${code} by ${ws.name} (${ws.clientId}) (Max: ${MAX_SQUAD_SIZE})`);
             break;
         }
 
@@ -208,6 +314,7 @@ function handleMessage(ws, msg) {
                 }
             }
 
+            ws.name = (msg.name || ('Keeper ' + assignedIndex)).substring(0, 20);
             ws.roomCode = code;
             ws.isHost = false;
             ws.playerIndex = assignedIndex;
@@ -216,16 +323,19 @@ function handleMessage(ws, msg) {
                 id: ws.clientId,
                 playerIndex: assignedIndex,
                 ws,
-                isHost: false
+                isHost: false,
+                name: ws.name
             });
 
-            // Send full squad info to joiner
+            // Get complete, updated roster of all players in the room
             const playersList = Array.from(room.clients.values()).map(c => ({
                 id: c.id,
                 playerIndex: c.playerIndex,
-                isHost: c.isHost
+                isHost: c.isHost,
+                name: c.name || ('Keeper ' + c.playerIndex)
             }));
 
+            // Send full squad info to joiner
             ws.send(JSON.stringify({
                 type: 'room_joined',
                 roomCode: code,
@@ -237,16 +347,38 @@ function handleMessage(ws, msg) {
                 players: playersList
             }));
 
-            // Notify everyone else in the room
+            // Notify everyone else in the room with FULL updated players list
             broadcastToRoom(room, ws, {
                 type: 'peer_joined',
                 peerId: ws.clientId,
                 playerIndex: assignedIndex,
                 roomCode: code,
-                totalPlayers: room.clients.size
+                totalPlayers: room.clients.size,
+                players: playersList
             });
 
             console.log(`[Multiplayer] Player ${ws.clientId} joined room ${code} as P${assignedIndex} (${room.clients.size}/${MAX_SQUAD_SIZE})`);
+            break;
+        }
+
+        case 'start_game': {
+            // Host launches the game for all squad members!
+            if (!ws.roomCode) return;
+            const room = rooms.get(ws.roomCode);
+            if (!room || !ws.isHost) return;
+
+            const startPacket = JSON.stringify({
+                type: 'game_started',
+                roomCode: ws.roomCode,
+                seed: room.seed
+            });
+
+            for (const client of room.clients.values()) {
+                if (client.ws.readyState === WebSocket.OPEN) {
+                    client.ws.send(startPacket);
+                }
+            }
+            console.log(`[Multiplayer] Host launched expedition ${ws.roomCode} for ${room.clients.size} players!`);
             break;
         }
 
@@ -266,7 +398,6 @@ function handleMessage(ws, msg) {
         }
 
         case 'sync_world_snapshot': {
-            // Authoritative Host World State Broadcast (Enemies, Objects, Drops, Pits, Mounds)
             if (!ws.roomCode) return;
             const room = rooms.get(ws.roomCode);
             if (!room || !ws.isHost) return;
@@ -330,7 +461,6 @@ function handleDisconnect(ws) {
         rooms.delete(ws.roomCode);
         console.log(`[Multiplayer] Room closed (empty): ${ws.roomCode}`);
     } else {
-        // If host left, elect next player as host
         if (ws.isHost) {
             const nextClient = room.clients.values().next().value;
             if (nextClient) {
@@ -343,18 +473,24 @@ function handleDisconnect(ws) {
             }
         }
 
+        const remainingPlayers = Array.from(room.clients.values()).map(c => ({
+            id: c.id,
+            playerIndex: c.playerIndex,
+            isHost: c.isHost
+        }));
+
         broadcastToRoom(room, ws, {
             type: 'partner_left',
             peerId: ws.clientId,
             playerIndex: ws.playerIndex,
             totalPlayers: room.clients.size,
+            players: remainingPlayers,
             message: `Keeper P${ws.playerIndex} disconnected.`
         });
     }
     ws.roomCode = null;
 }
 
-// Keep-alive heartbeat interval (every 25 seconds)
 const interval = setInterval(() => {
     wss.clients.forEach((ws) => {
         if (ws.isAlive === false) return ws.terminate();

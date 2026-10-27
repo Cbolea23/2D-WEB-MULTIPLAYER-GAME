@@ -9,6 +9,14 @@ let html = fs.readFileSync(srcPath, 'utf8');
 console.log('Source file read successfully. Size:', html.length, 'bytes');
 
 // ============================================================================
+// 0. INJECT CRAZYGAMES SDK V3 INTO HEAD (WEB MONETIZATION & QA TEST HARNESS)
+// ============================================================================
+html = html.replace(
+    '<script src="https://cdn.tailwindcss.com"></script>',
+    `<script src="https://cdn.tailwindcss.com"></script>\n    <!-- Official CrazyGames SDK v3 (Web Game Portal Monetization & Test Harness) -->\n    <script src="https://sdk.crazygames.com/crazygames-sdk-v3.js"></script>`
+);
+
+// ============================================================================
 // 1. UPDATE GAME CONTAINER STYLING FOR AD BANNER
 // ============================================================================
 html = html.replace(
@@ -628,10 +636,10 @@ html = html.replace(
     `enterRoom(targetX, targetY, dir);\n            if (typeof MultiplayerManager !== 'undefined' && MultiplayerManager.isConnected) {\n                MultiplayerManager.sendRoomTransition(targetX, targetY, dir, game.depth);\n            }`
 );
 
-// Broadcast depth / floor transitions
+// Broadcast depth / floor transitions with Midgame Ad Break
 html = html.replace(
     `game.depth++;\n                metaSave.bestDepth = Math.max(metaSave.bestDepth, game.depth);\n                saveMeta();\n                sfx.play('levelup');\n                addFloatingText(player.x, player.y - 30, \`DESCENDING TO DEPTH \${game.depth}...\`, "#c084fc", 18);\n                generateDungeonFloor(game.depth);`,
-    `game.depth++;\n                metaSave.bestDepth = Math.max(metaSave.bestDepth, game.depth);\n                saveMeta();\n                sfx.play('levelup');\n                addFloatingText(player.x, player.y - 30, \`DESCENDING TO DEPTH \${game.depth}...\`, "#c084fc", 18);\n                generateDungeonFloor(game.depth);\n                if (typeof MultiplayerManager !== 'undefined' && MultiplayerManager.isConnected) {\n                    MultiplayerManager.sendRoomTransition(2, 2, null, game.depth);\n                }`
+    `game.depth++;\n                metaSave.bestDepth = Math.max(metaSave.bestDepth, game.depth);\n                saveMeta();\n                sfx.play('levelup');\n                addFloatingText(player.x, player.y - 30, \`DESCENDING TO DEPTH \${game.depth}...\`, "#c084fc", 18);\n                const proceedDescend = () => {\n                    generateDungeonFloor(game.depth);\n                    if (typeof MultiplayerManager !== 'undefined' && MultiplayerManager.isConnected) {\n                        MultiplayerManager.sendRoomTransition(2, 2, null, game.depth);\n                    }\n                };\n                if (typeof AdManager !== 'undefined') {\n                    AdManager.showInterstitialAd(proceedDescend);\n                } else {\n                    proceedDescend();\n                }`
 );
 
 // Broadcast mound excavation & chest opening in triggerContextAction
@@ -1270,7 +1278,7 @@ html = html.replace(
 );
 html = html.replace(
     'function triggerGameOver() {',
-    'function triggerGameOver() {\n            if (player.isGhost) return;'
+    'function triggerGameOver() {\n            if (player.isGhost) return;\n            if (typeof AdManager !== \'undefined\') AdManager.onGameplayStop();'
 );
 html = html.replace(
     `function restartRun() {\n            document.getElementById('gameover-modal').classList.add('hidden');`,
@@ -1931,6 +1939,7 @@ const clientManagersJS = `
                         if (!game.running) {
                             restartRun();
                         }
+                        if (typeof AdManager !== 'undefined') AdManager.onGameplayStart();
                     });
                 }
 
@@ -1974,6 +1983,7 @@ const clientManagersJS = `
                     btnTopHome.addEventListener('click', () => {
                         document.getElementById('home-screen').classList.remove('hidden');
                         this.updateHomeScreenMeta();
+                        if (typeof AdManager !== 'undefined') AdManager.onGameplayStop();
                     });
                 }
 
@@ -2025,7 +2035,7 @@ const clientManagersJS = `
          */
         const AdManager = {
             config: {
-                mode: 'simulation',
+                mode: 'portal',
                 rewardAmount: 50,
                 bannerRotationIntervalSec: 15,
                 lastInterstitialTime: 0,
@@ -2033,10 +2043,82 @@ const clientManagersJS = `
             },
             adTimer: null,
             onRewardSuccess: null,
+            crazyGamesReady: false,
+            wasMutedBeforeAd: false,
+            gameplayActive: false,
 
             init() {
                 this.bindUI();
                 this.startBannerRotation();
+                this.initCrazyGamesSdk();
+            },
+
+            async initCrazyGamesSdk() {
+                if (window.CrazyGames && window.CrazyGames.SDK) {
+                    try {
+                        console.log('[AdManager] Initializing CrazyGames SDK v3...');
+                        await window.CrazyGames.SDK.init();
+                        this.crazyGamesReady = true;
+                        console.log('[AdManager] CrazyGames SDK v3 initialized successfully (Environment:', window.CrazyGames.SDK.environment || 'portal', ')');
+                        if (window.CrazyGames.SDK.game && typeof window.CrazyGames.SDK.game.loadingStop === 'function') {
+                            window.CrazyGames.SDK.game.loadingStop();
+                        }
+                        if (window.CrazyGames.SDK.ad && typeof window.CrazyGames.SDK.ad.hasAdblock === 'function') {
+                            const blocked = await window.CrazyGames.SDK.ad.hasAdblock();
+                            if (blocked) {
+                                console.info('[AdManager] Ad blocker detected - simulation fallback armed.');
+                            }
+                        }
+                    } catch (err) {
+                        console.warn('[AdManager] CrazyGames SDK init warning (sandbox active):', err);
+                    }
+                } else {
+                    console.info('[AdManager] CrazyGames SDK not loaded (running standalone / dev sandbox mode).');
+                }
+            },
+
+            onGameplayStart() {
+                if (this.gameplayActive) return;
+                this.gameplayActive = true;
+                if (window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.game) {
+                    try {
+                        window.CrazyGames.SDK.game.gameplayStart();
+                    } catch (e) {}
+                }
+            },
+
+            onGameplayStop() {
+                if (!this.gameplayActive) return;
+                this.gameplayActive = false;
+                if (window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.game) {
+                    try {
+                        window.CrazyGames.SDK.game.gameplayStop();
+                    } catch (e) {}
+                }
+            },
+
+            muteAudio() {
+                this.wasMutedBeforeAd = (typeof sfx !== 'undefined' && (sfx.muted || sfx.bgmMuted));
+                if (typeof sfx !== 'undefined') {
+                    sfx.muted = true;
+                    sfx.bgmMuted = true;
+                    if (sfx.ctx && sfx.ctx.state === 'running') {
+                        try { sfx.ctx.suspend(); } catch (e) {}
+                    }
+                }
+            },
+
+            unmuteAudio() {
+                if (typeof sfx !== 'undefined') {
+                    sfx.muted = this.wasMutedBeforeAd || false;
+                    sfx.bgmMuted = this.wasMutedBeforeAd || false;
+                    if (sfx.ctx && sfx.ctx.state === 'suspended' && !sfx.muted) {
+                        try { sfx.ctx.resume(); } catch (e) {}
+                    }
+                    if (typeof sfx.setBgmMode === 'function') {
+                        sfx.setBgmMode(sfx.bgmMode || 'explore');
+                    }
+                }
             },
 
             bindUI() {
@@ -2152,41 +2234,62 @@ const clientManagersJS = `
 
             showRewardedAd(onSuccess) {
                 this.onRewardSuccess = onSuccess;
+                this.onGameplayStop();
+                this.muteAudio();
 
-                // 1. Google AdSense for Games (H5 Ad Placement API)
+                const grantReward = () => {
+                    this.unmuteAudio();
+                    if (this.onRewardSuccess) {
+                        const cb = this.onRewardSuccess;
+                        this.onRewardSuccess = null;
+                        cb();
+                    }
+                };
+
+                const cancelAd = () => {
+                    this.unmuteAudio();
+                    this.onRewardSuccess = null;
+                };
+
+                // 1. CrazyGames HTML5 SDK v3
+                if (window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.ad) {
+                    try {
+                        window.CrazyGames.SDK.ad.requestAd("rewarded", {
+                            adStarted: () => {
+                                console.log('[CrazyGames] Rewarded video ad started');
+                            },
+                            adFinished: () => {
+                                console.log('[CrazyGames] Rewarded video ad completed - granting reward');
+                                grantReward();
+                            },
+                            adError: (err) => {
+                                console.warn('[CrazyGames] Rewarded ad unfilled/error - safe grant fallback:', err);
+                                grantReward();
+                            }
+                        });
+                        return;
+                    } catch (err) {
+                        console.warn('[CrazyGames] requestAd exception:', err);
+                    }
+                }
+
+                // 2. Poki Web SDK
+                if (window.PokiSDK && typeof window.PokiSDK.rewardedBreak === 'function') {
+                    window.PokiSDK.rewardedBreak().then((success) => {
+                        if (success) grantReward();
+                        else cancelAd();
+                    }).catch(() => grantReward());
+                    return;
+                }
+
+                // 3. Google AdSense for Games (H5 Ad Placement API)
                 if (typeof window.adBreak === 'function') {
                     window.adBreak({
                         type: 'reward',
                         name: 'revive_or_souls',
                         beforeReward: (showAdFn) => { showAdFn(); },
-                        adDismissed: () => {},
-                        adViewed: () => {
-                            if (this.onRewardSuccess) this.onRewardSuccess();
-                        }
-                    });
-                    return;
-                }
-
-                // 2. CrazyGames HTML5 SDK v2 / v3
-                if (window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.ad) {
-                    window.CrazyGames.SDK.ad.requestAd("rewarded", {
-                        adStarted: () => {},
-                        adFinished: () => {
-                            if (this.onRewardSuccess) this.onRewardSuccess();
-                        },
-                        adError: (err) => {
-                            console.warn('[CrazyGames Ad Error]', err);
-                            // Fallback to granting reward if ad failed to fill
-                            if (this.onRewardSuccess) this.onRewardSuccess();
-                        }
-                    });
-                    return;
-                }
-
-                // 3. Poki Web SDK
-                if (window.PokiSDK && typeof window.PokiSDK.rewardedBreak === 'function') {
-                    window.PokiSDK.rewardedBreak().then((success) => {
-                        if (success && this.onRewardSuccess) this.onRewardSuccess();
+                        adDismissed: () => { cancelAd(); },
+                        adViewed: () => { grantReward(); }
                     });
                     return;
                 }
@@ -2197,33 +2300,102 @@ const clientManagersJS = `
                 const bar = document.getElementById('ad-progress-bar');
                 const skipBtn = document.getElementById('btn-skip-ad');
 
+                if (!modal) {
+                    grantReward();
+                    return;
+                }
+
                 modal.classList.remove('hidden');
                 let remaining = 5;
-                cd.textContent = remaining + 's';
-                bar.style.width = '0%';
-                skipBtn.disabled = true;
-                skipBtn.classList.add('text-slate-600', 'cursor-not-allowed');
-                skipBtn.classList.remove('pixel-button-gold', 'text-amber-200');
-                skipBtn.textContent = 'WAIT FOR AD (5s)';
+                if (cd) cd.textContent = remaining + 's';
+                if (bar) bar.style.width = '0%';
+                if (skipBtn) {
+                    skipBtn.disabled = true;
+                    skipBtn.classList.add('text-slate-600', 'cursor-not-allowed');
+                    skipBtn.classList.remove('pixel-button-gold', 'text-amber-200');
+                    skipBtn.textContent = 'WAIT FOR AD (5s)';
+                }
 
-                setTimeout(() => { bar.style.width = '100%'; }, 100);
+                setTimeout(() => { if (bar) bar.style.width = '100%'; }, 100);
 
                 const interval = setInterval(() => {
                     remaining--;
-                    cd.textContent = remaining + 's';
-                    skipBtn.textContent = \`WAIT FOR AD (\${remaining}s)\`;
+                    if (cd) cd.textContent = remaining + 's';
+                    if (skipBtn) skipBtn.textContent = \`WAIT FOR AD (\${remaining}s)\`;
                     if (remaining <= 0) {
                         clearInterval(interval);
-                        skipBtn.disabled = false;
-                        skipBtn.classList.remove('text-slate-600', 'cursor-not-allowed');
-                        skipBtn.className = 'pixel-button-gold px-3 py-1.5 rounded font-pixel text-[8px] text-amber-200 w-full';
-                        skipBtn.textContent = 'CLAIM REWARD & RETURN';
-                        skipBtn.onclick = () => {
-                            modal.classList.add('hidden');
-                            if (this.onRewardSuccess) this.onRewardSuccess();
-                        };
+                        if (skipBtn) {
+                            skipBtn.disabled = false;
+                            skipBtn.classList.remove('text-slate-600', 'cursor-not-allowed');
+                            skipBtn.className = 'pixel-button-gold px-3 py-1.5 rounded font-pixel text-[8px] text-amber-200 w-full';
+                            skipBtn.textContent = 'CLAIM REWARD & RETURN';
+                            skipBtn.onclick = () => {
+                                modal.classList.add('hidden');
+                                grantReward();
+                            };
+                        }
                     }
                 }, 1000);
+            },
+
+            showInterstitialAd(onComplete) {
+                // In multiplayer co-op squad, NEVER interrupt clients with midgame interstitials
+                if (typeof MultiplayerManager !== 'undefined' && MultiplayerManager.isConnected) {
+                    if (onComplete) onComplete();
+                    return;
+                }
+
+                const now = Date.now();
+                if (now - this.config.lastInterstitialTime < this.config.interstitialCooldownSec * 1000) {
+                    if (onComplete) onComplete();
+                    return;
+                }
+                this.config.lastInterstitialTime = now;
+
+                this.onGameplayStop();
+                this.muteAudio();
+                const resume = () => {
+                    this.unmuteAudio();
+                    this.onGameplayStart();
+                    if (onComplete) onComplete();
+                };
+
+                // 1. CrazyGames HTML5 SDK v2 / v3
+                if (window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.ad) {
+                    try {
+                        window.CrazyGames.SDK.ad.requestAd("midgame", {
+                            adStarted: () => {
+                                console.log('[CrazyGames] Midgame interstitial started');
+                            },
+                            adFinished: () => {
+                                console.log('[CrazyGames] Midgame interstitial completed');
+                                resume();
+                            },
+                            adError: (err) => {
+                                console.warn('[CrazyGames] Midgame interstitial error:', err);
+                                resume();
+                            }
+                        });
+                        return;
+                    } catch (e) {
+                        console.warn('[CrazyGames] requestAd midgame exception:', e);
+                        resume();
+                        return;
+                    }
+                }
+
+                // 2. Poki Web SDK
+                if (window.PokiSDK && typeof window.PokiSDK.commercialBreak === 'function') {
+                    window.PokiSDK.commercialBreak().then(() => {
+                        resume();
+                    }).catch(() => {
+                        resume();
+                    });
+                    return;
+                }
+
+                // 3. Fallback: No ad provider available or local dev
+                resume();
             },
 
             revivePlayerFromAd() {
@@ -2237,6 +2409,7 @@ const clientManagersJS = `
                 player.invulnTimer = 2.5;
                 game.running = true;
                 game.paused = false;
+                this.onGameplayStart();
                 sfx.play('levelup');
                 triggerJuice(0.18, 20, 60);
                 addParticles(player.x, player.y, '#22d3ee', 45, 240, 7);
@@ -2259,6 +2432,7 @@ const clientManagersJS = `
                 player.hp = 0;
                 game.running = true;
                 game.paused = false;
+                this.onGameplayStart();
                 sfx.play('dash');
                 triggerJuice(0.08, 10, 30);
                 addParticles(player.x, player.y, '#38bdf8', 35, 180, 5);
@@ -2277,6 +2451,7 @@ const clientManagersJS = `
                 const spectHud = document.getElementById('ghost-spectator-hud');
                 if (spectHud) spectHud.classList.add('hidden');
 
+                this.onGameplayStop();
                 player.isGhost = false;
                 if (typeof MultiplayerManager !== 'undefined' && MultiplayerManager.isConnected) {
                     MultiplayerManager.disconnect();
@@ -2562,6 +2737,7 @@ const clientManagersJS = `
                 this.ws.send(JSON.stringify({ type: 'launch_game' }));
                 document.getElementById('coop-modal').classList.add('hidden');
                 restartRun();
+                if (typeof AdManager !== 'undefined') AdManager.onGameplayStart();
             },
 
             startSyncLoop() {
@@ -2624,6 +2800,7 @@ const clientManagersJS = `
                         document.getElementById('home-screen').classList.add('hidden');
                         game.multiplayerSeed = msg.seed || game.multiplayerSeed;
                         restartRun();
+                        if (typeof AdManager !== 'undefined') AdManager.onGameplayStart();
                         addFloatingText(ROOM_W / 2, ROOM_H / 2, "EXPEDITION COMMENCED!", "#fbbf24", 22);
                         break;
 

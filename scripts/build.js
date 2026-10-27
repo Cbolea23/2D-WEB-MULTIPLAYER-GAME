@@ -12,7 +12,272 @@ html = html.replace(
     `#game-container {\n            position: relative;\n            flex: 1;\n            width: 100%;\n            height: calc(100vh - 54px - 50px);\n            overflow: hidden;\n            background-color: var(--bg-dark);\n            transition: height 0.2s ease;\n        }\n        #game-container.banner-hidden {\n            height: calc(100vh - 54px);\n        }`
 );
 
-// 2. Add Ad Banner HTML and Rewarded Modal
+// 2. Add HOME and SETTINGS buttons to Top HUD Bar
+const topHudButtons = `
+            <button id="btn-home" class="pixel-button text-amber-300 font-pixel text-[9px] px-2 py-1.5 rounded hover:border-amber-400" title="Return to Home Screen">
+                🏠 HOME
+            </button>
+            <button id="btn-settings" class="pixel-button text-slate-200 font-pixel text-[9px] px-2 py-1.5 rounded hover:border-slate-300" title="Game Settings">
+                ⚙️
+            </button>
+            <button id="btn-coop" class="pixel-button text-emerald-300 font-pixel text-[9px] px-2 py-1.5 rounded hover:border-emerald-400" title="Multiplayer Co-Op Squad (Up to 6 Players)">
+                🌐 CO-OP [6P]
+            </button>
+`;
+html = html.replace(
+    `<button id="btn-coop" class="pixel-button text-emerald-300 font-pixel text-[9px] px-2 py-1.5 rounded hover:border-emerald-400" title="Multiplayer Co-Op & Godot Export Engine">\n                🌐 CO-OP\n            </button>`,
+    topHudButtons
+);
+
+// 3. Add HOME SCREEN and SETTINGS MODAL HTML
+const homeScreenAndSettingsHtml = `
+    <!-- FULLSCREEN TITLE / HOME SCREEN OVERLAY -->
+    <div id="home-screen" class="fixed inset-0 bg-[#05070b]/95 backdrop-blur-md z-50 flex flex-col items-center justify-center p-4 select-none">
+        <div class="absolute inset-0 overflow-hidden pointer-events-none opacity-40">
+            <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyan-600/10 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-1/4 left-1/2 -translate-x-1/2 translate-y-1/2 w-96 h-96 bg-amber-600/10 rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="relative z-10 max-w-lg w-full text-center space-y-6">
+            <div class="space-y-2">
+                <div class="flex items-center justify-center gap-3 mb-1">
+                    <span class="text-3xl animate-bounce">⚰️</span>
+                    <h1 class="font-pixel text-2xl md:text-4xl text-amber-400 tracking-wider font-black drop-shadow-[0_4px_16px_rgba(245,158,11,0.4)]">
+                        CRYPT KEEPER
+                    </h1>
+                    <span class="text-3xl animate-bounce">⛏️</span>
+                </div>
+                <div class="font-gothic text-sm md:text-base text-cyan-300 tracking-widest uppercase font-semibold">
+                    ROGUE SHOVEL • 6-PLAYER EXPEDITION
+                </div>
+                <p class="text-[8px] font-pixel text-slate-400 max-w-md mx-auto leading-relaxed pt-1">
+                    Unearth tombs, deflect cursed projectile orbs, and delve through procedurally generated catacombs with up to 6 players in lockstep online co-op!
+                </p>
+            </div>
+
+            <div class="space-y-2.5 max-w-xs mx-auto">
+                <button id="btn-home-solo" class="pixel-button-gold w-full py-3 rounded font-pixel text-xs text-amber-200 tracking-wider shadow-lg flex items-center justify-center gap-2">
+                    <span>⚔️</span> START SOLO GAME
+                </button>
+                <button id="btn-home-coop" class="pixel-button-cyan w-full py-3 rounded font-pixel text-xs text-cyan-100 tracking-wider shadow-lg flex items-center justify-center gap-2">
+                    <span>🌐</span> CO-OP SQUAD (UP TO 6 PLAYERS)
+                </button>
+                <div class="grid grid-cols-2 gap-2">
+                    <button id="btn-home-settings" class="pixel-button py-2.5 rounded font-pixel text-[9px] text-slate-200 flex items-center justify-center gap-1.5">
+                        <span>⚙️</span> SETTINGS
+                    </button>
+                    <button id="btn-home-codex" class="pixel-button py-2.5 rounded font-pixel text-[9px] text-purple-300 flex items-center justify-center gap-1.5">
+                        <span>📜</span> CODEX
+                    </button>
+                </div>
+            </div>
+
+            <div class="pixel-panel p-2.5 rounded flex items-center justify-around text-[8px] font-pixel text-slate-300 max-w-sm mx-auto bg-slate-950/80 border-slate-800">
+                <div>🔮 SOULS: <span id="home-souls" class="text-purple-400 font-bold">0</span></div>
+                <div>⛏️ WEAPON: <span id="home-weapon" class="text-amber-400 font-bold">IRON SPADE</span></div>
+                <div>🏆 BEST DEPTH: <span id="home-depth" class="text-cyan-400 font-bold">DEPTH 1</span></div>
+            </div>
+
+            <div class="text-[7px] font-pixel text-slate-500 flex items-center justify-center gap-4">
+                <span>VER 1.3.0 • WEB ROGUELIKE</span>
+                <span>DESKTOP & MOBILE TOUCH</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: GAME SETTINGS -->
+    <div id="settings-modal" class="hidden fixed inset-0 bg-slate-950/95 backdrop-blur-md z-50 flex items-center justify-center p-4 select-none">
+        <div class="pixel-panel max-w-md w-full p-5 rounded space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl">⚙️</span>
+                    <h2 class="font-pixel text-xs md:text-sm font-black text-amber-400">EXPEDITION SETTINGS</h2>
+                </div>
+                <button id="close-settings" class="pixel-button text-slate-300 px-2 py-0.5 rounded font-pixel text-[9px]">✕ [ESC]</button>
+            </div>
+
+            <div class="space-y-3 max-h-[65vh] overflow-y-auto pr-1">
+                <div class="pixel-panel p-3 rounded flex items-center justify-between">
+                    <div>
+                        <div class="font-pixel text-[9px] text-slate-200">MASTER AUDIO</div>
+                        <div class="text-[7px] font-pixel text-slate-400">Toggle all sounds & synthesizers</div>
+                    </div>
+                    <button id="setting-toggle-audio" class="pixel-button-cyan px-3 py-1 rounded font-pixel text-[8px]">
+                        🔊 ENABLED
+                    </button>
+                </div>
+
+                <div class="pixel-panel p-3 rounded space-y-1.5">
+                    <div class="flex justify-between items-center">
+                        <span class="font-pixel text-[9px] text-cyan-300">🎵 BGM CHIPTUNE SYNTH</span>
+                        <span id="setting-bgm-val" class="font-pixel text-[8px] text-cyan-400">70%</span>
+                    </div>
+                    <input id="setting-slider-bgm" type="range" min="0" max="100" value="70" class="w-full accent-cyan-400 cursor-pointer">
+                </div>
+
+                <div class="pixel-panel p-3 rounded space-y-1.5">
+                    <div class="flex justify-between items-center">
+                        <span class="font-pixel text-[9px] text-amber-300">💥 SOUND EFFECTS (SFX)</span>
+                        <span id="setting-sfx-val" class="font-pixel text-[8px] text-amber-400">80%</span>
+                    </div>
+                    <input id="setting-slider-sfx" type="range" min="0" max="100" value="80" class="w-full accent-amber-400 cursor-pointer">
+                </div>
+
+                <div class="pixel-panel p-3 rounded flex items-center justify-between">
+                    <div>
+                        <div class="font-pixel text-[9px] text-slate-200">SCREEN SHAKE & TRAUMA</div>
+                        <div class="text-[7px] font-pixel text-slate-400">Camera impact kick on finishers</div>
+                    </div>
+                    <button id="setting-toggle-shake" class="pixel-button-gold px-3 py-1 rounded font-pixel text-[8px]">
+                        FULL (100%)
+                    </button>
+                </div>
+
+                <div class="pixel-panel p-3 rounded flex items-center justify-between">
+                    <div>
+                        <div class="font-pixel text-[9px] text-slate-200">VIRTUAL TOUCH CONTROLS</div>
+                        <div class="text-[7px] font-pixel text-slate-400">On-screen analog stick & buttons</div>
+                    </div>
+                    <button id="setting-toggle-touch" class="pixel-button px-3 py-1 rounded font-pixel text-[8px] text-slate-300">
+                        AUTO-DETECT
+                    </button>
+                </div>
+
+                <div class="pixel-panel p-3 rounded space-y-1.5">
+                    <div class="flex justify-between items-center">
+                        <span class="font-pixel text-[9px] text-purple-300">📢 AD MONETIZATION MODE</span>
+                        <span id="setting-ad-mode-val" class="font-pixel text-[8px] text-purple-400">SIMULATED (TEST)</span>
+                    </div>
+                    <p class="text-[7px] font-pixel text-slate-400 leading-relaxed">
+                        Test ads work on localhost. Switch to Google AdSense, Poki, or CrazyGames when deploying to your public domain!
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex gap-2 pt-1 border-t border-slate-800">
+                <button id="btn-save-settings" class="pixel-button-gold w-full py-2 rounded font-pixel text-[9px] text-amber-200 uppercase">
+                    ✓ SAVE & CLOSE
+                </button>
+            </div>
+        </div>
+    </div>
+`;
+
+html = html.replace('<body class="bg-[#05070b] text-slate-100 select-none">', `<body class="bg-[#05070b] text-slate-100 select-none">\n${homeScreenAndSettingsHtml}`);
+
+// 4. Update the Co-Op Modal to display 6 squad player slots
+const sixPlayerLobbyHtml = `
+            <!-- TAB 1: CO-OP SESSION LOBBY (UP TO 6 PLAYERS) -->
+            <div id="tab-content-lobby" class="space-y-3 overflow-y-auto pr-1 flex-1">
+                <div class="pixel-panel p-2.5 rounded flex flex-wrap items-center justify-between gap-2 border-cyan-800 bg-cyan-950/20">
+                    <div class="flex items-center gap-2">
+                        <span id="net-status-dot" class="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block animate-pulse"></span>
+                        <span id="net-status-text" class="text-[8px] font-pixel text-cyan-200">SERVER: CONNECTING (ws://localhost:3000)...</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <input id="input-server-url" type="text" value="ws://localhost:3000" class="bg-slate-950 border border-slate-700 px-2 py-1 rounded text-cyan-300 font-pixel text-[8px] w-36 outline-none focus:border-cyan-400">
+                        <button id="btn-reconnect-server" class="pixel-button-cyan px-2 py-1 rounded font-pixel text-[8px] text-cyan-100">
+                            CONNECT
+                        </button>
+                    </div>
+                </div>
+
+                <div class="pixel-panel p-3 rounded space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-pixel text-[9px] text-white">EXPEDITION ROOM CODE:</span>
+                        <span id="coop-room-code" class="font-pixel text-xs text-amber-400 bg-slate-950 px-2.5 py-1 rounded border border-amber-600 tracking-widest font-black">KEEPER-7X9</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input id="input-coop-code" type="text" placeholder="ENTER 6P ROOM CODE..." class="flex-1 bg-slate-950 border border-slate-700 px-3 py-1.5 rounded font-pixel text-[9px] text-cyan-300 uppercase tracking-widest outline-none focus:border-cyan-400">
+                        <button id="btn-join-session" class="pixel-button-gold px-3 py-1.5 rounded font-pixel text-[8px] text-amber-200 shrink-0">
+                            🔗 JOIN EXPEDITION
+                        </button>
+                        <button id="btn-new-code" class="pixel-button px-3 py-1.5 rounded font-pixel text-[8px] text-slate-300 shrink-0">
+                            🎲 NEW CODE
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 6-PLAYER SQUAD ROSTER -->
+                <div class="pixel-panel p-3 rounded space-y-2">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-1.5">
+                        <div class="font-pixel text-[9px] text-cyan-300 flex items-center gap-1.5">
+                            <span>🛡️</span>
+                            <span>EXPEDITION SQUAD (MAX 6 PLAYERS)</span>
+                        </div>
+                        <span id="squad-count-badge" class="font-pixel text-[8px] px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                            1 / 6 KEEPERS
+                        </span>
+                    </div>
+
+                    <div id="squad-slots-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                        <div id="slot-p1" class="pixel-panel p-2 rounded border-amber-500 bg-amber-950/20 text-[8px] font-pixel flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                            <div>
+                                <div class="text-amber-300 font-bold">P1 (HOST/YOU)</div>
+                                <div class="text-[7px] text-slate-400">Ready in Crypt</div>
+                            </div>
+                        </div>
+                        <div id="slot-p2" class="pixel-panel p-2 rounded border-slate-800 bg-slate-950/40 text-[8px] font-pixel flex items-center gap-2 opacity-60">
+                            <span class="w-2.5 h-2.5 rounded-full bg-slate-600"></span>
+                            <div>
+                                <div class="text-cyan-300">P2 KEEPER</div>
+                                <div class="text-[7px] text-slate-500">Waiting...</div>
+                            </div>
+                        </div>
+                        <div id="slot-p3" class="pixel-panel p-2 rounded border-slate-800 bg-slate-950/40 text-[8px] font-pixel flex items-center gap-2 opacity-60">
+                            <span class="w-2.5 h-2.5 rounded-full bg-slate-600"></span>
+                            <div>
+                                <div class="text-emerald-300">P3 KEEPER</div>
+                                <div class="text-[7px] text-slate-500">Waiting...</div>
+                            </div>
+                        </div>
+                        <div id="slot-p4" class="pixel-panel p-2 rounded border-slate-800 bg-slate-950/40 text-[8px] font-pixel flex items-center gap-2 opacity-60">
+                            <span class="w-2.5 h-2.5 rounded-full bg-slate-600"></span>
+                            <div>
+                                <div class="text-purple-300">P4 KEEPER</div>
+                                <div class="text-[7px] text-slate-500">Waiting...</div>
+                            </div>
+                        </div>
+                        <div id="slot-p5" class="pixel-panel p-2 rounded border-slate-800 bg-slate-950/40 text-[8px] font-pixel flex items-center gap-2 opacity-60">
+                            <span class="w-2.5 h-2.5 rounded-full bg-slate-600"></span>
+                            <div>
+                                <div class="text-rose-300">P5 KEEPER</div>
+                                <div class="text-[7px] text-slate-500">Waiting...</div>
+                            </div>
+                        </div>
+                        <div id="slot-p6" class="pixel-panel p-2 rounded border-slate-800 bg-slate-950/40 text-[8px] font-pixel flex items-center gap-2 opacity-60">
+                            <span class="w-2.5 h-2.5 rounded-full bg-slate-600"></span>
+                            <div>
+                                <div class="text-amber-200">P6 KEEPER</div>
+                                <div class="text-[7px] text-slate-500">Waiting...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-2 border-t border-slate-800/80">
+                        <div class="text-[7px] font-pixel text-slate-400">
+                            Solo or small squads can activate an AI companion partner bot:
+                        </div>
+                        <button id="btn-toggle-coop-bot" class="pixel-button-cyan px-2.5 py-1 rounded font-pixel text-[7px] text-cyan-100">
+                            ACTIVATE AI BOT
+                        </button>
+                    </div>
+                </div>
+
+                <div class="pixel-panel p-3 rounded">
+                    <div class="font-pixel text-[8px] text-cyan-300 uppercase tracking-wider mb-1.5">⚡ LIVE SQUAD NETWORK SYNC (JSON)</div>
+                    <pre id="net-packet-preview" class="bg-slate-950 p-2 rounded text-[7px] font-mono text-emerald-400 overflow-x-auto border border-slate-800 leading-tight max-h-24"></pre>
+                </div>
+            </div>
+`;
+
+html = html.replace(
+    /<!-- TAB 1: CO-OP SESSION LOBBY -->[\s\S]*?<!-- TAB 2: GODOT 4 ANTIGRAVITY ENGINE ARCHITECTURE -->/,
+    `${sixPlayerLobbyHtml}\n            <!-- TAB 2: GODOT 4 ANTIGRAVITY ENGINE ARCHITECTURE -->`
+);
+
+// 5. Add Ad Banner HTML and Rewarded Modal
 const adBannerHtml = `
     <!-- BOTTOM AD BANNER BAR -->
     <footer id="ad-banner-container" class="w-full pixel-panel px-3 py-1 flex items-center justify-between gap-3 z-30 border-b-0 border-x-0 rounded-none bg-[#090d16] text-[8px] font-pixel shrink-0 h-[50px] transition-all duration-200">
@@ -62,7 +327,7 @@ const adBannerHtml = `
 `;
 html = html.replace('<!-- MODAL 6: GAME OVER / EXPEDITION SUMMARY -->', `${adBannerHtml}\n    <!-- MODAL 6: GAME OVER / EXPEDITION SUMMARY -->`);
 
-// 3. Add "Watch Ad to Rebirth" button in Game Over modal
+// 6. Add "Watch Ad to Rebirth" button in Game Over modal
 const rewardedDeathBtn = `
             <button id="btn-watch-ad-rebirth" class="pixel-button-cyan w-full py-2.5 rounded font-pixel text-[9px] uppercase text-cyan-200 mb-2 flex items-center justify-center gap-1.5 shadow-lg border-cyan-400">
                 <span>📺</span> WATCH AD TO REBIRTH (50% HP REVIVE)
@@ -73,7 +338,7 @@ html = html.replace(
     `<div id="gameover-stats" class="pixel-panel rounded p-3 mb-3 text-[9px] space-y-1.5 text-left font-pixel text-slate-300"></div>\n${rewardedDeathBtn}`
 );
 
-// 4. Add "Watch Ad for +50 Souls" button in Sanctuary Altar modal
+// 7. Add "Watch Ad for +50 Souls" button in Sanctuary Altar modal
 const rewardedAltarBtn = `
                 <div class="pixel-panel p-2.5 rounded flex items-center justify-between border-amber-700 bg-amber-950/20">
                     <div>
@@ -90,40 +355,28 @@ html = html.replace(
     `<div id="altar-blessings" class="space-y-2 mb-3"></div>\n${rewardedAltarBtn}`
 );
 
-// 5. Add WebSocket Connection status & Controls in Co-Op Modal
-const coOpNetControls = `
-                <!-- LIVE WEBSOCKET SERVER CONNECTION HUB -->
-                <div class="pixel-panel p-2.5 rounded flex flex-wrap items-center justify-between gap-2 border-cyan-800 bg-cyan-950/20">
-                    <div class="flex items-center gap-2">
-                        <span id="net-status-dot" class="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block animate-pulse"></span>
-                        <span id="net-status-text" class="text-[8px] font-pixel text-cyan-200">SERVER: CONNECTING (ws://localhost:3000)...</span>
-                    </div>
-                    <div class="flex items-center gap-1.5">
-                        <input id="input-server-url" type="text" value="ws://localhost:3000" class="bg-slate-950 border border-slate-700 px-2 py-1 rounded text-cyan-300 font-pixel text-[8px] w-36 outline-none focus:border-cyan-400">
-                        <button id="btn-reconnect-server" class="pixel-button-cyan px-2 py-1 rounded font-pixel text-[8px] text-cyan-100">
-                            CONNECT
-                        </button>
-                    </div>
-                </div>
-`;
-html = html.replace(
-    `<!-- TAB 1: CO-OP SESSION LOBBY -->\n            <div id="tab-content-lobby" class="space-y-3 overflow-y-auto pr-1 flex-1">`,
-    `<!-- TAB 1: CO-OP SESSION LOBBY -->\n            <div id="tab-content-lobby" class="space-y-3 overflow-y-auto pr-1 flex-1">\n${coOpNetControls}`
-);
-
-// 6. Enhance coopPartner state object with interpolation and remote flag
+// 8. Enhance coopPartner state object with squad array for up to 6 players
 html = html.replace(
     `let coopPartner = {`,
-    `let coopPartner = {\n            isRemotePlayer: false,\n            targetX: ROOM_W / 2 - 40,\n            targetY: ROOM_H / 2 + 70,\n            targetAngle: 0,\n            targetFacing: 1,\n            comboStep: 0,`
+    `const SQUAD_COLORS = {
+            1: '#f59e0b', // P1 Host: Gold
+            2: '#22d3ee', // P2: Cyan
+            3: '#34d399', // P3: Emerald
+            4: '#c084fc', // P4: Purple
+            5: '#fb7185', // P5: Rose
+            6: '#fbbf24'  // P6: Amber
+        };
+        const squadPeers = new Map(); // peerId -> squadMember
+
+        let coopPartner = {\n            isRemotePlayer: false,\n            targetX: ROOM_W / 2 - 40,\n            targetY: ROOM_H / 2 + 70,\n            targetAngle: 0,\n            targetFacing: 1,\n            comboStep: 0,\n            playerIndex: 2,`
 );
 
-// 7. Fix updateCoopPartner so that when isRemotePlayer is true, AI logic is completely disabled to eliminate shaking!
+// 9. Fix updateCoopPartner so that when isRemotePlayer is true, AI logic is completely disabled to eliminate shaking!
 const updateCoopPartnerPatch = `        function updateCoopPartner(dt) {
             if (!coopPartner.active) return;
             const p = coopPartner;
 
             if (p.isDowned) {
-                // Downed partner can be revived if player stands nearby and presses E
                 if (Math.hypot(player.x - p.x, player.y - p.y) < 70) {
                     p.reviveTimer += dt;
                     if (p.reviveTimer >= 2.0) {
@@ -132,7 +385,7 @@ const updateCoopPartnerPatch = `        function updateCoopPartner(dt) {
                         p.reviveTimer = 0;
                         sfx.play('levelup');
                         addParticles(p.x, p.y, '#34d399', 24, 180, 5);
-                        addFloatingText(p.x, p.y - 25, "✨ PARTNER REVIVED!", "#34d399", 16);
+                        addFloatingText(p.x, p.y - 25, "✨ KEEPER REVIVED!", "#34d399", 16);
                         if (typeof MultiplayerManager !== 'undefined' && MultiplayerManager.isConnected) {
                             MultiplayerManager.sendAction('revived');
                         }
@@ -162,14 +415,14 @@ const updateCoopPartnerPatch = `        function updateCoopPartner(dt) {
                 if (p.swingTimer > 0) p.swingTimer = Math.max(0, p.swingTimer - dt);
                 if (p.attackCd > 0) p.attackCd = Math.max(0, p.attackCd - dt);
                 if (p.dashTimer > 0) p.dashTimer = Math.max(0, p.dashTimer - dt);
-                return; // Stop here! Do NOT run AI combat or pathfinding on remote player!
+                return;
             }`;
 html = html.replace(
     /function updateCoopPartner\(dt\) \{[\s\S]*?if \(p\.isDowned\) \{[\s\S]*?return;\s*\}/,
     updateCoopPartnerPatch
 );
 
-// 8. Add Seeded Pseudo-Random Number Generator for Dungeon Floors
+// 10. Add Seeded Pseudo-Random Number Generator for Dungeon Floors
 const prngCode = `
         // Deterministic Pseudo-Random Generator for Synchronized Procedural Stages
         let _seedRngVal = 1234567;
@@ -193,31 +446,37 @@ html = html.replace(
     `const base = visited[Math.floor(dRand() * visited.length)];\n                const d = dirs[Math.floor(dRand() * dirs.length)];`
 );
 
-// 9. Sync attack swings in performAttack
+// 11. Sync attack swings in performAttack
 html = html.replace(
     `player.swingDuration = (isFinisher ? 0.25 : 0.18) / wep.speedMult;\n            player.swingTimer = player.swingDuration;`,
     `player.swingDuration = (isFinisher ? 0.25 : 0.18) / wep.speedMult;\n            player.swingTimer = player.swingDuration;\n            if (typeof MultiplayerManager !== 'undefined' && MultiplayerManager.isConnected) {\n                MultiplayerManager.sendAction('swing', {\n                    angle: +(player.angle.toFixed(3)),\n                    facing: player.facing,\n                    comboStep: player.comboStep,\n                    weaponId: player.weapon.id,\n                    x: Math.round(player.x),\n                    y: Math.round(player.y)\n                });\n            }`
 );
 
-// 10. Sync weapon changes in Arsenal modal
+// 12. Sync weapon changes in Arsenal modal
 html = html.replace(
     `player.weapon = w;\n                    metaSave.selectedWeapon = w.id;`,
     `player.weapon = w;\n                    metaSave.selectedWeapon = w.id;\n                    if (typeof MultiplayerManager !== 'undefined' && MultiplayerManager.isConnected) {\n                        MultiplayerManager.sendAction('change_weapon', { weaponId: w.id });\n                    }`
 );
 
-// 11. Sync room changes in changeRoom(dir)
+// 13. Sync room changes in changeRoom(dir)
 html = html.replace(
     `enterRoom(targetX, targetY, dir);\n            return true;`,
     `enterRoom(targetX, targetY, dir);\n            if (typeof MultiplayerManager !== 'undefined' && MultiplayerManager.isConnected) {\n                MultiplayerManager.sendRoomTransition(targetX, targetY, dir, game.depth);\n            }\n            return true;`
 );
 
-// 12. Sync floor portal transitions
+// 14. Sync floor portal transitions
 html = html.replace(
     `game.depth++;\n                generateDungeonFloor(game.depth);`,
     `game.depth++;\n                generateDungeonFloor(game.depth);\n                if (typeof MultiplayerManager !== 'undefined' && MultiplayerManager.isConnected) {\n                    MultiplayerManager.sendRoomTransition(2, 2, null, game.depth);\n                }`
 );
 
-// 13. Reusable Weapon and Attack Slash Renderer
+// 15. Sync Context Action (Dig Mounds, Open Chests) across network
+html = html.replace(
+    `function triggerContextAction() {`,
+    `function triggerContextAction() {\n            if (typeof MultiplayerManager !== 'undefined' && MultiplayerManager.isConnected) {\n                MultiplayerManager.sendAction('interact', { x: Math.round(player.x), y: Math.round(player.y) });\n            }`
+);
+
+// 16. Reusable Weapon and Attack Slash Renderer
 const weaponRendererCode = `
         function renderCharacterWeapon(ctx, entity, isPlayer = false) {
             const wep = entity.weapon || WEAPON_ARSENAL.rusty_spade;
@@ -348,33 +607,342 @@ const weaponRendererCode = `
         }
 `;
 
-// Replace existing player weapon drawing in render() with renderCharacterWeapon
 html = html.replace(
     /const wep = player\.weapon \|\| WEAPON_ARSENAL\.rusty_spade;[\s\S]*?ctx\.fillRect\(24, 4, 12, 14\);\s*\}\s*ctx\.restore\(\);\s*\}/,
     `renderCharacterWeapon(ctx, player, true);`
 );
 
-// Inject renderCharacterWeapon into coopPartner rendering
+const renderSquadCode = `
+            // Render Co-Op Squad Keepers (Up to 6 Players)
+            const squadToRender = squadPeers.size > 0 ? Array.from(squadPeers.values()) : (coopPartner.active ? [coopPartner] : []);
+            for (const sp of squadToRender) {
+                ctx.save();
+                ctx.translate(Math.round(sp.x), Math.round(sp.y));
+                ctx.scale(sp.facing || 1, 1);
+                
+                const pColor = SQUAD_COLORS[sp.playerIndex || 2] || '#34d399';
+                ctx.strokeStyle = sp.isDowned ? '#ef4444' : pColor;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(0, 8, 16, 0, Math.PI * 2);
+                ctx.stroke();
+
+                const cpSpr = atlas.sprites['player_0'];
+                if (cpSpr) {
+                    if (sp.isDowned) {
+                        ctx.save();
+                        ctx.rotate(Math.PI / 2);
+                        ctx.drawImage(cpSpr, Math.round(-cpSpr.width / 2), Math.round(-cpSpr.height / 2));
+                        ctx.restore();
+                        ctx.font = '800 8px Inter';
+                        ctx.textAlign = 'center';
+                        ctx.fillStyle = '#f87171';
+                        ctx.fillText('REVIVE [E]', 0, -22);
+                    } else {
+                        ctx.drawImage(cpSpr, Math.round(-cpSpr.width / 2), Math.round(-cpSpr.height / 2));
+                        renderCharacterWeapon(ctx, sp, false);
+                        ctx.font = '800 8px Inter';
+                        ctx.textAlign = 'center';
+                        ctx.fillStyle = pColor;
+                        ctx.fillText(\`P\${sp.playerIndex || 2} SQUAD\`, 0, -22);
+                    }
+                }
+                ctx.restore();
+            }
+`;
+
 html = html.replace(
-    `ctx.fillText('P2 CO-OP', 0, -22);\n                    }`,
-    `renderCharacterWeapon(ctx, coopPartner, false);\n                        ctx.font = '800 8px Inter';\n                        ctx.textAlign = 'center';\n                        ctx.fillStyle = '#34d399';\n                        ctx.fillText('P2 CO-OP', 0, -22);\n                    }`
+    /if \(coopPartner\.active\) \{[\s\S]*?ctx\.fillText\('P2 CO-OP', 0, -22\);\s*\}\s*\}\s*ctx\.restore\(\);\s*\}/,
+    renderSquadCode
 );
 
-// Insert weaponRendererCode before render()
 html = html.replace('function render() {', `${weaponRendererCode}\n        function render() {`);
 
-// 14. Inject the enhanced AdManager and MultiplayerManager modules right before window.onload
+// 17. Host-Authoritative Simulation & Lockstep Snapshot Syncing
+const hostSnapshotSyncCode = `
+        // Authoritative Host Snapshot Generator
+        function sendHostWorldSnapshot() {
+            if (!MultiplayerManager.isConnected || !MultiplayerManager.isHost || !MultiplayerManager.roomCode) return;
+            const r = currentRoom();
+            if (!r) return;
+
+            const snapshot = {
+                curX: game.curX,
+                curY: game.curY,
+                depth: game.depth,
+                roomCleared: !!r.cleared,
+                portalActive: !!r.portalActive,
+                enemies: enemies.map((e, idx) => ({
+                    id: e.id || idx,
+                    type: e.type,
+                    x: Math.round(e.x),
+                    y: Math.round(e.y),
+                    hp: Math.round(e.hp),
+                    maxHp: e.maxHp,
+                    vx: Math.round(e.vx || 0),
+                    vy: Math.round(e.vy || 0),
+                    facing: e.facing || 1,
+                    flash: e.flash > 0,
+                    burrowed: !!e.burrowed,
+                    isElite: !!e.isElite,
+                    isBoss: !!e.isBoss,
+                    animFrame: e.animFrame || 0
+                })),
+                projectiles: projectiles.map(p => ({
+                    x: Math.round(p.x),
+                    y: Math.round(p.y),
+                    vx: Math.round(p.vx),
+                    vy: Math.round(p.vy),
+                    radius: p.radius,
+                    color: p.color,
+                    isHostile: p.isHostile
+                })),
+                drops: drops.map((d, idx) => ({
+                    id: idx,
+                    x: Math.round(d.x),
+                    y: Math.round(d.y),
+                    type: d.type,
+                    value: d.value
+                })),
+                mounds: (r.mounds || []).map(m => ({
+                    x: Math.round(m.x),
+                    y: Math.round(m.y),
+                    hp: m.hp,
+                    maxHp: m.maxHp,
+                    rich: !!m.rich
+                })),
+                pits: (r.pits || []).map(p => ({
+                    x: Math.round(p.x),
+                    y: Math.round(p.y),
+                    radius: p.radius
+                })),
+                chests: (r.chests || []).map(c => ({
+                    x: Math.round(c.x),
+                    y: Math.round(c.y),
+                    opened: !!c.opened
+                }))
+            };
+
+            MultiplayerManager.ws.send(JSON.stringify({
+                type: 'sync_world_snapshot',
+                snapshot
+            }));
+        }
+`;
+
+// Insert sendHostWorldSnapshot before update()
+html = html.replace('function update(dt) {', `${hostSnapshotSyncCode}\n        function update(dt) {`);
+
+// Call sendHostWorldSnapshot inside update loop
+html = html.replace(
+    'updateNetworkPacketPreview();',
+    'updateNetworkPacketPreview();\n            if (MultiplayerManager.isHost) sendHostWorldSnapshot();'
+);
+
+// Disable local AI enemies pursuit when connected as peer
+html = html.replace(
+    'for (let i = enemies.length - 1; i >= 0; i--) {',
+    'if (MultiplayerManager.isConnected && !MultiplayerManager.isHost) {\n                // Remote clients smoothly lerp authoritative enemies from host snapshot\n                for (const e of enemies) {\n                    if (e.targetX !== undefined) {\n                        e.x += (e.targetX - e.x) * 0.45;\n                        e.y += (e.targetY - e.y) * 0.45;\n                    }\n                }\n            } else for (let i = enemies.length - 1; i >= 0; i--) {'
+);
+
+// 18. Settings Manager & Home Screen Controller
+const homeAndSettingsJS = `
+        /**
+         * ============================================================================
+         * 14. SETTINGS ENGINE & HOME SCREEN MANAGER
+         * ============================================================================
+         */
+        const SettingsManager = {
+            settings: {
+                audioEnabled: true,
+                bgmVolume: 70,
+                sfxVolume: 80,
+                screenShake: 100,
+                touchControls: 'auto',
+                adMode: 'simulated'
+            },
+
+            init() {
+                this.load();
+                this.bindUI();
+                this.updateHomeScreenMeta();
+            },
+
+            load() {
+                try {
+                    const saved = localStorage.getItem('crypt_keeper_settings');
+                    if (saved) {
+                        this.settings = Object.assign(this.settings, JSON.parse(saved));
+                    }
+                } catch (e) {}
+                this.apply();
+            },
+
+            save() {
+                try {
+                    localStorage.setItem('crypt_keeper_settings', JSON.stringify(this.settings));
+                } catch (e) {}
+                this.apply();
+            },
+
+            apply() {
+                game.shakeMultiplier = this.settings.screenShake / 100;
+                if (typeof sfx !== 'undefined') {
+                    sfx.muted = !this.settings.audioEnabled;
+                    sfx.bgmVolume = (this.settings.bgmVolume / 100);
+                    sfx.sfxVolume = (this.settings.sfxVolume / 100);
+                }
+                const mobControls = document.getElementById('mobile-controls');
+                if (mobControls) {
+                    if (this.settings.touchControls === 'always') mobControls.classList.remove('hidden');
+                    else if (this.settings.touchControls === 'hidden') mobControls.classList.add('hidden');
+                }
+            },
+
+            bindUI() {
+                const btnHomeSolo = document.getElementById('btn-home-solo');
+                if (btnHomeSolo) {
+                    btnHomeSolo.addEventListener('click', () => {
+                        document.getElementById('home-screen').classList.add('hidden');
+                        sfx.init();
+                        sfx.play('levelup');
+                        game.paused = false;
+                        game.running = true;
+                    });
+                }
+
+                const btnHomeCoop = document.getElementById('btn-home-coop');
+                if (btnHomeCoop) {
+                    btnHomeCoop.addEventListener('click', () => {
+                        document.getElementById('home-screen').classList.add('hidden');
+                        sfx.init();
+                        document.getElementById('coop-modal').classList.remove('hidden');
+                        game.paused = true;
+                    });
+                }
+
+                const btnHomeSettings = document.getElementById('btn-home-settings');
+                const btnTopSettings = document.getElementById('btn-settings');
+                if (btnHomeSettings) btnHomeSettings.addEventListener('click', () => this.openModal());
+                if (btnTopSettings) btnTopSettings.addEventListener('click', () => this.openModal());
+
+                const btnHomeCodex = document.getElementById('btn-home-codex');
+                if (btnHomeCodex) {
+                    btnHomeCodex.addEventListener('click', () => {
+                        document.getElementById('codex-modal').classList.remove('hidden');
+                    });
+                }
+
+                const btnTopHome = document.getElementById('btn-home');
+                if (btnTopHome) {
+                    btnTopHome.addEventListener('click', () => {
+                        document.getElementById('home-screen').classList.remove('hidden');
+                        this.updateHomeScreenMeta();
+                    });
+                }
+
+                const closeSettings = document.getElementById('close-settings');
+                const btnSaveSettings = document.getElementById('btn-save-settings');
+                if (closeSettings) closeSettings.addEventListener('click', () => this.closeModal());
+                if (btnSaveSettings) btnSaveSettings.addEventListener('click', () => this.closeModal());
+
+                const toggleAudio = document.getElementById('setting-toggle-audio');
+                if (toggleAudio) {
+                    toggleAudio.addEventListener('click', () => {
+                        this.settings.audioEnabled = !this.settings.audioEnabled;
+                        toggleAudio.textContent = this.settings.audioEnabled ? '🔊 ENABLED' : '🔇 MUTED';
+                        toggleAudio.className = this.settings.audioEnabled ? 'pixel-button-cyan px-3 py-1 rounded font-pixel text-[8px]' : 'pixel-button px-3 py-1 rounded font-pixel text-[8px] text-red-400';
+                    });
+                }
+
+                const sliderBgm = document.getElementById('setting-slider-bgm');
+                const valBgm = document.getElementById('setting-bgm-val');
+                if (sliderBgm) {
+                    sliderBgm.addEventListener('input', (e) => {
+                        this.settings.bgmVolume = parseInt(e.target.value);
+                        if (valBgm) valBgm.textContent = this.settings.bgmVolume + '%';
+                    });
+                }
+
+                const sliderSfx = document.getElementById('setting-slider-sfx');
+                const valSfx = document.getElementById('setting-sfx-val');
+                if (sliderSfx) {
+                    sliderSfx.addEventListener('input', (e) => {
+                        this.settings.sfxVolume = parseInt(e.target.value);
+                        if (valSfx) valSfx.textContent = this.settings.sfxVolume + '%';
+                    });
+                }
+
+                const toggleShake = document.getElementById('setting-toggle-shake');
+                if (toggleShake) {
+                    toggleShake.addEventListener('click', () => {
+                        if (this.settings.screenShake === 100) this.settings.screenShake = 40;
+                        else if (this.settings.screenShake === 40) this.settings.screenShake = 0;
+                        else this.settings.screenShake = 100;
+                        toggleShake.textContent = this.settings.screenShake === 100 ? 'FULL (100%)' : (this.settings.screenShake === 40 ? 'REDUCED (40%)' : 'OFF (0%)');
+                    });
+                }
+
+                const toggleTouch = document.getElementById('setting-toggle-touch');
+                if (toggleTouch) {
+                    toggleTouch.addEventListener('click', () => {
+                        if (this.settings.touchControls === 'auto') this.settings.touchControls = 'always';
+                        else if (this.settings.touchControls === 'always') this.settings.touchControls = 'hidden';
+                        else this.settings.touchControls = 'auto';
+                        toggleTouch.textContent = this.settings.touchControls.toUpperCase();
+                    });
+                }
+            },
+
+            openModal() {
+                const modal = document.getElementById('settings-modal');
+                if (modal) modal.classList.remove('hidden');
+                const toggleAudio = document.getElementById('setting-toggle-audio');
+                if (toggleAudio) {
+                    toggleAudio.textContent = this.settings.audioEnabled ? '🔊 ENABLED' : '🔇 MUTED';
+                    toggleAudio.className = this.settings.audioEnabled ? 'pixel-button-cyan px-3 py-1 rounded font-pixel text-[8px]' : 'pixel-button px-3 py-1 rounded font-pixel text-[8px] text-red-400';
+                }
+                const sliderBgm = document.getElementById('setting-slider-bgm');
+                const valBgm = document.getElementById('setting-bgm-val');
+                if (sliderBgm && valBgm) {
+                    sliderBgm.value = this.settings.bgmVolume;
+                    valBgm.textContent = this.settings.bgmVolume + '%';
+                }
+                const sliderSfx = document.getElementById('setting-slider-sfx');
+                const valSfx = document.getElementById('setting-sfx-val');
+                if (sliderSfx && valSfx) {
+                    sliderSfx.value = this.settings.sfxVolume;
+                    valSfx.textContent = this.settings.sfxVolume + '%';
+                }
+            },
+
+            closeModal() {
+                this.save();
+                const modal = document.getElementById('settings-modal');
+                if (modal) modal.classList.add('hidden');
+            },
+
+            updateHomeScreenMeta() {
+                const s = document.getElementById('home-souls');
+                const w = document.getElementById('home-weapon');
+                const d = document.getElementById('home-depth');
+                if (s) s.textContent = player.souls || metaSave.souls || 0;
+                if (w) w.textContent = (player.weapon ? player.weapon.name : 'IRON SPADE').toUpperCase();
+                if (d) d.textContent = 'DEPTH ' + (metaSave.bestDepth || 1);
+            }
+        };
+`;
+
+// 19. 6-Player Multiplayer Engine with World Snapshot Reconciliation
 const jsModules = `
         /**
          * ============================================================================
          * 12. WEB MONETIZATION & AD ENGINE (AdManager)
-         * Supports: Banner Ads, Rewarded Ads (Death Revive / Altar Souls), Interstitials
-         * Modes: 'simulated' (Default Out-of-the-box), 'poki', 'crazygames', 'adsense'
          * ============================================================================
          */
         const AdManager = {
             config: {
-                mode: 'simulated', // 'simulated' | 'poki' | 'crazygames' | 'adsense'
+                mode: 'simulated',
                 bannerEnabled: true,
                 bannerVisible: true,
                 adsenseClientId: 'ca-pub-XXXXXXXXXXXXXXXX',
@@ -392,7 +960,6 @@ const jsModules = `
             ],
 
             init() {
-                // Banner action button
                 const btnAction = document.getElementById('btn-ad-banner-action');
                 if (btnAction) {
                     btnAction.addEventListener('click', () => {
@@ -400,7 +967,6 @@ const jsModules = `
                     });
                 }
 
-                // Banner toggle/minimize
                 const btnToggle = document.getElementById('btn-toggle-ad-banner');
                 if (btnToggle) {
                     btnToggle.addEventListener('click', () => {
@@ -408,7 +974,6 @@ const jsModules = `
                     });
                 }
 
-                // Watch Ad for Ankh Rebirth
                 const btnAdRebirth = document.getElementById('btn-watch-ad-rebirth');
                 if (btnAdRebirth) {
                     btnAdRebirth.addEventListener('click', () => {
@@ -418,7 +983,6 @@ const jsModules = `
                     });
                 }
 
-                // Watch Ad for Soul Shards
                 const btnAdSouls = document.getElementById('btn-watch-ad-souls');
                 if (btnAdSouls) {
                     btnAdSouls.addEventListener('click', () => {
@@ -437,7 +1001,6 @@ const jsModules = `
                     });
                 }
 
-                // Rotate simulated banners every 20 seconds
                 setInterval(() => {
                     this.rotateBanner();
                 }, 20000);
@@ -481,7 +1044,6 @@ const jsModules = `
                 if (progressBar) progressBar.style.width = '0%';
                 if (skipBtn) skipBtn.classList.add('hidden');
 
-                // If Poki SDK is integrated
                 if (this.config.mode === 'poki' && window.PokiSDK) {
                     window.PokiSDK.rewardedBreak().then((success) => {
                         if (success && onRewardSuccess) onRewardSuccess();
@@ -489,7 +1051,6 @@ const jsModules = `
                     return;
                 }
 
-                // If CrazyGames SDK is integrated
                 if (this.config.mode === 'crazygames' && window.CrazyGames && window.CrazyGames.SDK) {
                     window.CrazyGames.SDK.ad.requestAd("rewarded", {
                         adFinished: () => { if (onRewardSuccess) onRewardSuccess(); },
@@ -498,7 +1059,6 @@ const jsModules = `
                     return;
                 }
 
-                // Default Simulator Mode (5 seconds clean countdown)
                 if (modal) modal.classList.remove('hidden');
                 let timeLeft = 5;
                 if (countdownEl) countdownEl.textContent = timeLeft + 's';
@@ -545,8 +1105,7 @@ const jsModules = `
 
         /**
          * ============================================================================
-         * 13. REAL-TIME MULTIPLAYER NETWORKING ENGINE (MultiplayerManager)
-         * WebSocket Room Lobby, Live Transform Sync, Attack Relaying & Revive Mechanics
+         * 13. REAL-TIME 6-PLAYER MULTIPLAYER NETWORKING ENGINE (MultiplayerManager)
          * ============================================================================
          */
         const MultiplayerManager = {
@@ -554,10 +1113,10 @@ const jsModules = `
             isConnected: false,
             isHost: false,
             roomCode: '',
-            partnerActive: false,
             syncInterval: null,
             lastPing: 0,
             latencyMs: 0,
+            playerIndex: 1,
 
             init() {
                 const defaultUrl = (window.location.protocol === 'https:' ? 'wss://' : 'ws://') + (window.location.host || 'localhost:3000');
@@ -572,7 +1131,6 @@ const jsModules = `
                     });
                 }
 
-                // Hook New Code button
                 const btnNewCode = document.getElementById('btn-new-code');
                 if (btnNewCode) {
                     btnNewCode.addEventListener('click', () => {
@@ -580,7 +1138,6 @@ const jsModules = `
                     });
                 }
 
-                // Hook Join Session button
                 const btnJoin = document.getElementById('btn-join-session');
                 if (btnJoin) {
                     btnJoin.addEventListener('click', () => {
@@ -589,7 +1146,6 @@ const jsModules = `
                     });
                 }
 
-                // Attempt auto-connect to local / hosted server
                 setTimeout(() => {
                     this.connect(defaultUrl);
                 }, 400);
@@ -604,14 +1160,13 @@ const jsModules = `
                 try {
                     this.ws = new WebSocket(url);
                 } catch (err) {
-                    this.updateNetUI('offline', 'OFFLINE (AI Companion active)');
+                    this.updateNetUI('offline', 'OFFLINE (Solo/AI mode)');
                     return;
                 }
 
                 this.ws.onopen = () => {
                     this.isConnected = true;
                     this.updateNetUI('online', \`CONNECTED (\${url})\`);
-                    // Start heartbeats
                     this.lastPing = Date.now();
                     this.ws.send(JSON.stringify({ type: 'ping', t: this.lastPing }));
                     this.startSyncLoop();
@@ -629,14 +1184,16 @@ const jsModules = `
                 this.ws.onclose = () => {
                     this.isConnected = false;
                     coopPartner.isRemotePlayer = false;
-                    this.updateNetUI('offline', 'OFFLINE (AI Companion active)');
+                    squadPeers.clear();
+                    this.updateSquadUI();
+                    this.updateNetUI('offline', 'OFFLINE (Solo/AI mode)');
                     if (this.syncInterval) clearInterval(this.syncInterval);
                 };
 
                 this.ws.onerror = () => {
                     this.isConnected = false;
                     coopPartner.isRemotePlayer = false;
-                    this.updateNetUI('offline', 'OFFLINE (AI Companion active)');
+                    this.updateNetUI('offline', 'OFFLINE (Solo/AI mode)');
                 };
             },
 
@@ -657,6 +1214,28 @@ const jsModules = `
                     dot.className = 'w-2.5 h-2.5 rounded-full bg-red-500 inline-block';
                     text.className = 'text-[8px] font-pixel text-slate-400';
                     text.textContent = \`SERVER: \${label}\`;
+                }
+            },
+
+            updateSquadUI() {
+                const countBadge = document.getElementById('squad-count-badge');
+                const total = 1 + squadPeers.size;
+                if (countBadge) countBadge.textContent = \`\${total} / 6 KEEPERS\`;
+
+                for (let i = 2; i <= 6; i++) {
+                    const slot = document.getElementById('slot-p' + i);
+                    if (!slot) continue;
+                    let member = null;
+                    for (const m of squadPeers.values()) {
+                        if (m.playerIndex === i) { member = m; break; }
+                    }
+                    if (member) {
+                        slot.className = 'pixel-panel p-2 rounded border-cyan-500 bg-cyan-950/30 text-[8px] font-pixel flex items-center gap-2';
+                        slot.innerHTML = \`<span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse"></span><div><div class="text-cyan-300 font-bold">P\${i} KEEPER</div><div class="text-[7px] text-emerald-400">In Crypt Sector</div></div>\`;
+                    } else {
+                        slot.className = 'pixel-panel p-2 rounded border-slate-800 bg-slate-950/40 text-[8px] font-pixel flex items-center gap-2 opacity-50';
+                        slot.innerHTML = \`<span class="w-2.5 h-2.5 rounded-full bg-slate-600"></span><div><div class="text-slate-400">P\${i} KEEPER</div><div class="text-[7px] text-slate-600">Waiting...</div></div>\`;
+                    }
                 }
             },
 
@@ -724,7 +1303,7 @@ const jsModules = `
                             curY: game.curY
                         }
                     }));
-                }, 35); // ~30 Hz state broadcast for responsive syncing
+                }, 35);
             },
 
             handleMessage(msg) {
@@ -740,109 +1319,277 @@ const jsModules = `
                     case 'room_created':
                         this.roomCode = msg.roomCode;
                         this.isHost = true;
+                        this.playerIndex = 1;
                         game.multiplayer.roomCode = msg.roomCode;
                         game.multiplayerSeed = msg.seed;
-                        // Synchronize initial stage with room seed
                         generateDungeonFloor(game.depth);
                         document.getElementById('coop-room-code').textContent = msg.roomCode;
+                        this.updateSquadUI();
                         sfx.play('coin');
-                        addFloatingText(player.x, player.y - 30, \`EXPEDITION \${msg.roomCode} CREATED!\`, "#f59e0b", 16);
+                        addFloatingText(player.x, player.y - 30, \`6P EXPEDITION \${msg.roomCode} CREATED!\`, "#f59e0b", 16);
                         break;
 
                     case 'room_joined':
                         this.roomCode = msg.roomCode;
                         this.isHost = false;
+                        this.playerIndex = msg.playerIndex || 2;
                         game.multiplayer.roomCode = msg.roomCode;
                         game.multiplayerSeed = msg.seed;
-                        // Generate identical stage layout using host seed
                         generateDungeonFloor(game.depth);
                         document.getElementById('coop-room-code').textContent = msg.roomCode;
-                        coopPartner.active = true;
-                        coopPartner.isRemotePlayer = true;
-                        updateCoopPartnerStatus();
+                        
+                        if (msg.players) {
+                            for (const p of msg.players) {
+                                if (p.id !== this.ws.clientId) {
+                                    squadPeers.set(p.id, {
+                                        id: p.id,
+                                        playerIndex: p.playerIndex,
+                                        x: ROOM_W / 2 - 40,
+                                        y: ROOM_H / 2 + 70,
+                                        targetX: ROOM_W / 2 - 40,
+                                        targetY: ROOM_H / 2 + 70,
+                                        angle: 0,
+                                        facing: 1,
+                                        animFrame: 0,
+                                        hp: 120,
+                                        maxHp: 120,
+                                        weapon: WEAPON_ARSENAL.rusty_spade,
+                                        isDowned: false
+                                    });
+                                }
+                            }
+                        }
+                        this.updateSquadUI();
                         sfx.play('levelup');
-                        addFloatingText(player.x, player.y - 30, \`JOINED \${msg.roomCode}!\`, "#34d399", 16);
+                        addFloatingText(player.x, player.y - 30, \`JOINED SQUAD AS P\${this.playerIndex}!\`, "#34d399", 16);
                         break;
 
                     case 'peer_joined':
-                        coopPartner.active = true;
-                        coopPartner.isRemotePlayer = true;
-                        updateCoopPartnerStatus();
                         sfx.play('levelup');
-                        addFloatingText(player.x, player.y - 30, "🤝 PARTNER JOINED YOUR EXPEDITION!", "#34d399", 18);
+                        squadPeers.set(msg.peerId, {
+                            id: msg.peerId,
+                            playerIndex: msg.playerIndex,
+                            x: ROOM_W / 2 - 40,
+                            y: ROOM_H / 2 + 70,
+                            targetX: ROOM_W / 2 - 40,
+                            targetY: ROOM_H / 2 + 70,
+                            angle: 0,
+                            facing: 1,
+                            animFrame: 0,
+                            hp: 120,
+                            maxHp: 120,
+                            weapon: WEAPON_ARSENAL.rusty_spade,
+                            isDowned: false
+                        });
+                        this.updateSquadUI();
+                        addFloatingText(player.x, player.y - 30, \`🤝 KEEPER P\${msg.playerIndex} JOINED SQUAD!\`, "#34d399", 18);
                         addParticles(player.x, player.y, '#34d399', 25, 200, 5);
                         break;
 
                     case 'partner_sync':
-                        if (!coopPartner.active) {
-                            coopPartner.active = true;
-                            updateCoopPartnerStatus();
+                        let peer = squadPeers.get(msg.peerId);
+                        if (!peer) {
+                            peer = {
+                                id: msg.peerId,
+                                playerIndex: msg.playerIndex || 2,
+                                x: msg.state.x,
+                                y: msg.state.y,
+                                targetX: msg.state.x,
+                                targetY: msg.state.y,
+                                angle: msg.state.angle || 0,
+                                facing: msg.state.facing || 1,
+                                animFrame: 0,
+                                hp: msg.state.hp || 120,
+                                maxHp: msg.state.maxHp || 120,
+                                weapon: WEAPON_ARSENAL.rusty_spade,
+                                isDowned: false
+                            };
+                            squadPeers.set(msg.peerId, peer);
+                            this.updateSquadUI();
                         }
-                        coopPartner.isRemotePlayer = true;
                         const s = msg.state;
-                        // Set target positions for smooth interpolation (NO SHAKING)
-                        coopPartner.targetX = s.x;
-                        coopPartner.targetY = s.y;
-                        coopPartner.targetAngle = s.angle !== undefined ? s.angle : coopPartner.targetAngle;
-                        coopPartner.targetFacing = s.facing || coopPartner.targetFacing;
-                        coopPartner.hp = s.hp !== undefined ? s.hp : coopPartner.hp;
-                        coopPartner.maxHp = s.maxHp || coopPartner.maxHp;
-                        coopPartner.isDowned = !!s.isDowned;
+                        peer.targetX = s.x;
+                        peer.targetY = s.y;
+                        peer.targetAngle = s.angle !== undefined ? s.angle : peer.targetAngle;
+                        peer.targetFacing = s.facing || peer.targetFacing;
+                        peer.hp = s.hp !== undefined ? s.hp : peer.hp;
+                        peer.maxHp = s.maxHp || peer.maxHp;
+                        peer.isDowned = !!s.isDowned;
                         if (s.weaponId && WEAPON_ARSENAL[s.weaponId]) {
-                            coopPartner.weapon = WEAPON_ARSENAL[s.weaponId];
+                            peer.weapon = WEAPON_ARSENAL[s.weaponId];
                         }
+                        
+                        const lerpFactor = 0.55;
+                        peer.x += (peer.targetX - peer.x) * lerpFactor;
+                        peer.y += (peer.targetY - peer.y) * lerpFactor;
+                        peer.angle = peer.targetAngle;
+                        peer.facing = peer.targetFacing;
+                        if (peer.swingTimer > 0) peer.swingTimer = Math.max(0, peer.swingTimer - 0.035);
                         break;
 
                     case 'partner_action':
+                        const actionPeer = squadPeers.get(msg.peerId);
+                        const actor = actionPeer || coopPartner;
+
                         if (msg.action === 'swing') {
                             const d = msg.data || {};
                             if (d.weaponId && WEAPON_ARSENAL[d.weaponId]) {
-                                coopPartner.weapon = WEAPON_ARSENAL[d.weaponId];
+                                actor.weapon = WEAPON_ARSENAL[d.weaponId];
                             }
-                            coopPartner.comboStep = d.comboStep !== undefined ? d.comboStep : 0;
-                            coopPartner.angle = d.angle !== undefined ? d.angle : coopPartner.angle;
-                            coopPartner.facing = d.facing !== undefined ? d.facing : coopPartner.facing;
-                            const isFinisher = coopPartner.comboStep === 0;
-                            coopPartner.swingDuration = (isFinisher ? 0.25 : 0.18) / (coopPartner.weapon.speedMult || 1);
-                            coopPartner.swingTimer = coopPartner.swingDuration;
+                            actor.comboStep = d.comboStep !== undefined ? d.comboStep : 0;
+                            actor.angle = d.angle !== undefined ? d.angle : actor.angle;
+                            actor.facing = d.facing !== undefined ? d.facing : actor.facing;
+                            const isFinisher = actor.comboStep === 0;
+                            actor.swingDuration = (isFinisher ? 0.25 : 0.18) / (actor.weapon.speedMult || 1);
+                            actor.swingTimer = actor.swingDuration;
 
                             sfx.play('swing');
-                            const reach = (coopPartner.weapon.reach || 42) * (isFinisher ? 1.15 : 1.0);
-                            const slashX = coopPartner.x + Math.cos(coopPartner.angle) * (reach * 0.7);
-                            const slashY = coopPartner.y + Math.sin(coopPartner.angle) * (reach * 0.7);
-                            addParticles(slashX, slashY, coopPartner.weapon.trailColor || '#22d3ee', isFinisher ? 16 : 8, 140, 4);
+                            const reach = (actor.weapon.reach || 42) * (isFinisher ? 1.15 : 1.0);
+                            const slashX = actor.x + Math.cos(actor.angle) * (reach * 0.7);
+                            const slashY = actor.y + Math.sin(actor.angle) * (reach * 0.7);
+                            addParticles(slashX, slashY, actor.weapon.trailColor || '#22d3ee', isFinisher ? 16 : 8, 140, 4);
 
-                            // Partner damage check on local enemies
-                            for (let i = enemies.length - 1; i >= 0; i--) {
-                                const foe = enemies[i];
-                                if (!foe.burrowed && Math.hypot(foe.x - coopPartner.x, foe.y - coopPartner.y) < reach + 20) {
-                                    foe.hp -= 28;
-                                    foe.flash = 0.12;
-                                    const kb = Math.atan2(foe.y - coopPartner.y, foe.x - coopPartner.x);
-                                    foe.vx = Math.cos(kb) * 220;
-                                    foe.vy = Math.sin(kb) * 220;
-                                    addParticles(foe.x, foe.y, '#22d3ee', 6, 110, 3);
-                                    addFloatingText(foe.x, foe.y - 12, "-28", "#67e8f9", 12);
-                                    if (foe.hp <= 0) killEnemy(i);
+                            // Authoritative damage check if host
+                            if (MultiplayerManager.isHost) {
+                                for (let i = enemies.length - 1; i >= 0; i--) {
+                                    const foe = enemies[i];
+                                    if (!foe.burrowed && Math.hypot(foe.x - actor.x, foe.y - actor.y) < reach + 20) {
+                                        foe.hp -= 28;
+                                        foe.flash = 0.12;
+                                        const kb = Math.atan2(foe.y - actor.y, foe.x - actor.x);
+                                        foe.vx = Math.cos(kb) * 220;
+                                        foe.vy = Math.sin(kb) * 220;
+                                        addParticles(foe.x, foe.y, '#22d3ee', 6, 110, 3);
+                                        addFloatingText(foe.x, foe.y - 12, "-28", "#67e8f9", 12);
+                                        if (foe.hp <= 0) killEnemy(i);
+                                    }
+                                }
+                            }
+                        } else if (msg.action === 'interact') {
+                            if (MultiplayerManager.isHost) {
+                                const ix = msg.data.x;
+                                const iy = msg.data.y;
+                                const r = currentRoom();
+                                if (r && r.mounds) {
+                                    for (let i = r.mounds.length - 1; i >= 0; i--) {
+                                        if (Math.hypot(r.mounds[i].x - ix, r.mounds[i].y - iy) < 85) {
+                                            excavateMound(i);
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (r && r.chests) {
+                                    for (const ch of r.chests) {
+                                        if (!ch.opened && Math.hypot(ch.x - ix, ch.y - iy) < 85) {
+                                            ch.opened = true;
+                                            sfx.play('levelup');
+                                            addParticles(ch.x, ch.y, '#fbbf24', 24, 170, 5);
+                                            for (let c = 0; c < 4; c++) spawnLootDrop(ch.x + (c - 1.5) * 15, ch.y + 15, 'coin', 12);
+                                            break;
+                                        }
+                                    }
                                 }
                             }
                         } else if (msg.action === 'change_weapon') {
                             if (msg.data.weaponId && WEAPON_ARSENAL[msg.data.weaponId]) {
-                                coopPartner.weapon = WEAPON_ARSENAL[msg.data.weaponId];
+                                actor.weapon = WEAPON_ARSENAL[msg.data.weaponId];
                                 sfx.play('swing');
-                                addFloatingText(coopPartner.x, coopPartner.y - 20, \`PARTNER: \${coopPartner.weapon.name}\`, "#f59e0b", 12);
                             }
                         } else if (msg.action === 'dash') {
                             sfx.play('dash');
-                            addParticles(coopPartner.x, coopPartner.y, '#94a3b8', 12, 120, 4);
+                            addParticles(actor.x, actor.y, '#94a3b8', 12, 120, 4);
                         } else if (msg.action === 'deflect') {
                             sfx.play('deflect');
-                            addParticles(coopPartner.x, coopPartner.y, '#f59e0b', 16, 160, 5);
+                            addParticles(actor.x, actor.y, '#f59e0b', 16, 160, 5);
                         } else if (msg.action === 'revived') {
                             sfx.play('levelup');
-                            coopPartner.isDowned = false;
-                            coopPartner.hp = Math.round(coopPartner.maxHp * 0.5);
-                            addParticles(coopPartner.x, coopPartner.y, '#34d399', 24, 180, 5);
+                            actor.isDowned = false;
+                            actor.hp = Math.round(actor.maxHp * 0.5);
+                            addParticles(actor.x, actor.y, '#34d399', 24, 180, 5);
+                        }
+                        break;
+
+                    case 'world_snapshot':
+                        // LOCKSTEP AUTHORITATIVE RECONCILIATION FOR PEERS
+                        if (MultiplayerManager.isHost) return;
+                        const snap = msg.snapshot;
+                        if (!snap) return;
+
+                        // Room and Depth sync
+                        if (snap.depth !== game.depth || snap.curX !== game.curX || snap.curY !== game.curY) {
+                            if (snap.depth !== game.depth) {
+                                game.depth = snap.depth;
+                                generateDungeonFloor(game.depth);
+                            }
+                            enterRoom(snap.curX, snap.curY, null);
+                        }
+
+                        const curR = currentRoom();
+                        if (curR) {
+                            curR.cleared = snap.roomCleared;
+                            curR.portalActive = snap.portalActive;
+                            if (snap.mounds) curR.mounds = snap.mounds;
+                            if (snap.pits) curR.pits = snap.pits;
+                            if (snap.chests && curR.chests) {
+                                curR.chests.forEach((c, idx) => {
+                                    if (snap.chests[idx]) c.opened = snap.chests[idx].opened;
+                                });
+                            }
+                        }
+
+                        // Reconcile drops
+                        if (snap.drops) {
+                            drops = snap.drops.map(d => ({ x: d.x, y: d.y, type: d.type, value: d.value, bob: 0 }));
+                        }
+
+                        // Reconcile projectiles
+                        if (snap.projectiles) {
+                            projectiles = snap.projectiles;
+                        }
+
+                        // Reconcile Enemies perfectly
+                        const snapFoes = snap.enemies || [];
+                        while (enemies.length < snapFoes.length) {
+                            const sf = snapFoes[enemies.length];
+                            enemies.push({
+                                type: sf.type,
+                                x: sf.x,
+                                y: sf.y,
+                                targetX: sf.x,
+                                targetY: sf.y,
+                                hp: sf.hp,
+                                maxHp: sf.maxHp,
+                                vx: sf.vx,
+                                vy: sf.vy,
+                                facing: sf.facing,
+                                flash: sf.flash ? 0.12 : 0,
+                                burrowed: sf.burrowed,
+                                isElite: sf.isElite,
+                                isBoss: sf.isBoss,
+                                animFrame: sf.animFrame || 0,
+                                radius: sf.type === 'wraith' ? 18 : 16
+                            });
+                        }
+                        while (enemies.length > snapFoes.length) {
+                            const deadFoe = enemies.pop();
+                            addParticles(deadFoe.x, deadFoe.y, '#94a3b8', 10, 120, 4);
+                        }
+                        for (let i = 0; i < snapFoes.length; i++) {
+                            const sf = snapFoes[i];
+                            const ef = enemies[i];
+                            ef.type = sf.type;
+                            ef.targetX = sf.x;
+                            ef.targetY = sf.y;
+                            ef.x += (sf.x - ef.x) * 0.6;
+                            ef.y += (sf.y - ef.y) * 0.6;
+                            ef.hp = sf.hp;
+                            ef.maxHp = sf.maxHp;
+                            ef.facing = sf.facing;
+                            ef.flash = sf.flash ? 0.12 : 0;
+                            ef.burrowed = sf.burrowed;
+                            ef.isElite = sf.isElite;
+                            ef.isBoss = sf.isBoss;
+                            ef.animFrame = sf.animFrame;
                         }
                         break;
 
@@ -852,18 +1599,20 @@ const jsModules = `
                             generateDungeonFloor(game.depth);
                         }
                         enterRoom(msg.curX, msg.curY, msg.dir || null);
-                        // Position partner by entrance door
-                        const offDist = 35;
-                        coopPartner.x = player.x + (msg.dir === 'E' ? -offDist : (msg.dir === 'W' ? offDist : 0));
-                        coopPartner.y = player.y + (msg.dir === 'S' ? -offDist : (msg.dir === 'N' ? offDist : 30));
-                        coopPartner.targetX = coopPartner.x;
-                        coopPartner.targetY = coopPartner.y;
-                        addFloatingText(ROOM_W / 2, ROOM_H / 2 - 30, "ROOM TRANSITION", "#34d399", 16);
+                        addFloatingText(ROOM_W / 2, ROOM_H / 2 - 30, "SQUAD TRANSITION", "#34d399", 16);
                         break;
 
                     case 'partner_left':
-                        coopPartner.isRemotePlayer = false;
-                        addFloatingText(player.x, player.y - 30, "PARTNER LEFT (AI ACTIVE)", "#ef4444", 14);
+                        squadPeers.delete(msg.peerId);
+                        this.updateSquadUI();
+                        addFloatingText(player.x, player.y - 30, \`P\${msg.playerIndex} LEFT SQUAD\`, "#ef4444", 14);
+                        break;
+
+                    case 'promoted_to_host':
+                        this.isHost = true;
+                        this.playerIndex = 1;
+                        this.updateSquadUI();
+                        addFloatingText(player.x, player.y - 30, "👑 YOU ARE EXPEDITION LEADER!", "#f59e0b", 18);
                         break;
 
                     case 'error':
@@ -874,11 +1623,11 @@ const jsModules = `
         };
 `;
 
-// Inject before window.onload
+// Inject JS modules into window.onload
 html = html.replace(
     'window.onload = function () {',
-    `${jsModules}\n\n        window.onload = function () {\n            AdManager.init();\n            MultiplayerManager.init();`
+    `${homeAndSettingsJS}\n${jsModules}\n\n        window.onload = function () {\n            SettingsManager.init();\n            AdManager.init();\n            MultiplayerManager.init();`
 );
 
 fs.writeFileSync(destPath, html, 'utf8');
-console.log('Successfully compiled index.html with complete sync enhancements!');
+console.log('Successfully compiled index.html with Home Screen, Settings & Host-Authoritative 6P Sync!');

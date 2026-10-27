@@ -200,6 +200,138 @@
 
 <body class="bg-[#05070b] text-slate-100 select-none">
 
+    <!-- FULLSCREEN TITLE / HOME SCREEN OVERLAY -->
+    <div id="home-screen" class="fixed inset-0 bg-[#05070b]/95 backdrop-blur-md z-50 flex flex-col items-center justify-center p-4 select-none">
+        <div class="absolute inset-0 overflow-hidden pointer-events-none opacity-40">
+            <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyan-600/10 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-1/4 left-1/2 -translate-x-1/2 translate-y-1/2 w-96 h-96 bg-amber-600/10 rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="relative z-10 max-w-lg w-full text-center space-y-6">
+            <div class="space-y-2">
+                <div class="flex items-center justify-center gap-3 mb-1">
+                    <span class="text-3xl animate-bounce">⚰️</span>
+                    <h1 class="font-pixel text-2xl md:text-4xl text-amber-400 tracking-wider font-black drop-shadow-[0_4px_16px_rgba(245,158,11,0.4)]">
+                        CRYPT KEEPER
+                    </h1>
+                    <span class="text-3xl animate-bounce">⛏️</span>
+                </div>
+                <div class="font-gothic text-sm md:text-base text-cyan-300 tracking-widest uppercase font-semibold">
+                    ROGUE SHOVEL • 6-PLAYER EXPEDITION
+                </div>
+                <p class="text-[8px] font-pixel text-slate-400 max-w-md mx-auto leading-relaxed pt-1">
+                    Unearth tombs, deflect cursed projectile orbs, and delve through procedurally generated catacombs with up to 6 players in lockstep online co-op!
+                </p>
+            </div>
+
+            <div class="space-y-2.5 max-w-xs mx-auto">
+                <button id="btn-home-solo" class="pixel-button-gold w-full py-3 rounded font-pixel text-xs text-amber-200 tracking-wider shadow-lg flex items-center justify-center gap-2">
+                    <span>⚔️</span> START SOLO GAME
+                </button>
+                <button id="btn-home-coop" class="pixel-button-cyan w-full py-3 rounded font-pixel text-xs text-cyan-100 tracking-wider shadow-lg flex items-center justify-center gap-2">
+                    <span>🌐</span> CO-OP SQUAD (UP TO 6 PLAYERS)
+                </button>
+                <div class="grid grid-cols-2 gap-2">
+                    <button id="btn-home-settings" class="pixel-button py-2.5 rounded font-pixel text-[9px] text-slate-200 flex items-center justify-center gap-1.5">
+                        <span>⚙️</span> SETTINGS
+                    </button>
+                    <button id="btn-home-codex" class="pixel-button py-2.5 rounded font-pixel text-[9px] text-purple-300 flex items-center justify-center gap-1.5">
+                        <span>📜</span> CODEX
+                    </button>
+                </div>
+            </div>
+
+            <div class="pixel-panel p-2.5 rounded flex items-center justify-around text-[8px] font-pixel text-slate-300 max-w-sm mx-auto bg-slate-950/80 border-slate-800">
+                <div>🔮 SOULS: <span id="home-souls" class="text-purple-400 font-bold">0</span></div>
+                <div>⛏️ WEAPON: <span id="home-weapon" class="text-amber-400 font-bold">IRON SPADE</span></div>
+                <div>🏆 BEST DEPTH: <span id="home-depth" class="text-cyan-400 font-bold">DEPTH 1</span></div>
+            </div>
+
+            <div class="text-[7px] font-pixel text-slate-500 flex items-center justify-center gap-4">
+                <span>VER 1.3.0 • WEB ROGUELIKE</span>
+                <span>DESKTOP & MOBILE TOUCH</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: GAME SETTINGS -->
+    <div id="settings-modal" class="hidden fixed inset-0 bg-slate-950/95 backdrop-blur-md z-50 flex items-center justify-center p-4 select-none">
+        <div class="pixel-panel max-w-md w-full p-5 rounded space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl">⚙️</span>
+                    <h2 class="font-pixel text-xs md:text-sm font-black text-amber-400">EXPEDITION SETTINGS</h2>
+                </div>
+                <button id="close-settings" class="pixel-button text-slate-300 px-2 py-0.5 rounded font-pixel text-[9px]">✕ [ESC]</button>
+            </div>
+
+            <div class="space-y-3 max-h-[65vh] overflow-y-auto pr-1">
+                <div class="pixel-panel p-3 rounded flex items-center justify-between">
+                    <div>
+                        <div class="font-pixel text-[9px] text-slate-200">MASTER AUDIO</div>
+                        <div class="text-[7px] font-pixel text-slate-400">Toggle all sounds & synthesizers</div>
+                    </div>
+                    <button id="setting-toggle-audio" class="pixel-button-cyan px-3 py-1 rounded font-pixel text-[8px]">
+                        🔊 ENABLED
+                    </button>
+                </div>
+
+                <div class="pixel-panel p-3 rounded space-y-1.5">
+                    <div class="flex justify-between items-center">
+                        <span class="font-pixel text-[9px] text-cyan-300">🎵 BGM CHIPTUNE SYNTH</span>
+                        <span id="setting-bgm-val" class="font-pixel text-[8px] text-cyan-400">70%</span>
+                    </div>
+                    <input id="setting-slider-bgm" type="range" min="0" max="100" value="70" class="w-full accent-cyan-400 cursor-pointer">
+                </div>
+
+                <div class="pixel-panel p-3 rounded space-y-1.5">
+                    <div class="flex justify-between items-center">
+                        <span class="font-pixel text-[9px] text-amber-300">💥 SOUND EFFECTS (SFX)</span>
+                        <span id="setting-sfx-val" class="font-pixel text-[8px] text-amber-400">80%</span>
+                    </div>
+                    <input id="setting-slider-sfx" type="range" min="0" max="100" value="80" class="w-full accent-amber-400 cursor-pointer">
+                </div>
+
+                <div class="pixel-panel p-3 rounded flex items-center justify-between">
+                    <div>
+                        <div class="font-pixel text-[9px] text-slate-200">SCREEN SHAKE & TRAUMA</div>
+                        <div class="text-[7px] font-pixel text-slate-400">Camera impact kick on finishers</div>
+                    </div>
+                    <button id="setting-toggle-shake" class="pixel-button-gold px-3 py-1 rounded font-pixel text-[8px]">
+                        FULL (100%)
+                    </button>
+                </div>
+
+                <div class="pixel-panel p-3 rounded flex items-center justify-between">
+                    <div>
+                        <div class="font-pixel text-[9px] text-slate-200">VIRTUAL TOUCH CONTROLS</div>
+                        <div class="text-[7px] font-pixel text-slate-400">On-screen analog stick & buttons</div>
+                    </div>
+                    <button id="setting-toggle-touch" class="pixel-button px-3 py-1 rounded font-pixel text-[8px] text-slate-300">
+                        AUTO-DETECT
+                    </button>
+                </div>
+
+                <div class="pixel-panel p-3 rounded space-y-1.5">
+                    <div class="flex justify-between items-center">
+                        <span class="font-pixel text-[9px] text-purple-300">📢 AD MONETIZATION MODE</span>
+                        <span id="setting-ad-mode-val" class="font-pixel text-[8px] text-purple-400">SIMULATED (TEST)</span>
+                    </div>
+                    <p class="text-[7px] font-pixel text-slate-400 leading-relaxed">
+                        Test ads work on localhost. Switch to Google AdSense, Poki, or CrazyGames when deploying to your public domain!
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex gap-2 pt-1 border-t border-slate-800">
+                <button id="btn-save-settings" class="pixel-button-gold w-full py-2 rounded font-pixel text-[9px] text-amber-200 uppercase">
+                    ✓ SAVE & CLOSE
+                </button>
+            </div>
+        </div>
+    </div>
+
+
     <!-- TOP HUD BAR -->
     <header class="w-full pixel-panel px-2.5 py-1.5 flex flex-wrap items-center justify-between gap-2 z-20 border-t-0 border-x-0 rounded-none">
         <!-- Title & Biome/Room Status -->
@@ -280,9 +412,17 @@
                 <span class="animate-pulse text-amber-400">♪</span>
                 <span id="bgm-track-name">MOONLIT GRAVE</span>
             </div>
-            <button id="btn-coop" class="pixel-button text-emerald-300 font-pixel text-[9px] px-2 py-1.5 rounded hover:border-emerald-400" title="Multiplayer Co-Op & Godot Export Engine">
-                🌐 CO-OP
+            
+            <button id="btn-home" class="pixel-button text-amber-300 font-pixel text-[9px] px-2 py-1.5 rounded hover:border-amber-400" title="Return to Home Screen">
+                🏠 HOME
             </button>
+            <button id="btn-settings" class="pixel-button text-slate-200 font-pixel text-[9px] px-2 py-1.5 rounded hover:border-slate-300" title="Game Settings">
+                ⚙️
+            </button>
+            <button id="btn-coop" class="pixel-button text-emerald-300 font-pixel text-[9px] px-2 py-1.5 rounded hover:border-emerald-400" title="Multiplayer Co-Op Squad (Up to 6 Players)">
+                🌐 CO-OP [6P]
+            </button>
+
             <button id="btn-arsenal" class="pixel-button text-amber-300 font-pixel text-[9px] px-2 py-1.5 rounded" title="Switch Shovel Weapon">
                 ⛏️ ARSENAL
             </button>
@@ -558,10 +698,9 @@
                 </button>
             </div>
 
-            <!-- TAB 1: CO-OP SESSION LOBBY -->
+            
+            <!-- TAB 1: CO-OP SESSION LOBBY (UP TO 6 PLAYERS) -->
             <div id="tab-content-lobby" class="space-y-3 overflow-y-auto pr-1 flex-1">
-
-                <!-- LIVE WEBSOCKET SERVER CONNECTION HUB -->
                 <div class="pixel-panel p-2.5 rounded flex flex-wrap items-center justify-between gap-2 border-cyan-800 bg-cyan-950/20">
                     <div class="flex items-center gap-2">
                         <span id="net-status-dot" class="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block animate-pulse"></span>
@@ -577,13 +716,13 @@
 
                 <div class="pixel-panel p-3 rounded space-y-2">
                     <div class="flex items-center justify-between">
-                        <span class="font-pixel text-[9px] text-white">ACTIVE EXPEDITION CODE:</span>
-                        <span id="coop-room-code" class="font-pixel text-xs text-amber-400 bg-slate-950 px-2 py-1 rounded border border-amber-600 tracking-widest">KEEPER-7X9</span>
+                        <span class="font-pixel text-[9px] text-white">EXPEDITION ROOM CODE:</span>
+                        <span id="coop-room-code" class="font-pixel text-xs text-amber-400 bg-slate-950 px-2.5 py-1 rounded border border-amber-600 tracking-widest font-black">KEEPER-7X9</span>
                     </div>
                     <div class="flex items-center gap-2">
-                        <input id="input-coop-code" type="text" placeholder="ENTER ROOM CODE..." class="flex-1 bg-slate-950 border border-slate-700 px-3 py-1.5 rounded font-pixel text-[9px] text-cyan-300 uppercase tracking-widest outline-none focus:border-cyan-400">
+                        <input id="input-coop-code" type="text" placeholder="ENTER 6P ROOM CODE..." class="flex-1 bg-slate-950 border border-slate-700 px-3 py-1.5 rounded font-pixel text-[9px] text-cyan-300 uppercase tracking-widest outline-none focus:border-cyan-400">
                         <button id="btn-join-session" class="pixel-button-gold px-3 py-1.5 rounded font-pixel text-[8px] text-amber-200 shrink-0">
-                            🔗 JOIN SESSION
+                            🔗 JOIN EXPEDITION
                         </button>
                         <button id="btn-new-code" class="pixel-button px-3 py-1.5 rounded font-pixel text-[8px] text-slate-300 shrink-0">
                             🎲 NEW CODE
@@ -591,25 +730,76 @@
                     </div>
                 </div>
 
-                <div class="pixel-panel p-3 rounded">
-                    <div class="flex items-center justify-between mb-2">
-                        <div>
-                            <div class="font-pixel text-[9px] text-emerald-300">AI CO-OP KEEPER (BROTHER IN SHOVELS)</div>
-                            <div class="text-[7px] font-pixel text-slate-400 mt-0.5">Spawns an active 2nd Keeper hero who fights, dashes, deflects, and digs with you!</div>
+                <!-- 6-PLAYER SQUAD ROSTER -->
+                <div class="pixel-panel p-3 rounded space-y-2">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-1.5">
+                        <div class="font-pixel text-[9px] text-cyan-300 flex items-center gap-1.5">
+                            <span>🛡️</span>
+                            <span>EXPEDITION SQUAD (MAX 6 PLAYERS)</span>
                         </div>
-                        <button id="btn-toggle-coop-bot" class="pixel-button-cyan px-3 py-1.5 rounded font-pixel text-[8px] text-cyan-100">
-                            ACTIVATE PARTNER
-                        </button>
+                        <span id="squad-count-badge" class="font-pixel text-[8px] px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                            1 / 6 KEEPERS
+                        </span>
                     </div>
-                    <div id="coop-partner-status" class="text-[8px] font-pixel text-slate-400 flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-slate-600 inline-block"></span>
-                        <span>Partner Status: Offline</span>
+
+                    <div id="squad-slots-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                        <div id="slot-p1" class="pixel-panel p-2 rounded border-amber-500 bg-amber-950/20 text-[8px] font-pixel flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                            <div>
+                                <div class="text-amber-300 font-bold">P1 (HOST/YOU)</div>
+                                <div class="text-[7px] text-slate-400">Ready in Crypt</div>
+                            </div>
+                        </div>
+                        <div id="slot-p2" class="pixel-panel p-2 rounded border-slate-800 bg-slate-950/40 text-[8px] font-pixel flex items-center gap-2 opacity-60">
+                            <span class="w-2.5 h-2.5 rounded-full bg-slate-600"></span>
+                            <div>
+                                <div class="text-cyan-300">P2 KEEPER</div>
+                                <div class="text-[7px] text-slate-500">Waiting...</div>
+                            </div>
+                        </div>
+                        <div id="slot-p3" class="pixel-panel p-2 rounded border-slate-800 bg-slate-950/40 text-[8px] font-pixel flex items-center gap-2 opacity-60">
+                            <span class="w-2.5 h-2.5 rounded-full bg-slate-600"></span>
+                            <div>
+                                <div class="text-emerald-300">P3 KEEPER</div>
+                                <div class="text-[7px] text-slate-500">Waiting...</div>
+                            </div>
+                        </div>
+                        <div id="slot-p4" class="pixel-panel p-2 rounded border-slate-800 bg-slate-950/40 text-[8px] font-pixel flex items-center gap-2 opacity-60">
+                            <span class="w-2.5 h-2.5 rounded-full bg-slate-600"></span>
+                            <div>
+                                <div class="text-purple-300">P4 KEEPER</div>
+                                <div class="text-[7px] text-slate-500">Waiting...</div>
+                            </div>
+                        </div>
+                        <div id="slot-p5" class="pixel-panel p-2 rounded border-slate-800 bg-slate-950/40 text-[8px] font-pixel flex items-center gap-2 opacity-60">
+                            <span class="w-2.5 h-2.5 rounded-full bg-slate-600"></span>
+                            <div>
+                                <div class="text-rose-300">P5 KEEPER</div>
+                                <div class="text-[7px] text-slate-500">Waiting...</div>
+                            </div>
+                        </div>
+                        <div id="slot-p6" class="pixel-panel p-2 rounded border-slate-800 bg-slate-950/40 text-[8px] font-pixel flex items-center gap-2 opacity-60">
+                            <span class="w-2.5 h-2.5 rounded-full bg-slate-600"></span>
+                            <div>
+                                <div class="text-amber-200">P6 KEEPER</div>
+                                <div class="text-[7px] text-slate-500">Waiting...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-2 border-t border-slate-800/80">
+                        <div class="text-[7px] font-pixel text-slate-400">
+                            Solo or small squads can activate an AI companion partner bot:
+                        </div>
+                        <button id="btn-toggle-coop-bot" class="pixel-button-cyan px-2.5 py-1 rounded font-pixel text-[7px] text-cyan-100">
+                            ACTIVATE AI BOT
+                        </button>
                     </div>
                 </div>
 
                 <div class="pixel-panel p-3 rounded">
-                    <div class="font-pixel text-[8px] text-cyan-300 uppercase tracking-wider mb-1.5">⚡ LIVE NETWORK PACKET SYNC (JSON)</div>
-                    <pre id="net-packet-preview" class="bg-slate-950 p-2 rounded text-[7px] font-mono text-emerald-400 overflow-x-auto border border-slate-800 leading-tight max-h-28"></pre>
+                    <div class="font-pixel text-[8px] text-cyan-300 uppercase tracking-wider mb-1.5">⚡ LIVE SQUAD NETWORK SYNC (JSON)</div>
+                    <pre id="net-packet-preview" class="bg-slate-950 p-2 rounded text-[7px] font-mono text-emerald-400 overflow-x-auto border border-slate-800 leading-tight max-h-24"></pre>
                 </div>
             </div>
 
@@ -1588,6 +1778,16 @@
             }
         };
 
+        const SQUAD_COLORS = {
+            1: '#f59e0b', // P1 Host: Gold
+            2: '#22d3ee', // P2: Cyan
+            3: '#34d399', // P3: Emerald
+            4: '#c084fc', // P4: Purple
+            5: '#fb7185', // P5: Rose
+            6: '#fbbf24'  // P6: Amber
+        };
+        const squadPeers = new Map(); // peerId -> squadMember
+
         let coopPartner = {
             isRemotePlayer: false,
             targetX: ROOM_W / 2 - 40,
@@ -1595,6 +1795,7 @@
             targetAngle: 0,
             targetFacing: 1,
             comboStep: 0,
+            playerIndex: 2,
             active: false,
             x: ROOM_W / 2 - 40,
             y: ROOM_H / 2 + 70,
@@ -2265,7 +2466,15 @@
             }
 
             // Strike Enemies
-            for (let i = enemies.length - 1; i >= 0; i--) {
+            if (MultiplayerManager.isConnected && !MultiplayerManager.isHost) {
+                // Remote clients smoothly lerp authoritative enemies from host snapshot
+                for (const e of enemies) {
+                    if (e.targetX !== undefined) {
+                        e.x += (e.targetX - e.x) * 0.45;
+                        e.y += (e.targetY - e.y) * 0.45;
+                    }
+                }
+            } else for (let i = enemies.length - 1; i >= 0; i--) {
                 const e = enemies[i];
                 if (e.burrowed) continue;
                 const dist = Math.hypot(e.x - player.x, e.y - player.y);
@@ -2440,6 +2649,9 @@
         }
 
         function triggerContextAction() {
+            if (typeof MultiplayerManager !== 'undefined' && MultiplayerManager.isConnected) {
+                MultiplayerManager.sendAction('interact', { x: Math.round(player.x), y: Math.round(player.y) });
+            }
             if (!game.running || game.paused) return;
             flashSkillButton('act-dig');
             const room = currentRoom();
@@ -3037,7 +3249,6 @@
             const p = coopPartner;
 
             if (p.isDowned) {
-                // Downed partner can be revived if player stands nearby and presses E
                 if (Math.hypot(player.x - p.x, player.y - p.y) < 70) {
                     p.reviveTimer += dt;
                     if (p.reviveTimer >= 2.0) {
@@ -3046,7 +3257,7 @@
                         p.reviveTimer = 0;
                         sfx.play('levelup');
                         addParticles(p.x, p.y, '#34d399', 24, 180, 5);
-                        addFloatingText(p.x, p.y - 25, "✨ PARTNER REVIVED!", "#34d399", 16);
+                        addFloatingText(p.x, p.y - 25, "✨ KEEPER REVIVED!", "#34d399", 16);
                         if (typeof MultiplayerManager !== 'undefined' && MultiplayerManager.isConnected) {
                             MultiplayerManager.sendAction('revived');
                         }
@@ -3076,7 +3287,7 @@
                 if (p.swingTimer > 0) p.swingTimer = Math.max(0, p.swingTimer - dt);
                 if (p.attackCd > 0) p.attackCd = Math.max(0, p.attackCd - dt);
                 if (p.dashTimer > 0) p.dashTimer = Math.max(0, p.dashTimer - dt);
-                return; // Stop here! Do NOT run AI combat or pathfinding on remote player!
+                return;
             }
 
             if (p.swingTimer > 0) p.swingTimer = Math.max(0, p.swingTimer - dt);
@@ -3144,6 +3355,76 @@
             preview.textContent = JSON.stringify(packet, null, 2);
         }
 
+        
+        // Authoritative Host Snapshot Generator
+        function sendHostWorldSnapshot() {
+            if (!MultiplayerManager.isConnected || !MultiplayerManager.isHost || !MultiplayerManager.roomCode) return;
+            const r = currentRoom();
+            if (!r) return;
+
+            const snapshot = {
+                curX: game.curX,
+                curY: game.curY,
+                depth: game.depth,
+                roomCleared: !!r.cleared,
+                portalActive: !!r.portalActive,
+                enemies: enemies.map((e, idx) => ({
+                    id: e.id || idx,
+                    type: e.type,
+                    x: Math.round(e.x),
+                    y: Math.round(e.y),
+                    hp: Math.round(e.hp),
+                    maxHp: e.maxHp,
+                    vx: Math.round(e.vx || 0),
+                    vy: Math.round(e.vy || 0),
+                    facing: e.facing || 1,
+                    flash: e.flash > 0,
+                    burrowed: !!e.burrowed,
+                    isElite: !!e.isElite,
+                    isBoss: !!e.isBoss,
+                    animFrame: e.animFrame || 0
+                })),
+                projectiles: projectiles.map(p => ({
+                    x: Math.round(p.x),
+                    y: Math.round(p.y),
+                    vx: Math.round(p.vx),
+                    vy: Math.round(p.vy),
+                    radius: p.radius,
+                    color: p.color,
+                    isHostile: p.isHostile
+                })),
+                drops: drops.map((d, idx) => ({
+                    id: idx,
+                    x: Math.round(d.x),
+                    y: Math.round(d.y),
+                    type: d.type,
+                    value: d.value
+                })),
+                mounds: (r.mounds || []).map(m => ({
+                    x: Math.round(m.x),
+                    y: Math.round(m.y),
+                    hp: m.hp,
+                    maxHp: m.maxHp,
+                    rich: !!m.rich
+                })),
+                pits: (r.pits || []).map(p => ({
+                    x: Math.round(p.x),
+                    y: Math.round(p.y),
+                    radius: p.radius
+                })),
+                chests: (r.chests || []).map(c => ({
+                    x: Math.round(c.x),
+                    y: Math.round(c.y),
+                    opened: !!c.opened
+                }))
+            };
+
+            MultiplayerManager.ws.send(JSON.stringify({
+                type: 'sync_world_snapshot',
+                snapshot
+            }));
+        }
+
         function update(dt) {
             if (!game.running || game.paused) return;
 
@@ -3152,1084 +3433,16 @@
             player.scaleY += (1.0 - player.scaleY) * Math.min(1, dt * 18);
 
             // Co-Op Companion / AI Partner Update Loop
-            if (coopPartner.active) {
-                updateCoopPartner(dt);
-            }
-
-            // Live Network Packet Synchronization Preview for Godot / Multiplayer
-            updateNetworkPacketPreview();
-
-            // Combo Timer & Style Decay
-            if (player.comboTimer > 0) {
-                player.comboTimer -= dt;
-                const ratio = Math.max(0, player.comboTimer / 3.8);
-                document.getElementById('combo-bar').style.width = `${ratio * 100}%`;
-                if (player.comboTimer <= 0) {
-                    player.comboStreak = 0;
-                    player.styleRank = 'D';
-                    updateHUD();
-                }
-            } else {
-                document.getElementById('combo-bar').style.width = '0%';
-            }
-            if (player.critBoostTimer > 0) player.critBoostTimer -= dt;
-
-            // Hellfire Chasm Vortex on Pits
-            if (game.synergies.hellfireChasm && room && room.pits) {
-                for (const pit of room.pits) {
-                    for (const foe of enemies) {
-                        if (!foe.burrowed && !foe.isBoss) {
-                            const d = Math.hypot(pit.x - foe.x, pit.y - foe.y);
-                            if (d < 160 && d > 15) {
-                                const pullAng = Math.atan2(pit.y - foe.y, pit.x - foe.x);
-                                foe.vx += Math.cos(pullAng) * 90 * dt;
-                                foe.vy += Math.sin(pullAng) * 90 * dt;
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (game.hitStop > 0) {
-                game.hitStop = Math.max(0, game.hitStop - dt);
-                if (game.shake > 0) game.shake = Math.max(0, game.shake - dt * 25);
-                return;
-            }
-
-            if (game.shake > 0) game.shake = Math.max(0, game.shake - dt * 30);
-
-            if (player.swingTimer > 0) player.swingTimer = Math.max(0, player.swingTimer - dt);
-            if (player.swingCooldown > 0) player.swingCooldown = Math.max(0, player.swingCooldown - dt);
-            if (player.dashCooldown > 0) player.dashCooldown = Math.max(0, player.dashCooldown - dt);
-            if (player.invulnTimer > 0) player.invulnTimer = Math.max(0, player.invulnTimer - dt);
-            if (player.ultCooldown > 0) player.ultCooldown = Math.max(0, player.ultCooldown - dt);
-
-            const dashRatio = player.dashCooldown / player.dashMaxCd;
-            const ultRatio = player.ultCooldown / player.ultMaxCd;
-            document.getElementById('cd-dash').style.transform = `scaleY(${dashRatio})`;
-            document.getElementById('cd-dash-mob').style.transform = `scaleY(${dashRatio})`;
-            document.getElementById('cd-ult').style.transform = `scaleY(${ultRatio})`;
-            document.getElementById('cd-ult-mob').style.transform = `scaleY(${ultRatio})`;
-            document.getElementById('ult-status').textContent = player.ultCooldown > 0 ? `${Math.ceil(player.ultCooldown)}s` : '[Q] READY';
-
-            // Sanctuary Proving Grounds Step 3 Soul Turret Orb Spawner
-            if (room.type === 'start' && game.provingGroundsStep === 3) {
-                room.turretTimer -= dt;
-                if (room.turretTimer <= 0) {
-                    room.turretTimer = 2.6;
-                    const tx = ROOM_W / 2, ty = WALL_T + 90;
-                    const ang = Math.atan2(player.y - ty, player.x - tx);
-                    projectiles.push({
-                        x: tx, y: ty,
-                        vx: Math.cos(ang) * 210, vy: Math.sin(ang) * 210,
-                        radius: 10, dmg: 8, friendly: false, color: '#a855f7', life: 4.0
-                    });
-                }
-            }
-
-            // Player Movement & Phantom Dash
-            if (player.dashTimer > 0) {
-                player.dashTimer -= dt;
-                player.x += player.dashVx * dt;
-                player.y += player.dashVy * dt;
-                if (Math.random() < 0.65) afterimages.push({ x: player.x, y: player.y, facing: player.facing, life: 0.22 });
-            } else {
-                let mx = 0, my = 0;
-                if (touchJoystick.active && (Math.abs(touchJoystick.dx) > 0.08 || Math.abs(touchJoystick.dy) > 0.08)) {
-                    mx = touchJoystick.dx;
-                    my = touchJoystick.dy;
-                } else {
-                    if (keys['KeyW'] || keys['ArrowUp']) my -= 1;
-                    if (keys['KeyS'] || keys['ArrowDown']) my += 1;
-                    if (keys['KeyA'] || keys['ArrowLeft']) mx -= 1;
-                    if (keys['KeyD'] || keys['ArrowRight']) mx += 1;
-                    if (mx !== 0 || my !== 0) {
-                        const len = Math.hypot(mx, my);
-                        mx /= len; my /= len;
-                    }
-                }
-
-                if (mx !== 0 || my !== 0) {
-                    player.x += mx * player.speed * dt;
-                    player.y += my * player.speed * dt;
-                    if (Math.abs(mx) > 0.05) player.facing = mx >= 0 ? 1 : -1;
-
-                    if (game.usingTouch && !autoAimNearestEnemy(195)) {
-                        player.angle = Math.atan2(my, mx);
-                    }
-                    player.animTimer += dt;
-                    if (player.animTimer > 0.15) {
-                        player.animTimer = 0;
-                        player.animFrame = 1 - player.animFrame;
-                    }
-                    player.dustTimer -= dt;
-                    if (player.dustTimer <= 0) {
-                        player.dustTimer = 0.14;
-                        particles.push({
-                            x: player.x, y: player.y + 14,
-                            vx: -mx * 28 + (Math.random() - 0.5) * 20,
-                            vy: -10 - Math.random() * 15,
-                            color: '#64748b', size: 3, life: 0.28, maxLife: 0.28
-                        });
-                    }
-                } else {
-                    player.animFrame = 0;
-                    if (game.usingTouch) autoAimNearestEnemy(195);
-                }
-            }
-
-            if (!game.usingTouch) {
-                mousePos.worldX = (mousePos.x - canvas.width / 2) / game.zoom + game.camera.x;
-                mousePos.worldY = (mousePos.y - canvas.height / 2) / game.zoom + game.camera.y;
-                player.angle = Math.atan2(mousePos.worldY - player.y, mousePos.worldX - player.x);
-                player.facing = Math.cos(player.angle) >= 0 ? 1 : -1;
-            }
-
-            // Room Gate Transitions & Wall Clamping
-            const DOOR_HALF_W = 70;
-            const inHorizDoorGap = Math.abs(player.x - ROOM_W / 2) < DOOR_HALF_W;
-            const inVertDoorGap = Math.abs(player.y - ROOM_H / 2) < DOOR_HALF_W;
-
-            if (room.cleared) {
-                const triggerMargin = WALL_T + player.radius + 14;
-                if (room.doors.N && inHorizDoorGap && player.y <= triggerMargin) { changeRoom('N'); return; }
-                if (room.doors.S && inHorizDoorGap && player.y >= ROOM_H - triggerMargin) { changeRoom('S'); return; }
-                if (room.doors.E && inVertDoorGap && player.x >= ROOM_W - triggerMargin) { changeRoom('E'); return; }
-                if (room.doors.W && inVertDoorGap && player.x <= triggerMargin) { changeRoom('W'); return; }
-            }
-
-            const minX = (room.cleared && room.doors.W && inVertDoorGap) ? 8 : WALL_T + player.radius;
-            const maxX = (room.cleared && room.doors.E && inVertDoorGap) ? ROOM_W - 8 : ROOM_W - WALL_T - player.radius;
-            const minY = (room.cleared && room.doors.N && inHorizDoorGap) ? 8 : WALL_T + player.radius;
-            const maxY = (room.cleared && room.doors.S && inHorizDoorGap) ? ROOM_H - 8 : ROOM_H - WALL_T - player.radius;
-
-            player.x = Math.max(minX, Math.min(maxX, player.x));
-            player.y = Math.max(minY, Math.min(maxY, player.y));
-
-            // Warding Soul Lantern / Bloodfire Halo Synergy Aura
-            if (player.relics.iron_lantern) {
-                const isBloodfire = game.synergies.bloodfireHalo;
-                const auraDmg = (isBloodfire ? 36 : 18) * player.relics.iron_lantern * dt;
-                for (let i = enemies.length - 1; i >= 0; i--) {
-                    const e = enemies[i];
-                    if (!e.burrowed && !e.isDummy && Math.hypot(e.x - player.x, e.y - player.y) < 140) {
-                        e.hp -= auraDmg;
-                        if (isBloodfire) player.hp = Math.min(player.maxHp, player.hp + auraDmg * 0.12);
-                        if (e.hp <= 0) killEnemy(i);
-                    }
-                }
-            }
-
-            // Update Spike Plates & Biome Puddles
-            for (const sp of room.spikePlates) {
-                sp.timer = (sp.timer + dt) % 3.0;
-                const active = sp.timer > 2.0;
-                if (active) {
-                    if (Math.abs(player.x - sp.x) < sp.w / 2 && Math.abs(player.y - sp.y) < sp.h / 2 && player.invulnTimer <= 0) {
-                        damagePlayer(14);
-                    }
-                    for (let i = enemies.length - 1; i >= 0; i--) {
-                        const e = enemies[i];
-                        if (!e.burrowed && !e.isBoss && Math.abs(e.x - sp.x) < sp.w / 2 && Math.abs(e.y - sp.y) < sp.h / 2) {
-                            e.hp -= 35 * dt;
-                            if (e.hp <= 0) killEnemy(i);
-                        }
-                    }
-                }
-            }
-
-            for (const pud of room.puddles) {
-                if (pud.shockTimer > 0) pud.shockTimer = Math.max(0, pud.shockTimer - dt);
-                if (pud.kind === 'lava') {
-                    if (Math.hypot(player.x - pud.x, player.y - pud.y) < pud.r && player.invulnTimer <= 0 && player.dashTimer <= 0) {
-                        damagePlayer(10);
-                    }
-                    for (let i = enemies.length - 1; i >= 0; i--) {
-                        const e = enemies[i];
-                        if (!e.burrowed && Math.hypot(e.x - pud.x, e.y - pud.y) < pud.r) {
-                            e.hp -= 20 * dt;
-                            if (e.hp <= 0) killEnemy(i);
-                        }
-                    }
-                }
-            }
-
-            // Update Hazard Pools (Toad Gas / Lantern Flail Holy Fire)
-            for (let i = hazardPools.length - 1; i >= 0; i--) {
-                const hp = hazardPools[i];
-                hp.life -= dt;
-                if (hp.life <= 0) { hazardPools.splice(i, 1); continue; }
-                if (hp.friendly) {
-                    for (let j = enemies.length - 1; j >= 0; j--) {
-                        const e = enemies[j];
-                        if (!e.burrowed && !e.isDummy && Math.hypot(e.x - hp.x, e.y - hp.y) < hp.r + e.radius) {
-                            e.hp -= hp.dps * dt;
-                            if (e.hp <= 0) killEnemy(j);
-                        }
-                    }
-                } else {
-                    if (Math.hypot(player.x - hp.x, player.y - hp.y) < hp.r + player.radius && player.invulnTimer <= 0) {
-                        damagePlayer(12);
-                    }
-                }
-            }
-
-            // Friendly Skeleton Allies AI
-            for (let i = allies.length - 1; i >= 0; i--) {
-                const a = allies[i];
-                if (a.hitCd > 0) a.hitCd -= dt;
-                const activeFoes = enemies.filter(e => !e.burrowed);
-                if (activeFoes.length > 0) {
-                    let nearest = activeFoes[0], minDist = Math.hypot(nearest.x - a.x, nearest.y - a.y);
-                    for (const e of activeFoes) {
-                        const d = Math.hypot(e.x - a.x, e.y - a.y);
-                        if (d < minDist) { minDist = d; nearest = e; }
-                    }
-                    const ang = Math.atan2(nearest.y - a.y, nearest.x - a.x);
-                    a.x += Math.cos(ang) * a.speed * dt;
-                    a.y += Math.sin(ang) * a.speed * dt;
-                    if (minDist < a.radius + nearest.radius + 6 && a.hitCd <= 0) {
-                        nearest.hp -= a.dmg;
-                        nearest.flash = 0.1;
-                        a.hitCd = 0.65;
-                        addParticles(nearest.x, nearest.y, '#22d3ee', 5, 80, 3);
-                        if (nearest.hp <= 0) killEnemy(enemies.indexOf(nearest));
-                    }
-                } else {
-                    const d = Math.hypot(player.x - a.x, player.y - a.y);
-                    if (d > 75) {
-                        const ang = Math.atan2(player.y - a.y, player.x - a.x);
-                        a.x += Math.cos(ang) * a.speed * 0.8 * dt;
-                        a.y += Math.sin(ang) * a.speed * 0.8 * dt;
-                    }
-                }
-            }
-
-            // Enemies & Multi-Phase Boss AI with Flanking & Predictive Aim
-            for (let i = enemies.length - 1; i >= 0; i--) {
-                const e = enemies[i];
-                if (e.flash > 0) e.flash -= dt;
-
-                // Bleed DoT from Twin Trowels
-                if (e.bleedStacks > 0 && !e.isDummy) {
-                    e.hp -= e.bleedStacks * 8 * dt;
-                    if (Math.random() < 0.2) addParticles(e.x, e.y, '#ef4444', 1, 30, 3);
-                    if (e.hp <= 0) { killEnemy(i); continue; }
-                }
-
-                // Stun check
-                if (e.stunTimer > 0) {
-                    e.stunTimer = Math.max(0, e.stunTimer - dt);
-                    e.vx *= Math.pow(0.04, dt);
-                    e.vy *= Math.pow(0.04, dt);
-                    e.x += e.vx * dt;
-                    e.y += e.vy * dt;
-                    continue;
-                }
-
-                // Base angle to player with flanking encirclement offset
-                const baseAng = Math.atan2(player.y - e.y, player.x - e.x);
-                const flankWave = Math.sin(performance.now() * 0.002 + i * 1.5) * (e.flankAngleOffset || 0.4);
-                const ang = baseAng + flankWave;
-                const distToPlayer = Math.hypot(player.x - e.x, player.y - e.y);
-
-                if (e.isDummy) {
-                    // Stationary training dummy only moves via knockback
-                } else if (e.type === 'spider') {
-                    e.burrowCd -= dt;
-                    if (!e.burrowed && e.burrowCd <= 0 && distToPlayer > 80) {
-                        e.burrowed = true;
-                        e.ambushTimer = Math.max(0.65, 1.1 - (game.depth - 1) * 0.2);
-                        e.x = player.x + (Math.random() * 50 - 25);
-                        e.y = player.y + (Math.random() * 50 - 25);
-                        e.telegraphTimer = 0.55;
-                    } else if (e.burrowed) {
-                        e.ambushTimer -= dt;
-                        if (e.ambushTimer <= 0) {
-                            e.burrowed = false;
-                            e.burrowCd = Math.max(2.2, 4.0 - (game.depth - 1) * 0.6);
-                            e.telegraphTimer = 0;
-                            sfx.play('dig');
-                            addParticles(e.x, e.y, '#a855f7', 14, 130, 4);
-                            room.pits.push({ x: e.x, y: e.y, w: 48, h: 60 });
-                        }
-                    } else {
-                        e.x += Math.cos(ang) * e.speed * dt;
-                        e.y += Math.sin(ang) * e.speed * dt;
-                    }
-                } else if (e.type === 'necro') {
-                    e.shootCd -= dt;
-                    if (e.shootCd < 0.5 && e.shootCd > 0) e.telegraphTimer = e.shootCd;
-                    if (distToPlayer > 185) {
-                        e.x += Math.cos(ang) * e.speed * dt;
-                        e.y += Math.sin(ang) * e.speed * dt;
-                    } else if (distToPlayer < 120) {
-                        // Necros retreat when player gets too close!
-                        e.x -= Math.cos(baseAng) * e.speed * 0.85 * dt;
-                        e.y -= Math.sin(baseAng) * e.speed * 0.85 * dt;
-                    }
-
-                    if (e.shootCd <= 0) {
-                        // Predictive projectile shooting: Aim where player is heading
-                        const leadSec = Math.min(0.35, distToPlayer / 260);
-                        const predX = player.x + (player.dashTimer > 0 ? player.dashVx : 0) * leadSec;
-                        const predY = player.y + (player.dashTimer > 0 ? player.dashVy : 0) * leadSec;
-                        const fireAng = Math.atan2(predY - e.y, predX - e.x);
-
-                        projectiles.push({
-                            x: e.x, y: e.y,
-                            vx: Math.cos(fireAng) * (240 + game.depth * 25),
-                            vy: Math.sin(fireAng) * (240 + game.depth * 25),
-                            radius: 9, dmg: e.dmg, friendly: false, color: '#a855f7', life: 3.2
-                        });
-                        e.shootCd = Math.max(1.3, 2.3 - (game.depth - 1) * 0.35);
-                        e.telegraphTimer = 0;
-                    }
-                } else if (e.isBoss) {
-                    // Check Phase 2 Transition (<50% HP)
-                    if (e.phase === 1 && e.hp <= e.maxHp * 0.5) {
-                        e.phase = 2;
-                        sfx.play('quake');
-                        triggerJuice(0.12, 16, 50);
-                        addFloatingText(e.x, e.y - 40, "🔥 PHASE 2: TITAN FRENZY! 🔥", "#f59e0b", 19);
-                        document.getElementById('boss-phase-badge').textContent = 'PHASE 2: FRENZY';
-                    }
-
-                    if (e.isCharging) {
-                        e.chargeTime -= dt;
-                        e.x += e.chargeVx * dt;
-                        e.y += e.chargeVy * dt;
-                        addParticles(e.x, e.y + 16, '#f59e0b', 2, 70, 4);
-
-                        // Check collision with Boss Arena Stone Pillars for Stun Mechanic!
-                        for (let pi = room.obstacles.length - 1; pi >= 0; pi--) {
-                            const ob = room.obstacles[pi];
-                            if (ob.isPillar && Math.hypot(e.x - ob.x, e.y - ob.y) < e.radius + ob.r + 6) {
-                                room.obstacles.splice(pi, 1);
-                                e.isCharging = false;
-                                e.stunTimer = 3.2;
-                                e.hp -= 100;
-                                sfx.play('explosion');
-                                triggerJuice(0.14, 20, 55);
-                                addParticles(ob.x, ob.y, '#fbbf24', 32, 220, 6);
-                                addFloatingText(e.x, e.y - 36, "💫 PILLAR CRASH! STUNNED 3.2s (200% CRITS)!", "#22d3ee", 17);
-                                updateBossHUD();
-                                break;
-                            }
-                        }
-
-                        if (e.chargeTime <= 0 || e.x <= WALL_T + e.radius || e.x >= ROOM_W - WALL_T - e.radius || e.y <= WALL_T + e.radius || e.y >= ROOM_H - WALL_T - e.radius) {
-                            e.isCharging = false;
-                            sfx.play('hit');
-                            game.shake = 9;
-                        }
-                    } else {
-                        e.x += Math.cos(ang) * e.speed * (e.phase === 2 ? 1.3 : 1.0) * dt;
-                        e.y += Math.sin(ang) * e.speed * (e.phase === 2 ? 1.3 : 1.0) * dt;
-                        e.shootCd -= dt;
-                        e.summonCd -= dt;
-
-                        if (e.phase === 2) {
-                            e.chargeCd -= dt;
-                            if (e.chargeCd < 0.70 && e.chargeCd > 0) {
-                                e.telegraphTimer = e.chargeCd;
-                                e.chargeTargetAngle = baseAng;
-                            }
-                            if (e.chargeCd <= 0) {
-                                e.isCharging = true;
-                                e.chargeTime = 0.95;
-                                const cAng = e.chargeTargetAngle ?? baseAng;
-                                const chargeSpeed = 540 + game.depth * 35;
-                                e.chargeVx = Math.cos(cAng) * chargeSpeed;
-                                e.chargeVy = Math.sin(cAng) * chargeSpeed;
-                                e.chargeCd = Math.max(2.8, 4.2 - (game.depth - 1) * 0.5);
-                                e.telegraphTimer = 0;
-                                sfx.play('dash');
-                            }
-                        }
-
-                        // Escalated Bullet Hell Patterns on Higher Depths
-                        if (e.shootCd <= 0) {
-                            const count = e.phase === 2 ? (10 + game.depth * 2) : (8 + game.depth);
-                            const spiralOffset = performance.now() * 0.003;
-                            for (let k = 0; k < count; k++) {
-                                const oa = spiralOffset + baseAng + (k / count) * Math.PI * 2;
-                                projectiles.push({
-                                    x: e.x, y: e.y,
-                                    vx: Math.cos(oa) * (240 + game.depth * 30),
-                                    vy: Math.sin(oa) * (240 + game.depth * 30),
-                                    radius: 10, dmg: e.dmg, friendly: false, color: '#ef4444', life: 3.5
-                                });
-                            }
-                            e.shootCd = e.phase === 2 ? Math.max(1.4, 2.0 - (game.depth - 1) * 0.3) : Math.max(1.8, 2.6 - (game.depth - 1) * 0.3);
-                        }
-
-                        if (e.summonCd <= 0 && enemies.length < (6 + game.depth)) {
-                            spawnEnemy(e.x - 70, e.y + 40, 'skeleton', Math.random() < 0.4);
-                            spawnEnemy(e.x + 70, e.y + 40, 'skeleton', Math.random() < 0.4);
-                            e.summonCd = Math.max(4.5, 7.0 - (game.depth - 1) * 0.8);
-                        }
-                    }
-                } else {
-                    e.x += Math.cos(ang) * e.speed * dt;
-                    e.y += Math.sin(ang) * e.speed * dt;
-                }
-
-                e.x += e.vx * dt;
-                e.y += e.vy * dt;
-                e.vx *= Math.pow(0.04, dt);
-                e.vy *= Math.pow(0.04, dt);
-                e.x = Math.max(WALL_T + e.radius, Math.min(ROOM_W - WALL_T - e.radius, e.x));
-                e.y = Math.max(WALL_T + e.radius, Math.min(ROOM_H - WALL_T - e.radius, e.y));
-
-                // Open Grave Pit Instant Kill Check
-                if (!e.isBoss && !e.burrowed && e.type !== 'wraith' && Math.hypot(e.vx, e.vy) > 55) {
-                    let buried = false;
-                    for (const pit of room.pits) {
-                        if (Math.abs(e.x - pit.x) < pit.w / 2 + 6 && Math.abs(e.y - pit.y) < pit.h / 2 + 6) {
-                            addFloatingText(e.x, e.y - 18, "⚰️ BURIED ALIVE!", "#34d399", 16);
-                            killEnemy(i, true);
-                            buried = true;
-                            break;
-                        }
-                    }
-                    if (buried) continue;
-                }
-
-                if (!e.burrowed && !e.isDummy && distToPlayer < player.radius + e.radius - 2 && player.invulnTimer <= 0) {
-                    damagePlayer(e.dmg);
-                }
-            }
-
-            // Update Projectiles
-            for (let i = projectiles.length - 1; i >= 0; i--) {
-                const p = projectiles[i];
-                p.x += p.vx * dt;
-                p.y += p.vy * dt;
-                p.life -= dt;
-                if (p.life <= 0 || p.x < WALL_T || p.x > ROOM_W - WALL_T || p.y < WALL_T || p.y > ROOM_H - WALL_T) {
-                    projectiles.splice(i, 1);
-                    continue;
-                }
-                if (p.friendly) {
-                    if (p.electrifies) {
-                        triggerStormcallerLightning(p.x, p.y, 18);
-                    }
-                    for (let j = enemies.length - 1; j >= 0; j--) {
-                        const e = enemies[j];
-                        if (!e.burrowed && Math.hypot(e.x - p.x, e.y - p.y) < e.radius + p.radius) {
-                            if (!e.isDummy) e.hp -= p.dmg;
-                            e.flash = 0.12;
-                            if (p.electrifies) e.stunTimer = Math.max(e.stunTimer, 0.8);
-                            addParticles(e.x, e.y, p.color, 8, 120, 4);
-                            addFloatingText(e.x, e.y - 14, `-${p.dmg}`, p.color, 15);
-                            if (e.hp <= 0) killEnemy(j);
-                            else if (e.isBoss) updateBossHUD();
-                            if (!p.pierce) { projectiles.splice(i, 1); break; }
-                        }
-                    }
-                } else {
-                    if (Math.hypot(player.x - p.x, player.y - p.y) < player.radius + p.radius && player.invulnTimer <= 0) {
-                        damagePlayer(p.dmg);
-                        projectiles.splice(i, 1);
-                    }
-                }
-            }
-
-            // Update Loot Drops
-            for (let i = drops.length - 1; i >= 0; i--) {
-                const d = drops[i];
-                d.bob += dt * 5;
-                const dist = Math.hypot(player.x - d.x, player.y - d.y);
-                if (dist < 115) {
-                    d.x += (player.x - d.x) * dt * 10;
-                    d.y += (player.y - d.y) * dt * 10;
-                }
-                if (dist < player.radius + 14) {
-                    if (d.type === 'coin') {
-                        player.gold += d.value;
-                        game.stats.goldEarned += d.value;
-                        sfx.play('coin');
-                        addFloatingText(d.x, d.y - 10, `+${d.value}🪙`, "#fbbf24", 13);
-                    } else if (d.type === 'soul') {
-                        player.souls += d.value;
-                        metaSave.souls = player.souls;
-                        saveMeta();
-                        sfx.play('coin');
-                        addFloatingText(d.x, d.y - 10, `+${d.value}🔮`, "#c084fc", 13);
-                    } else if (d.type === 'heart') {
-                        player.hp = Math.min(player.maxHp, player.hp + d.value);
-                        sfx.play('coin');
-                        addFloatingText(d.x, d.y - 10, `+${d.value}❤️`, "#f43f5e", 13);
-                    } else if (d.type === 'xp') {
-                        gainXp(d.value);
-                    }
-                    drops.splice(i, 1);
-                    updateHUD();
-                }
-            }
-
-            // Ambient Motes & Particles
-            for (const m of ambientMotes) {
-                m.x = (m.x + m.vx * dt + ROOM_W) % ROOM_W;
-                m.y = (m.y + m.vy * dt + ROOM_H) % ROOM_H;
-                m.phase += dt * 3;
-            }
-            for (let i = particles.length - 1; i >= 0; i--) {
-                particles[i].x += particles[i].vx * dt;
-                particles[i].y += particles[i].vy * dt;
-                particles[i].life -= dt;
-                if (particles[i].life <= 0) particles.splice(i, 1);
-            }
-            for (let i = floatingTexts.length - 1; i >= 0; i--) {
-                floatingTexts[i].y += floatingTexts[i].vy * dt;
-                floatingTexts[i].life -= dt;
-                if (floatingTexts[i].life <= 0) floatingTexts.splice(i, 1);
-            }
-            for (let i = afterimages.length - 1; i >= 0; i--) {
-                afterimages[i].life -= dt;
-                if (afterimages[i].life <= 0) afterimages.splice(i, 1);
-            }
-
-            // Smooth Camera with Desktop Mouse-Lead
-            let leadX = 0, leadY = 0;
-            if (!game.usingTouch) {
-                leadX = Math.max(-75, Math.min(75, (mousePos.x - canvas.width / 2) * 0.14));
-                leadY = Math.max(-55, Math.min(55, (mousePos.y - canvas.height / 2) * 0.14));
-            }
-            game.camera.x += (player.x + leadX - game.camera.x) * Math.min(1, dt * 11);
-            game.camera.y += (player.y + leadY - game.camera.y) * Math.min(1, dt * 11);
-
-            updateContextPrompt();
-        }
-
-        function updateContextPrompt() {
-            const room = currentRoom();
-            const banner = document.getElementById('context-banner');
-            const text = document.getElementById('context-text');
-            if (!banner || !text || !room) return;
-            let msg = null;
-
-            if (room.sarcophagi) {
-                for (const s of room.sarcophagi) {
-                    if (!s.opened && Math.hypot(s.x - player.x, s.y - player.y) < 80) { msg = "⚰️ Press [E] to Open Ancient Tomb"; break; }
-                }
-            }
-            if (!msg && room.bloodChalice && !room.bloodChalice.used) {
-                if (Math.hypot(room.bloodChalice.x - player.x, room.bloodChalice.y - player.y) < 85) msg = "🩸 Press [E] for Cursed Blood Pact";
-            }
-            if (!msg) {
-                for (const m of room.mounds) {
-                    if (Math.hypot(m.x - player.x, m.y - player.y) < 75) { msg = "⛏️ Press [E] or Strike to Excavate Mound"; break; }
-                }
-            }
-            if (!msg && room.type === 'start') {
-                if (room.altarPos && Math.hypot(room.altarPos.x - player.x, room.altarPos.y - player.y) < 85) msg = "🔮 Press [E] to Commune with Soul Altar";
-                else if (room.rackPos && Math.hypot(room.rackPos.x - player.x, room.rackPos.y - player.y) < 85) msg = "⛏️ Press [E] to Open Weapon Arsenal";
-            }
-            if (!msg) {
-                for (const ch of room.chests) {
-                    if (!ch.opened && Math.hypot(ch.x - player.x, ch.y - player.y) < 80) { msg = "🎁 Press [E] to Open Vault Chest"; break; }
-                }
-            }
-            if (!msg && room.type === 'shrine' && !room.shrineUsed && Math.hypot(ROOM_W / 2 - player.x, ROOM_H / 2 - player.y) < 85) msg = "✨ Press [E] to Commune with Soul Shrine";
-            if (!msg && room.type === 'shop' && Math.hypot(ROOM_W / 2 - player.x, ROOM_H / 2 - player.y) < 95) msg = "🕯️ Press [E] to Open Charon's Black Market";
-            if (!msg && room.portalActive && Math.hypot(ROOM_W / 2 - player.x, ROOM_H / 2 - player.y) < 85) msg = "🌀 Press [E] to Descend to Next Depth";
-            if (!msg) {
-                const nearDoor = getNearbyOpenDoor(room);
-                if (nearDoor) {
-                    const neighbor = getNeighborRoom(room, nearDoor);
-                    const info = getRoomBadgeInfo(neighbor);
-                    msg = `🚪 Walk through or Press [E] to enter ${nearDoor} Gate (${info.icon} ${info.label})`;
-                }
-            }
-
-            if (msg) { text.textContent = msg; banner.classList.remove('hidden'); }
-            else { banner.classList.add('hidden'); }
-        }
-
-        function damagePlayer(amount) {
-            player.hp = Math.max(0, player.hp - amount);
-            player.invulnTimer = 0.75;
-            triggerJuice(0.08, 12, 40);
-            sfx.play('hurt');
-            addParticles(player.x, player.y, '#ef4444', 14, 150, 5);
-            addFloatingText(player.x, player.y - 24, `-${amount} HP`, "#ef4444", 16);
-            updateHUD();
-
-            const drainBar = document.getElementById('hp-drain-bar');
-            if (drainBar) {
-                setTimeout(() => {
-                    drainBar.style.width = `${Math.max(0, (player.hp / player.maxHp) * 100)}%`;
-                }, 250);
-            }
-
-            if (player.hp <= 0) {
-                // Ankh of Rebirth Cheat Death Check (Consumes 1 stack)
-                if (player.reviveCharges > 0 || player.hasRevive) {
-                    player.reviveCharges = Math.max(0, (player.reviveCharges || 1) - 1);
-                    player.hasRevive = player.reviveCharges > 0;
-                    
-                    const ankhEl = document.getElementById('ankh-badge');
-                    if (ankhEl) {
-                        if (player.hasRevive) {
-                            const label = ankhEl.querySelector('span:last-child');
-                            if (label) label.textContent = `REBIRTH (x${player.reviveCharges})`;
-                        } else {
-                            ankhEl.classList.add('hidden');
-                            ankhEl.classList.remove('flex');
-                        }
-                    }
-
-                    player.hp = Math.min(player.maxHp, 60);
-                    player.invulnTimer = 2.0;
-                    sfx.play('levelup');
-                    triggerJuice(0.18, 22, 60);
-                    addParticles(player.x, player.y, '#fbbf24', 45, 260, 7);
-                    addFloatingText(player.x, player.y - 36, `☥ REBIRTH TRIGGERED! (${player.reviveCharges} REMAINING) ☥`, "#fbbf24", 18);
-
-                    for (let i = enemies.length - 1; i >= 0; i--) {
-                        const e = enemies[i];
-                        if (!e.burrowed && Math.hypot(e.x - player.x, e.y - player.y) < 220) {
-                            e.hp -= 90;
-                            const ang = Math.atan2(e.y - player.y, e.x - player.x);
-                            e.vx = Math.cos(ang) * 440;
-                            e.vy = Math.sin(ang) * 440;
-                            if (e.hp <= 0) killEnemy(i);
-                        }
-                    }
-                    updateHUD();
-                    return;
-                }
-                triggerGameOver();
-            }
-        }
-
-        /**
-         * ============================================================================
-         * 10. RENDERING ENGINE (WITH ADAPTIVE ZOOM, TELEGRAPHS & PIT-KILL GUIDES)
-         * ============================================================================
-         */
-        
-        function renderCharacterWeapon(ctx, entity, isPlayer = false) {
-            const wep = entity.weapon || WEAPON_ARSENAL.rusty_spade;
-            const comboStep = entity.comboStep || 0;
-            const isFinisher = comboStep === 0;
-
-            if (entity.swingTimer > 0) {
-                const dur = entity.swingDuration || (0.2 / (wep.speedMult || 1));
-                const prog = 1 - (entity.swingTimer / dur);
-                const dir = comboStep % 2 === 0 ? 1 : -1;
-                const startA = entity.angle - 1.35 * dir;
-                const endA = entity.angle + 1.35 * dir;
-                const curA = startA + (endA - startA) * prog;
-                const reach = (wep.reach || 42) * (isFinisher ? 1.15 : 1.0);
-
-                // Swing Arc Trail
-                ctx.strokeStyle = wep.trailColor || '#fbbf24';
-                ctx.lineWidth = isFinisher ? 9 : 6;
-                ctx.beginPath();
-                ctx.arc(0, 0, reach - 8, Math.min(startA, curA), Math.max(startA, curA));
-                ctx.stroke();
-
-                if (wep.id === 'twin_trowels') {
-                    ctx.strokeStyle = '#67e8f9';
-                    ctx.lineWidth = 4;
-                    ctx.beginPath();
-                    ctx.arc(0, 0, reach - 18, Math.max(startA, curA), Math.min(startA, curA));
-                    ctx.stroke();
-                }
-
+            
+            // Render Co-Op Squad Keepers (Up to 6 Players)
+            const squadToRender = squadPeers.size > 0 ? Array.from(squadPeers.values()) : (coopPartner.active ? [coopPartner] : []);
+            for (const sp of squadToRender) {
                 ctx.save();
-                ctx.rotate(curA);
-                drawWeaponBladeGraphic(ctx, wep, reach);
-                ctx.restore();
-            } else {
-                // Idle Held Weapon Stance
-                ctx.save();
-                ctx.rotate((entity.angle || 0) + 0.38);
-                drawWeaponIdleGraphic(ctx, wep);
-                ctx.restore();
-            }
-        }
-
-        function drawWeaponBladeGraphic(ctx, wep, reach) {
-            if (wep.id === 'rusty_spade') {
-                ctx.fillStyle = '#78350f';
-                ctx.fillRect(8, -3, reach - 22, 6);
-                ctx.fillStyle = '#cbd5e1';
-                ctx.fillRect(reach - 18, -10, 16, 20);
-                ctx.fillStyle = '#94a3b8';
-                ctx.fillRect(reach - 10, -8, 6, 16);
-            } else if (wep.id === 'great_shovel') {
-                ctx.fillStyle = '#1e1b4b';
-                ctx.fillRect(8, -4, reach - 26, 8);
-                ctx.fillStyle = '#ef4444';
-                ctx.fillRect(reach - 26, -14, 24, 28);
-                ctx.fillStyle = '#7f1d1d';
-                ctx.fillRect(reach - 20, -11, 14, 22);
-                ctx.fillStyle = '#fca5a5';
-                ctx.fillRect(reach - 4, -12, 4, 6);
-                ctx.fillRect(reach - 4, 6, 4, 6);
-            } else if (wep.id === 'twin_trowels') {
-                ctx.fillStyle = '#0f172a';
-                ctx.fillRect(6, -8, reach - 20, 4);
-                ctx.fillRect(6, 4, reach - 20, 4);
-                ctx.fillStyle = '#22d3ee';
-                ctx.fillRect(reach - 16, -11, 14, 10);
-                ctx.fillRect(reach - 16, 1, 14, 10);
-            } else if (wep.id === 'soulreaper_scythe') {
-                ctx.fillStyle = '#3b0764';
-                ctx.fillRect(8, -3, reach - 16, 6);
-                ctx.strokeStyle = '#c084fc';
-                ctx.lineWidth = 5;
-                ctx.beginPath();
-                ctx.arc(reach - 16, 12, 28, -Math.PI * 0.7, Math.PI * 0.3);
-                ctx.stroke();
-                ctx.fillStyle = '#e879f9';
-                ctx.fillRect(reach - 18, -8, 8, 16);
-            } else if (wep.id === 'lantern_flail') {
-                ctx.strokeStyle = '#f59e0b';
-                ctx.lineWidth = 3;
-                ctx.beginPath();
-                ctx.moveTo(8, 0);
-                ctx.lineTo(reach - 16, 0);
-                ctx.stroke();
-                ctx.fillStyle = '#d97706';
-                ctx.fillRect(reach - 16, -9, 14, 18);
-                ctx.fillStyle = '#fef08a';
-                ctx.fillRect(reach - 13, -6, 8, 12);
-            }
-        }
-
-        function drawWeaponIdleGraphic(ctx, wep) {
-            if (wep.id === 'rusty_spade') {
-                ctx.fillStyle = '#78350f';
-                ctx.fillRect(8, -2, 24, 5);
-                ctx.fillStyle = '#cbd5e1';
-                ctx.fillRect(30, -7, 12, 15);
-            } else if (wep.id === 'great_shovel') {
-                ctx.fillStyle = '#1e1b4b';
-                ctx.fillRect(8, -3, 30, 7);
-                ctx.fillStyle = '#ef4444';
-                ctx.fillRect(36, -12, 18, 24);
-                ctx.fillStyle = '#7f1d1d';
-                ctx.fillRect(40, -9, 10, 18);
-            } else if (wep.id === 'twin_trowels') {
-                ctx.fillStyle = '#22d3ee';
-                ctx.fillRect(10, -8, 16, 6);
-                ctx.fillRect(10, 3, 16, 6);
-            } else if (wep.id === 'soulreaper_scythe') {
-                ctx.fillStyle = '#3b0764';
-                ctx.fillRect(8, -2, 26, 5);
-                ctx.strokeStyle = '#c084fc';
-                ctx.lineWidth = 4;
-                ctx.beginPath();
-                ctx.arc(32, 10, 20, -Math.PI * 0.6, Math.PI * 0.2);
-                ctx.stroke();
-            } else if (wep.id === 'lantern_flail') {
-                ctx.strokeStyle = '#f59e0b';
-                ctx.lineWidth = 2.5;
-                ctx.beginPath();
-                ctx.moveTo(8, 0);
-                ctx.lineTo(24, 8);
-                ctx.stroke();
-                ctx.fillStyle = '#d97706';
-                ctx.fillRect(24, 4, 12, 14);
-            }
-        }
-
-        function render() {
-            ctx.save();
-            ctx.imageSmoothingEnabled = false;
-            ctx.fillStyle = '#05070b';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            const sx = Math.round((Math.random() - 0.5) * game.shake);
-            const sy = Math.round((Math.random() - 0.5) * game.shake);
-
-            ctx.translate(canvas.width / 2, canvas.height / 2);
-            ctx.scale(game.zoom, game.zoom);
-            ctx.translate(Math.round(-game.camera.x + sx), Math.round(-game.camera.y + sy));
-
-            const room = currentRoom();
-            const torchFrame = Math.floor(performance.now() / 180) % 2;
-            const bounce = Math.round(Math.sin(performance.now() * 0.008) * 4);
-
-            if (!room.bgCanvas) atlas.bakeRoomBackground(room);
-            ctx.drawImage(room.bgCanvas, 0, 0);
-
-            // Render Biome Puddles (Conductive Water & Lava Fissures)
-            for (const pud of room.puddles) {
-                ctx.save();
-                ctx.beginPath();
-                ctx.arc(pud.x, pud.y, pud.r, 0, Math.PI * 2);
-                if (pud.kind === 'water') {
-                    ctx.fillStyle = pud.shockTimer > 0 ? 'rgba(56, 189, 248, 0.55)' : 'rgba(14, 116, 144, 0.38)';
-                    ctx.fill();
-                    ctx.strokeStyle = pud.shockTimer > 0 ? '#bae6fd' : '#0891b2';
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
-                } else {
-                    ctx.fillStyle = 'rgba(220, 38, 38, 0.45)';
-                    ctx.fill();
-                    ctx.strokeStyle = '#f59e0b';
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
-                }
-                ctx.restore();
-            }
-
-            // Render Spike Floor Plates
-            for (const sp of room.spikePlates) {
-                const active = sp.timer > 2.0;
-                const warn = sp.timer > 1.5 && !active;
-                ctx.fillStyle = active ? '#7f1d1d' : (warn ? '#78350f' : '#1e293b');
-                ctx.fillRect(sp.x - sp.w / 2, sp.y - sp.h / 2, sp.w, sp.h);
-                ctx.strokeStyle = active ? '#ef4444' : '#475569';
-                ctx.lineWidth = 2;
-                ctx.strokeRect(sp.x - sp.w / 2, sp.y - sp.h / 2, sp.w, sp.h);
-                if (active) {
-                    ctx.fillStyle = '#e2e8f0';
-                    for (let gx = -16; gx <= 16; gx += 16) {
-                        for (let gy = -16; gy <= 16; gy += 16) {
-                            ctx.fillRect(sp.x + gx - 3, sp.y + gy - 3, 6, 6);
-                        }
-                    }
-                }
-            }
-
-            // Render Hazard Pools
-            for (const hp of hazardPools) {
-                ctx.save();
-                ctx.fillStyle = hp.color;
-                ctx.beginPath();
-                ctx.arc(hp.x, hp.y, hp.r, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.restore();
-            }
-
-            // Render Doors & Gates
-            const doorHalf = 70;
-            const drawDoorPortal = (dir) => {
-                if (!room.doors[dir]) return;
-                const neighbor = getNeighborRoom(room, dir);
-                const info = getRoomBadgeInfo(neighbor);
-
-                ctx.save();
-                let gx = ROOM_W / 2, gy = WALL_T;
-                let matX = ROOM_W / 2 - doorHalf, matY = WALL_T - 20, matW = doorHalf * 2, matH = 56;
-                let labelX = ROOM_W / 2, labelY = WALL_T + 52;
-                let arrowX = ROOM_W / 2, arrowY = WALL_T + 20 - bounce;
-                let arrowChar = '▲';
-
-                if (dir === 'S') {
-                    gx = ROOM_W / 2; gy = ROOM_H - WALL_T;
-                    matX = ROOM_W / 2 - doorHalf; matY = ROOM_H - WALL_T - 36; matW = doorHalf * 2; matH = 56;
-                    labelX = ROOM_W / 2; labelY = ROOM_H - WALL_T - 44;
-                    arrowX = ROOM_W / 2; arrowY = ROOM_H - WALL_T - 12 + bounce; arrowChar = '▼';
-                } else if (dir === 'E') {
-                    gx = ROOM_W - WALL_T; gy = ROOM_H / 2;
-                    matX = ROOM_W - WALL_T - 36; matY = ROOM_H / 2 - doorHalf; matW = 56; matH = doorHalf * 2;
-                    labelX = ROOM_W - WALL_T - 68; labelY = ROOM_H / 2 + 4;
-                    arrowX = ROOM_W - WALL_T - 16 + bounce; arrowY = ROOM_H / 2 + 5; arrowChar = '▶';
-                } else if (dir === 'W') {
-                    gx = WALL_T; gy = ROOM_H / 2;
-                    matX = WALL_T - 20; matY = ROOM_H / 2 - doorHalf; matW = 56; matH = doorHalf * 2;
-                    labelX = WALL_T + 68; labelY = ROOM_H / 2 + 4;
-                    arrowX = WALL_T + 16 - bounce; arrowY = ROOM_H / 2 + 5; arrowChar = '◀';
-                }
-
-                const tSpr = atlas.sprites['torch_' + torchFrame];
-                if (tSpr) {
-                    if (dir === 'N' || dir === 'S') {
-                        ctx.drawImage(tSpr, ROOM_W / 2 - doorHalf - 28, gy - 14);
-                        ctx.drawImage(tSpr, ROOM_W / 2 + doorHalf + 6, gy - 14);
-                    } else {
-                        ctx.drawImage(tSpr, gx - 12, ROOM_H / 2 - doorHalf - 28);
-                        ctx.drawImage(tSpr, gx - 12, ROOM_H / 2 + doorHalf + 6);
-                    }
-                }
-
-                if (room.cleared) {
-                    ctx.fillStyle = '#064e3b'; ctx.fillRect(matX + 4, matY + 4, matW - 8, matH - 8);
-                    ctx.fillStyle = '#10b981';
-                    ctx.fillRect(matX + 4, matY + 4, matW - 8, 4); ctx.fillRect(matX + 4, matY + matH - 8, matW - 8, 4);
-                    ctx.fillRect(matX + 4, matY + 4, 4, matH - 8); ctx.fillRect(matX + matW - 8, matY + 4, 4, matH - 8);
-
-                    ctx.font = '900 18px Inter'; ctx.textAlign = 'center';
-                    ctx.fillStyle = '#090d16'; ctx.fillText(arrowChar, arrowX + 2, arrowY + 2);
-                    ctx.fillStyle = '#22d3ee'; ctx.fillText(arrowChar, arrowX, arrowY);
-
-                    ctx.font = '800 10px Inter';
-                    ctx.fillStyle = '#090d16'; ctx.fillText(`${info.icon} ${info.label}`, labelX + 1, labelY + 1);
-                    ctx.fillStyle = info.color; ctx.fillText(`${info.icon} ${info.label}`, labelX, labelY);
-                } else {
-                    ctx.fillStyle = '#450a0a'; ctx.fillRect(matX, matY, matW, matH);
-                    ctx.fillStyle = '#ef4444'; ctx.fillRect(matX, matY, matW, 4); ctx.fillRect(matX, matY + matH - 4, matW, 4);
-
-                    if (dir === 'N' || dir === 'S') {
-                        for (let bx = matX + 10; bx < matX + matW - 6; bx += 16) {
-                            ctx.fillStyle = '#090d16'; ctx.fillRect(bx - 2, gy - 18, 8, 36);
-                            ctx.fillStyle = '#94a3b8'; ctx.fillRect(bx, gy - 16, 4, 32);
-                        }
-                    } else {
-                        for (let by = matY + 10; by < matY + matH - 6; by += 16) {
-                            ctx.fillStyle = '#090d16'; ctx.fillRect(gx - 18, by - 2, 36, 8);
-                            ctx.fillStyle = '#94a3b8'; ctx.fillRect(gx - 16, by, 32, 4);
-                        }
-                    }
-                    ctx.font = '800 9px Inter'; ctx.textAlign = 'center';
-                    ctx.fillStyle = '#fecaca'; ctx.fillText(`🔒 ${enemies.length}`, labelX, labelY);
-                }
-                ctx.restore();
-            };
-
-            drawDoorPortal('N'); drawDoorPortal('S'); drawDoorPortal('E'); drawDoorPortal('W');
-
-            // Render Open Grave Pits (+ Brimstone Fire if Hellfire Chasm / Brimstone Censer)
-            const pitSpr = atlas.sprites['open_pit'];
-            for (const pit of room.pits) {
-                if (pitSpr) ctx.drawImage(pitSpr, Math.round(pit.x - pitSpr.width / 2), Math.round(pit.y - pitSpr.height / 2));
-                if (player.relics.brimstone_censer || game.synergies.hellfireChasm) {
-                    ctx.save();
-                    ctx.strokeStyle = '#f97316';
-                    ctx.lineWidth = 2.5;
-                    ctx.beginPath();
-                    ctx.arc(pit.x, pit.y, 30 + Math.sin(performance.now() * 0.01) * 3, 0, Math.PI * 2);
-                    ctx.stroke();
-                    ctx.restore();
-                }
-            }
-
-            // Render Ancient Sarcophagi
-            if (room.sarcophagi) {
-                for (const s of room.sarcophagi) {
-                    const spr = atlas.sprites[s.opened ? 'sarcophagus_open' : 'sarcophagus_closed'];
-                    if (spr) ctx.drawImage(spr, Math.round(s.x - spr.width / 2), Math.round(s.y - spr.height / 2));
-                    if (!s.opened) {
-                        ctx.font = '800 8px Inter'; ctx.textAlign = 'center'; ctx.fillStyle = '#fde047';
-                        ctx.fillText('ANCIENT TOMB [E]', s.x, s.y - 30);
-                    }
-                }
-            }
-
-            // Render Cursed Blood Chalice
-            if (room.bloodChalice && !room.bloodChalice.used) {
-                const chaliceSpr = atlas.sprites['blood_chalice'];
-                if (chaliceSpr) ctx.drawImage(chaliceSpr, Math.round(room.bloodChalice.x - chaliceSpr.width / 2), Math.round(room.bloodChalice.y - chaliceSpr.height / 2));
-                ctx.font = '900 9px Inter'; ctx.textAlign = 'center'; ctx.fillStyle = '#ef4444';
-                ctx.fillText('🩸 BLOOD PACT [E]', room.bloodChalice.x, room.bloodChalice.y - 30 + bounce);
-            }
-
-            // Render Dirt Mounds (+ Proving Grounds Step 1 Bounce Arrow)
-            for (const m of room.mounds) {
-                const mSpr = atlas.sprites[m.rich ? 'mound_rich' : 'mound_normal'];
-                if (mSpr) ctx.drawImage(mSpr, Math.round(m.x - mSpr.width / 2), Math.round(m.y - mSpr.height / 2));
-                if (m.isTutorialMound && game.provingGroundsStep === 1) {
-                    ctx.font = '900 14px Inter';
-                    ctx.textAlign = 'center';
-                    ctx.fillStyle = '#fbbf24';
-                    ctx.fillText('▼ DIG HERE [E]', m.x, m.y - 30 + bounce);
-                }
-            }
-
-            // Render Sanctuary Soul Altar, Weapon Rack & Proving Grounds Soul Turret
-            if (room.type === 'start') {
-                if (room.altarPos && atlas.sprites['meta_altar']) {
-                    const s = atlas.sprites['meta_altar'];
-                    ctx.drawImage(s, Math.round(room.altarPos.x - s.width / 2), Math.round(room.altarPos.y - s.height / 2));
-                    ctx.font = '800 9px Inter'; ctx.textAlign = 'center'; ctx.fillStyle = '#c084fc';
-                    ctx.fillText('🔮 SOUL ALTAR', room.altarPos.x, room.altarPos.y - 28);
-                }
-                if (room.rackPos && atlas.sprites['weapon_rack']) {
-                    const s = atlas.sprites['weapon_rack'];
-                    ctx.drawImage(s, Math.round(room.rackPos.x - s.width / 2), Math.round(room.rackPos.y - s.height / 2));
-                    ctx.font = '800 9px Inter'; ctx.textAlign = 'center'; ctx.fillStyle = '#fbbf24';
-                    ctx.fillText('⛏️ ARSENAL RACK', room.rackPos.x, room.rackPos.y - 28);
-                }
-                if (game.provingGroundsStep === 3 && atlas.sprites['shrine']) {
-                    const s = atlas.sprites['shrine'];
-                    ctx.drawImage(s, Math.round(ROOM_W / 2 - s.width / 2), Math.round(WALL_T + 90 - s.height / 2));
-                    ctx.font = '800 10px Inter'; ctx.textAlign = 'center'; ctx.fillStyle = '#22d3ee';
-                    ctx.fillText('⚡ DEFLECT ORB OR DASH!', ROOM_W / 2, WALL_T + 55 + bounce);
-                }
-            }
-
-            // Render Interactive Urns & Soul Barrels
-            for (const u of room.urns) {
-                const spr = atlas.sprites[u.kind];
-                if (spr) ctx.drawImage(spr, Math.round(u.x - spr.width / 2), Math.round(u.y - spr.height / 2));
-            }
-
-            // Render Obstacles & Boss Arena Pillars
-            for (const ob of room.obstacles) {
-                const spr = atlas.sprites[ob.kind || 'headstone'] || atlas.sprites['headstone'];
-                if (spr) ctx.drawImage(spr, Math.round(ob.x - spr.width / 2), Math.round(ob.y - spr.height / 2));
-                if (ob.isPillar) {
-                    ctx.font = '800 8px Inter'; ctx.textAlign = 'center'; ctx.fillStyle = '#94a3b8';
-                    ctx.fillText('STONE PILLAR', ob.x, ob.y - 34);
-                }
-            }
-
-            for (const ch of room.chests) {
-                const spr = atlas.sprites[ch.opened ? 'chest_open' : 'chest_closed'];
-                if (spr) ctx.drawImage(spr, Math.round(ch.x - spr.width / 2), Math.round(ch.y - spr.height / 2));
-            }
-
-            if (room.type === 'shrine' && atlas.sprites['shrine']) {
-                const spr = atlas.sprites['shrine'];
-                ctx.drawImage(spr, Math.round(ROOM_W / 2 - spr.width / 2), Math.round(ROOM_H / 2 - spr.height / 2));
-            }
-
-            if (room.type === 'shop') {
-                ctx.drawImage(atlas.sprites['necro_0'], ROOM_W / 2 - 24, ROOM_H / 2 - 24);
-                ctx.font = '800 10px Inter'; ctx.textAlign = 'center'; ctx.fillStyle = '#fbbf24';
-                ctx.fillText("🕯️ CHARON'S MARKET [E]", ROOM_W / 2, ROOM_H / 2 - 34);
-            }
-
-            if (room.portalActive) {
-                ctx.save();
-                ctx.strokeStyle = '#c084fc'; ctx.lineWidth = 4;
-                ctx.beginPath(); ctx.arc(ROOM_W / 2, ROOM_H / 2, 34 + Math.sin(performance.now() * 0.006) * 4, 0, Math.PI * 2); ctx.stroke();
-                ctx.font = '800 11px Inter'; ctx.textAlign = 'center'; ctx.fillStyle = '#e879f9';
-                ctx.fillText('🌀 DESCEND [E]', ROOM_W / 2, ROOM_H / 2 - 44);
-                ctx.restore();
-            }
-
-            const tSpr = atlas.sprites['torch_' + torchFrame];
-            for (const t of room.torches) {
-                if (tSpr) ctx.drawImage(tSpr, Math.round(t.x - tSpr.width / 2), Math.round(t.y - tSpr.height / 2));
-            }
-
-            for (const d of drops) {
-                const by = Math.round(d.y + Math.sin(d.bob) * 4);
-                let dSpr = atlas.sprites['drop_xp'];
-                if (d.type === 'coin') dSpr = atlas.sprites['drop_coin'];
-                else if (d.type === 'soul') dSpr = atlas.sprites['drop_soul'];
-                else if (d.type === 'heart') dSpr = atlas.sprites['drop_heart'];
-                if (dSpr) ctx.drawImage(dSpr, Math.round(d.x - dSpr.width / 2), Math.round(by - dSpr.height / 2));
-            }
-
-            for (const a of allies) {
-                const spr = atlas.sprites['skeleton_' + player.animFrame];
-                if (spr) {
-                    ctx.save(); ctx.translate(a.x, a.y);
-                    ctx.strokeStyle = '#22d3ee'; ctx.lineWidth = 2;
-                    ctx.beginPath(); ctx.arc(0, 4, 18, 0, Math.PI * 2); ctx.stroke();
-                    ctx.drawImage(spr, -spr.width / 2, -spr.height / 2);
-                    ctx.restore();
-                }
-            }
-
-            // Render Co-Op Partner / 2nd Keeper Companion
-            if (coopPartner.active) {
-                ctx.save();
-                ctx.translate(Math.round(coopPartner.x), Math.round(coopPartner.y));
-                ctx.scale(coopPartner.facing, 1);
+                ctx.translate(Math.round(sp.x), Math.round(sp.y));
+                ctx.scale(sp.facing || 1, 1);
                 
-                // Cyan ring for Co-Op Partner
-                ctx.strokeStyle = coopPartner.isDowned ? '#ef4444' : '#34d399';
+                const pColor = SQUAD_COLORS[sp.playerIndex || 2] || '#34d399';
+                ctx.strokeStyle = sp.isDowned ? '#ef4444' : pColor;
                 ctx.lineWidth = 2;
                 ctx.beginPath();
                 ctx.arc(0, 8, 16, 0, Math.PI * 2);
@@ -4237,7 +3450,7 @@
 
                 const cpSpr = atlas.sprites['player_0'];
                 if (cpSpr) {
-                    if (coopPartner.isDowned) {
+                    if (sp.isDowned) {
                         ctx.save();
                         ctx.rotate(Math.PI / 2);
                         ctx.drawImage(cpSpr, Math.round(-cpSpr.width / 2), Math.round(-cpSpr.height / 2));
@@ -4248,18 +3461,16 @@
                         ctx.fillText('REVIVE [E]', 0, -22);
                     } else {
                         ctx.drawImage(cpSpr, Math.round(-cpSpr.width / 2), Math.round(-cpSpr.height / 2));
+                        renderCharacterWeapon(ctx, sp, false);
                         ctx.font = '800 8px Inter';
                         ctx.textAlign = 'center';
-                        ctx.fillStyle = '#34d399';
-                        renderCharacterWeapon(ctx, coopPartner, false);
-                        ctx.font = '800 8px Inter';
-                        ctx.textAlign = 'center';
-                        ctx.fillStyle = '#34d399';
-                        ctx.fillText('P2 CO-OP', 0, -22);
+                        ctx.fillStyle = pColor;
+                        ctx.fillText(`P${sp.playerIndex || 2} SQUAD`, 0, -22);
                     }
                 }
                 ctx.restore();
             }
+
 
             // Render Enemies, Elite Auras, Telegraphs & Pit-Kill Trajectory Guides
             const eFrame = Math.floor(performance.now() / 220) % 2;
@@ -5077,14 +4288,198 @@ func rpc_trigger_pit_kill(enemy_id: int):
         
         /**
          * ============================================================================
+         * 14. SETTINGS ENGINE & HOME SCREEN MANAGER
+         * ============================================================================
+         */
+        const SettingsManager = {
+            settings: {
+                audioEnabled: true,
+                bgmVolume: 70,
+                sfxVolume: 80,
+                screenShake: 100,
+                touchControls: 'auto',
+                adMode: 'simulated'
+            },
+
+            init() {
+                this.load();
+                this.bindUI();
+                this.updateHomeScreenMeta();
+            },
+
+            load() {
+                try {
+                    const saved = localStorage.getItem('crypt_keeper_settings');
+                    if (saved) {
+                        this.settings = Object.assign(this.settings, JSON.parse(saved));
+                    }
+                } catch (e) {}
+                this.apply();
+            },
+
+            save() {
+                try {
+                    localStorage.setItem('crypt_keeper_settings', JSON.stringify(this.settings));
+                } catch (e) {}
+                this.apply();
+            },
+
+            apply() {
+                game.shakeMultiplier = this.settings.screenShake / 100;
+                if (typeof sfx !== 'undefined') {
+                    sfx.muted = !this.settings.audioEnabled;
+                    sfx.bgmVolume = (this.settings.bgmVolume / 100);
+                    sfx.sfxVolume = (this.settings.sfxVolume / 100);
+                }
+                const mobControls = document.getElementById('mobile-controls');
+                if (mobControls) {
+                    if (this.settings.touchControls === 'always') mobControls.classList.remove('hidden');
+                    else if (this.settings.touchControls === 'hidden') mobControls.classList.add('hidden');
+                }
+            },
+
+            bindUI() {
+                const btnHomeSolo = document.getElementById('btn-home-solo');
+                if (btnHomeSolo) {
+                    btnHomeSolo.addEventListener('click', () => {
+                        document.getElementById('home-screen').classList.add('hidden');
+                        sfx.init();
+                        sfx.play('levelup');
+                        game.paused = false;
+                        game.running = true;
+                    });
+                }
+
+                const btnHomeCoop = document.getElementById('btn-home-coop');
+                if (btnHomeCoop) {
+                    btnHomeCoop.addEventListener('click', () => {
+                        document.getElementById('home-screen').classList.add('hidden');
+                        sfx.init();
+                        document.getElementById('coop-modal').classList.remove('hidden');
+                        game.paused = true;
+                    });
+                }
+
+                const btnHomeSettings = document.getElementById('btn-home-settings');
+                const btnTopSettings = document.getElementById('btn-settings');
+                if (btnHomeSettings) btnHomeSettings.addEventListener('click', () => this.openModal());
+                if (btnTopSettings) btnTopSettings.addEventListener('click', () => this.openModal());
+
+                const btnHomeCodex = document.getElementById('btn-home-codex');
+                if (btnHomeCodex) {
+                    btnHomeCodex.addEventListener('click', () => {
+                        document.getElementById('codex-modal').classList.remove('hidden');
+                    });
+                }
+
+                const btnTopHome = document.getElementById('btn-home');
+                if (btnTopHome) {
+                    btnTopHome.addEventListener('click', () => {
+                        document.getElementById('home-screen').classList.remove('hidden');
+                        this.updateHomeScreenMeta();
+                    });
+                }
+
+                const closeSettings = document.getElementById('close-settings');
+                const btnSaveSettings = document.getElementById('btn-save-settings');
+                if (closeSettings) closeSettings.addEventListener('click', () => this.closeModal());
+                if (btnSaveSettings) btnSaveSettings.addEventListener('click', () => this.closeModal());
+
+                const toggleAudio = document.getElementById('setting-toggle-audio');
+                if (toggleAudio) {
+                    toggleAudio.addEventListener('click', () => {
+                        this.settings.audioEnabled = !this.settings.audioEnabled;
+                        toggleAudio.textContent = this.settings.audioEnabled ? '🔊 ENABLED' : '🔇 MUTED';
+                        toggleAudio.className = this.settings.audioEnabled ? 'pixel-button-cyan px-3 py-1 rounded font-pixel text-[8px]' : 'pixel-button px-3 py-1 rounded font-pixel text-[8px] text-red-400';
+                    });
+                }
+
+                const sliderBgm = document.getElementById('setting-slider-bgm');
+                const valBgm = document.getElementById('setting-bgm-val');
+                if (sliderBgm) {
+                    sliderBgm.addEventListener('input', (e) => {
+                        this.settings.bgmVolume = parseInt(e.target.value);
+                        if (valBgm) valBgm.textContent = this.settings.bgmVolume + '%';
+                    });
+                }
+
+                const sliderSfx = document.getElementById('setting-slider-sfx');
+                const valSfx = document.getElementById('setting-sfx-val');
+                if (sliderSfx) {
+                    sliderSfx.addEventListener('input', (e) => {
+                        this.settings.sfxVolume = parseInt(e.target.value);
+                        if (valSfx) valSfx.textContent = this.settings.sfxVolume + '%';
+                    });
+                }
+
+                const toggleShake = document.getElementById('setting-toggle-shake');
+                if (toggleShake) {
+                    toggleShake.addEventListener('click', () => {
+                        if (this.settings.screenShake === 100) this.settings.screenShake = 40;
+                        else if (this.settings.screenShake === 40) this.settings.screenShake = 0;
+                        else this.settings.screenShake = 100;
+                        toggleShake.textContent = this.settings.screenShake === 100 ? 'FULL (100%)' : (this.settings.screenShake === 40 ? 'REDUCED (40%)' : 'OFF (0%)');
+                    });
+                }
+
+                const toggleTouch = document.getElementById('setting-toggle-touch');
+                if (toggleTouch) {
+                    toggleTouch.addEventListener('click', () => {
+                        if (this.settings.touchControls === 'auto') this.settings.touchControls = 'always';
+                        else if (this.settings.touchControls === 'always') this.settings.touchControls = 'hidden';
+                        else this.settings.touchControls = 'auto';
+                        toggleTouch.textContent = this.settings.touchControls.toUpperCase();
+                    });
+                }
+            },
+
+            openModal() {
+                const modal = document.getElementById('settings-modal');
+                if (modal) modal.classList.remove('hidden');
+                const toggleAudio = document.getElementById('setting-toggle-audio');
+                if (toggleAudio) {
+                    toggleAudio.textContent = this.settings.audioEnabled ? '🔊 ENABLED' : '🔇 MUTED';
+                    toggleAudio.className = this.settings.audioEnabled ? 'pixel-button-cyan px-3 py-1 rounded font-pixel text-[8px]' : 'pixel-button px-3 py-1 rounded font-pixel text-[8px] text-red-400';
+                }
+                const sliderBgm = document.getElementById('setting-slider-bgm');
+                const valBgm = document.getElementById('setting-bgm-val');
+                if (sliderBgm && valBgm) {
+                    sliderBgm.value = this.settings.bgmVolume;
+                    valBgm.textContent = this.settings.bgmVolume + '%';
+                }
+                const sliderSfx = document.getElementById('setting-slider-sfx');
+                const valSfx = document.getElementById('setting-sfx-val');
+                if (sliderSfx && valSfx) {
+                    sliderSfx.value = this.settings.sfxVolume;
+                    valSfx.textContent = this.settings.sfxVolume + '%';
+                }
+            },
+
+            closeModal() {
+                this.save();
+                const modal = document.getElementById('settings-modal');
+                if (modal) modal.classList.add('hidden');
+            },
+
+            updateHomeScreenMeta() {
+                const s = document.getElementById('home-souls');
+                const w = document.getElementById('home-weapon');
+                const d = document.getElementById('home-depth');
+                if (s) s.textContent = player.souls || metaSave.souls || 0;
+                if (w) w.textContent = (player.weapon ? player.weapon.name : 'IRON SPADE').toUpperCase();
+                if (d) d.textContent = 'DEPTH ' + (metaSave.bestDepth || 1);
+            }
+        };
+
+
+        /**
+         * ============================================================================
          * 12. WEB MONETIZATION & AD ENGINE (AdManager)
-         * Supports: Banner Ads, Rewarded Ads (Death Revive / Altar Souls), Interstitials
-         * Modes: 'simulated' (Default Out-of-the-box), 'poki', 'crazygames', 'adsense'
          * ============================================================================
          */
         const AdManager = {
             config: {
-                mode: 'simulated', // 'simulated' | 'poki' | 'crazygames' | 'adsense'
+                mode: 'simulated',
                 bannerEnabled: true,
                 bannerVisible: true,
                 adsenseClientId: 'ca-pub-XXXXXXXXXXXXXXXX',
@@ -5102,7 +4497,6 @@ func rpc_trigger_pit_kill(enemy_id: int):
             ],
 
             init() {
-                // Banner action button
                 const btnAction = document.getElementById('btn-ad-banner-action');
                 if (btnAction) {
                     btnAction.addEventListener('click', () => {
@@ -5110,7 +4504,6 @@ func rpc_trigger_pit_kill(enemy_id: int):
                     });
                 }
 
-                // Banner toggle/minimize
                 const btnToggle = document.getElementById('btn-toggle-ad-banner');
                 if (btnToggle) {
                     btnToggle.addEventListener('click', () => {
@@ -5118,7 +4511,6 @@ func rpc_trigger_pit_kill(enemy_id: int):
                     });
                 }
 
-                // Watch Ad for Ankh Rebirth
                 const btnAdRebirth = document.getElementById('btn-watch-ad-rebirth');
                 if (btnAdRebirth) {
                     btnAdRebirth.addEventListener('click', () => {
@@ -5128,7 +4520,6 @@ func rpc_trigger_pit_kill(enemy_id: int):
                     });
                 }
 
-                // Watch Ad for Soul Shards
                 const btnAdSouls = document.getElementById('btn-watch-ad-souls');
                 if (btnAdSouls) {
                     btnAdSouls.addEventListener('click', () => {
@@ -5147,7 +4538,6 @@ func rpc_trigger_pit_kill(enemy_id: int):
                     });
                 }
 
-                // Rotate simulated banners every 20 seconds
                 setInterval(() => {
                     this.rotateBanner();
                 }, 20000);
@@ -5191,7 +4581,6 @@ func rpc_trigger_pit_kill(enemy_id: int):
                 if (progressBar) progressBar.style.width = '0%';
                 if (skipBtn) skipBtn.classList.add('hidden');
 
-                // If Poki SDK is integrated
                 if (this.config.mode === 'poki' && window.PokiSDK) {
                     window.PokiSDK.rewardedBreak().then((success) => {
                         if (success && onRewardSuccess) onRewardSuccess();
@@ -5199,7 +4588,6 @@ func rpc_trigger_pit_kill(enemy_id: int):
                     return;
                 }
 
-                // If CrazyGames SDK is integrated
                 if (this.config.mode === 'crazygames' && window.CrazyGames && window.CrazyGames.SDK) {
                     window.CrazyGames.SDK.ad.requestAd("rewarded", {
                         adFinished: () => { if (onRewardSuccess) onRewardSuccess(); },
@@ -5208,7 +4596,6 @@ func rpc_trigger_pit_kill(enemy_id: int):
                     return;
                 }
 
-                // Default Simulator Mode (5 seconds clean countdown)
                 if (modal) modal.classList.remove('hidden');
                 let timeLeft = 5;
                 if (countdownEl) countdownEl.textContent = timeLeft + 's';
@@ -5255,8 +4642,7 @@ func rpc_trigger_pit_kill(enemy_id: int):
 
         /**
          * ============================================================================
-         * 13. REAL-TIME MULTIPLAYER NETWORKING ENGINE (MultiplayerManager)
-         * WebSocket Room Lobby, Live Transform Sync, Attack Relaying & Revive Mechanics
+         * 13. REAL-TIME 6-PLAYER MULTIPLAYER NETWORKING ENGINE (MultiplayerManager)
          * ============================================================================
          */
         const MultiplayerManager = {
@@ -5264,10 +4650,10 @@ func rpc_trigger_pit_kill(enemy_id: int):
             isConnected: false,
             isHost: false,
             roomCode: '',
-            partnerActive: false,
             syncInterval: null,
             lastPing: 0,
             latencyMs: 0,
+            playerIndex: 1,
 
             init() {
                 const defaultUrl = (window.location.protocol === 'https:' ? 'wss://' : 'ws://') + (window.location.host || 'localhost:3000');
@@ -5282,7 +4668,6 @@ func rpc_trigger_pit_kill(enemy_id: int):
                     });
                 }
 
-                // Hook New Code button
                 const btnNewCode = document.getElementById('btn-new-code');
                 if (btnNewCode) {
                     btnNewCode.addEventListener('click', () => {
@@ -5290,7 +4675,6 @@ func rpc_trigger_pit_kill(enemy_id: int):
                     });
                 }
 
-                // Hook Join Session button
                 const btnJoin = document.getElementById('btn-join-session');
                 if (btnJoin) {
                     btnJoin.addEventListener('click', () => {
@@ -5299,7 +4683,6 @@ func rpc_trigger_pit_kill(enemy_id: int):
                     });
                 }
 
-                // Attempt auto-connect to local / hosted server
                 setTimeout(() => {
                     this.connect(defaultUrl);
                 }, 400);
@@ -5314,14 +4697,13 @@ func rpc_trigger_pit_kill(enemy_id: int):
                 try {
                     this.ws = new WebSocket(url);
                 } catch (err) {
-                    this.updateNetUI('offline', 'OFFLINE (AI Companion active)');
+                    this.updateNetUI('offline', 'OFFLINE (Solo/AI mode)');
                     return;
                 }
 
                 this.ws.onopen = () => {
                     this.isConnected = true;
                     this.updateNetUI('online', `CONNECTED (${url})`);
-                    // Start heartbeats
                     this.lastPing = Date.now();
                     this.ws.send(JSON.stringify({ type: 'ping', t: this.lastPing }));
                     this.startSyncLoop();
@@ -5339,14 +4721,16 @@ func rpc_trigger_pit_kill(enemy_id: int):
                 this.ws.onclose = () => {
                     this.isConnected = false;
                     coopPartner.isRemotePlayer = false;
-                    this.updateNetUI('offline', 'OFFLINE (AI Companion active)');
+                    squadPeers.clear();
+                    this.updateSquadUI();
+                    this.updateNetUI('offline', 'OFFLINE (Solo/AI mode)');
                     if (this.syncInterval) clearInterval(this.syncInterval);
                 };
 
                 this.ws.onerror = () => {
                     this.isConnected = false;
                     coopPartner.isRemotePlayer = false;
-                    this.updateNetUI('offline', 'OFFLINE (AI Companion active)');
+                    this.updateNetUI('offline', 'OFFLINE (Solo/AI mode)');
                 };
             },
 
@@ -5367,6 +4751,28 @@ func rpc_trigger_pit_kill(enemy_id: int):
                     dot.className = 'w-2.5 h-2.5 rounded-full bg-red-500 inline-block';
                     text.className = 'text-[8px] font-pixel text-slate-400';
                     text.textContent = `SERVER: ${label}`;
+                }
+            },
+
+            updateSquadUI() {
+                const countBadge = document.getElementById('squad-count-badge');
+                const total = 1 + squadPeers.size;
+                if (countBadge) countBadge.textContent = `${total} / 6 KEEPERS`;
+
+                for (let i = 2; i <= 6; i++) {
+                    const slot = document.getElementById('slot-p' + i);
+                    if (!slot) continue;
+                    let member = null;
+                    for (const m of squadPeers.values()) {
+                        if (m.playerIndex === i) { member = m; break; }
+                    }
+                    if (member) {
+                        slot.className = 'pixel-panel p-2 rounded border-cyan-500 bg-cyan-950/30 text-[8px] font-pixel flex items-center gap-2';
+                        slot.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse"></span><div><div class="text-cyan-300 font-bold">P${i} KEEPER</div><div class="text-[7px] text-emerald-400">In Crypt Sector</div></div>`;
+                    } else {
+                        slot.className = 'pixel-panel p-2 rounded border-slate-800 bg-slate-950/40 text-[8px] font-pixel flex items-center gap-2 opacity-50';
+                        slot.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-slate-600"></span><div><div class="text-slate-400">P${i} KEEPER</div><div class="text-[7px] text-slate-600">Waiting...</div></div>`;
+                    }
                 }
             },
 
@@ -5434,7 +4840,7 @@ func rpc_trigger_pit_kill(enemy_id: int):
                             curY: game.curY
                         }
                     }));
-                }, 35); // ~30 Hz state broadcast for responsive syncing
+                }, 35);
             },
 
             handleMessage(msg) {
@@ -5450,109 +4856,277 @@ func rpc_trigger_pit_kill(enemy_id: int):
                     case 'room_created':
                         this.roomCode = msg.roomCode;
                         this.isHost = true;
+                        this.playerIndex = 1;
                         game.multiplayer.roomCode = msg.roomCode;
                         game.multiplayerSeed = msg.seed;
-                        // Synchronize initial stage with room seed
                         generateDungeonFloor(game.depth);
                         document.getElementById('coop-room-code').textContent = msg.roomCode;
+                        this.updateSquadUI();
                         sfx.play('coin');
-                        addFloatingText(player.x, player.y - 30, `EXPEDITION ${msg.roomCode} CREATED!`, "#f59e0b", 16);
+                        addFloatingText(player.x, player.y - 30, `6P EXPEDITION ${msg.roomCode} CREATED!`, "#f59e0b", 16);
                         break;
 
                     case 'room_joined':
                         this.roomCode = msg.roomCode;
                         this.isHost = false;
+                        this.playerIndex = msg.playerIndex || 2;
                         game.multiplayer.roomCode = msg.roomCode;
                         game.multiplayerSeed = msg.seed;
-                        // Generate identical stage layout using host seed
                         generateDungeonFloor(game.depth);
                         document.getElementById('coop-room-code').textContent = msg.roomCode;
-                        coopPartner.active = true;
-                        coopPartner.isRemotePlayer = true;
-                        updateCoopPartnerStatus();
+                        
+                        if (msg.players) {
+                            for (const p of msg.players) {
+                                if (p.id !== this.ws.clientId) {
+                                    squadPeers.set(p.id, {
+                                        id: p.id,
+                                        playerIndex: p.playerIndex,
+                                        x: ROOM_W / 2 - 40,
+                                        y: ROOM_H / 2 + 70,
+                                        targetX: ROOM_W / 2 - 40,
+                                        targetY: ROOM_H / 2 + 70,
+                                        angle: 0,
+                                        facing: 1,
+                                        animFrame: 0,
+                                        hp: 120,
+                                        maxHp: 120,
+                                        weapon: WEAPON_ARSENAL.rusty_spade,
+                                        isDowned: false
+                                    });
+                                }
+                            }
+                        }
+                        this.updateSquadUI();
                         sfx.play('levelup');
-                        addFloatingText(player.x, player.y - 30, `JOINED ${msg.roomCode}!`, "#34d399", 16);
+                        addFloatingText(player.x, player.y - 30, `JOINED SQUAD AS P${this.playerIndex}!`, "#34d399", 16);
                         break;
 
                     case 'peer_joined':
-                        coopPartner.active = true;
-                        coopPartner.isRemotePlayer = true;
-                        updateCoopPartnerStatus();
                         sfx.play('levelup');
-                        addFloatingText(player.x, player.y - 30, "🤝 PARTNER JOINED YOUR EXPEDITION!", "#34d399", 18);
+                        squadPeers.set(msg.peerId, {
+                            id: msg.peerId,
+                            playerIndex: msg.playerIndex,
+                            x: ROOM_W / 2 - 40,
+                            y: ROOM_H / 2 + 70,
+                            targetX: ROOM_W / 2 - 40,
+                            targetY: ROOM_H / 2 + 70,
+                            angle: 0,
+                            facing: 1,
+                            animFrame: 0,
+                            hp: 120,
+                            maxHp: 120,
+                            weapon: WEAPON_ARSENAL.rusty_spade,
+                            isDowned: false
+                        });
+                        this.updateSquadUI();
+                        addFloatingText(player.x, player.y - 30, `🤝 KEEPER P${msg.playerIndex} JOINED SQUAD!`, "#34d399", 18);
                         addParticles(player.x, player.y, '#34d399', 25, 200, 5);
                         break;
 
                     case 'partner_sync':
-                        if (!coopPartner.active) {
-                            coopPartner.active = true;
-                            updateCoopPartnerStatus();
+                        let peer = squadPeers.get(msg.peerId);
+                        if (!peer) {
+                            peer = {
+                                id: msg.peerId,
+                                playerIndex: msg.playerIndex || 2,
+                                x: msg.state.x,
+                                y: msg.state.y,
+                                targetX: msg.state.x,
+                                targetY: msg.state.y,
+                                angle: msg.state.angle || 0,
+                                facing: msg.state.facing || 1,
+                                animFrame: 0,
+                                hp: msg.state.hp || 120,
+                                maxHp: msg.state.maxHp || 120,
+                                weapon: WEAPON_ARSENAL.rusty_spade,
+                                isDowned: false
+                            };
+                            squadPeers.set(msg.peerId, peer);
+                            this.updateSquadUI();
                         }
-                        coopPartner.isRemotePlayer = true;
                         const s = msg.state;
-                        // Set target positions for smooth interpolation (NO SHAKING)
-                        coopPartner.targetX = s.x;
-                        coopPartner.targetY = s.y;
-                        coopPartner.targetAngle = s.angle !== undefined ? s.angle : coopPartner.targetAngle;
-                        coopPartner.targetFacing = s.facing || coopPartner.targetFacing;
-                        coopPartner.hp = s.hp !== undefined ? s.hp : coopPartner.hp;
-                        coopPartner.maxHp = s.maxHp || coopPartner.maxHp;
-                        coopPartner.isDowned = !!s.isDowned;
+                        peer.targetX = s.x;
+                        peer.targetY = s.y;
+                        peer.targetAngle = s.angle !== undefined ? s.angle : peer.targetAngle;
+                        peer.targetFacing = s.facing || peer.targetFacing;
+                        peer.hp = s.hp !== undefined ? s.hp : peer.hp;
+                        peer.maxHp = s.maxHp || peer.maxHp;
+                        peer.isDowned = !!s.isDowned;
                         if (s.weaponId && WEAPON_ARSENAL[s.weaponId]) {
-                            coopPartner.weapon = WEAPON_ARSENAL[s.weaponId];
+                            peer.weapon = WEAPON_ARSENAL[s.weaponId];
                         }
+                        
+                        const lerpFactor = 0.55;
+                        peer.x += (peer.targetX - peer.x) * lerpFactor;
+                        peer.y += (peer.targetY - peer.y) * lerpFactor;
+                        peer.angle = peer.targetAngle;
+                        peer.facing = peer.targetFacing;
+                        if (peer.swingTimer > 0) peer.swingTimer = Math.max(0, peer.swingTimer - 0.035);
                         break;
 
                     case 'partner_action':
+                        const actionPeer = squadPeers.get(msg.peerId);
+                        const actor = actionPeer || coopPartner;
+
                         if (msg.action === 'swing') {
                             const d = msg.data || {};
                             if (d.weaponId && WEAPON_ARSENAL[d.weaponId]) {
-                                coopPartner.weapon = WEAPON_ARSENAL[d.weaponId];
+                                actor.weapon = WEAPON_ARSENAL[d.weaponId];
                             }
-                            coopPartner.comboStep = d.comboStep !== undefined ? d.comboStep : 0;
-                            coopPartner.angle = d.angle !== undefined ? d.angle : coopPartner.angle;
-                            coopPartner.facing = d.facing !== undefined ? d.facing : coopPartner.facing;
-                            const isFinisher = coopPartner.comboStep === 0;
-                            coopPartner.swingDuration = (isFinisher ? 0.25 : 0.18) / (coopPartner.weapon.speedMult || 1);
-                            coopPartner.swingTimer = coopPartner.swingDuration;
+                            actor.comboStep = d.comboStep !== undefined ? d.comboStep : 0;
+                            actor.angle = d.angle !== undefined ? d.angle : actor.angle;
+                            actor.facing = d.facing !== undefined ? d.facing : actor.facing;
+                            const isFinisher = actor.comboStep === 0;
+                            actor.swingDuration = (isFinisher ? 0.25 : 0.18) / (actor.weapon.speedMult || 1);
+                            actor.swingTimer = actor.swingDuration;
 
                             sfx.play('swing');
-                            const reach = (coopPartner.weapon.reach || 42) * (isFinisher ? 1.15 : 1.0);
-                            const slashX = coopPartner.x + Math.cos(coopPartner.angle) * (reach * 0.7);
-                            const slashY = coopPartner.y + Math.sin(coopPartner.angle) * (reach * 0.7);
-                            addParticles(slashX, slashY, coopPartner.weapon.trailColor || '#22d3ee', isFinisher ? 16 : 8, 140, 4);
+                            const reach = (actor.weapon.reach || 42) * (isFinisher ? 1.15 : 1.0);
+                            const slashX = actor.x + Math.cos(actor.angle) * (reach * 0.7);
+                            const slashY = actor.y + Math.sin(actor.angle) * (reach * 0.7);
+                            addParticles(slashX, slashY, actor.weapon.trailColor || '#22d3ee', isFinisher ? 16 : 8, 140, 4);
 
-                            // Partner damage check on local enemies
-                            for (let i = enemies.length - 1; i >= 0; i--) {
-                                const foe = enemies[i];
-                                if (!foe.burrowed && Math.hypot(foe.x - coopPartner.x, foe.y - coopPartner.y) < reach + 20) {
-                                    foe.hp -= 28;
-                                    foe.flash = 0.12;
-                                    const kb = Math.atan2(foe.y - coopPartner.y, foe.x - coopPartner.x);
-                                    foe.vx = Math.cos(kb) * 220;
-                                    foe.vy = Math.sin(kb) * 220;
-                                    addParticles(foe.x, foe.y, '#22d3ee', 6, 110, 3);
-                                    addFloatingText(foe.x, foe.y - 12, "-28", "#67e8f9", 12);
-                                    if (foe.hp <= 0) killEnemy(i);
+                            // Authoritative damage check if host
+                            if (MultiplayerManager.isHost) {
+                                for (let i = enemies.length - 1; i >= 0; i--) {
+                                    const foe = enemies[i];
+                                    if (!foe.burrowed && Math.hypot(foe.x - actor.x, foe.y - actor.y) < reach + 20) {
+                                        foe.hp -= 28;
+                                        foe.flash = 0.12;
+                                        const kb = Math.atan2(foe.y - actor.y, foe.x - actor.x);
+                                        foe.vx = Math.cos(kb) * 220;
+                                        foe.vy = Math.sin(kb) * 220;
+                                        addParticles(foe.x, foe.y, '#22d3ee', 6, 110, 3);
+                                        addFloatingText(foe.x, foe.y - 12, "-28", "#67e8f9", 12);
+                                        if (foe.hp <= 0) killEnemy(i);
+                                    }
+                                }
+                            }
+                        } else if (msg.action === 'interact') {
+                            if (MultiplayerManager.isHost) {
+                                const ix = msg.data.x;
+                                const iy = msg.data.y;
+                                const r = currentRoom();
+                                if (r && r.mounds) {
+                                    for (let i = r.mounds.length - 1; i >= 0; i--) {
+                                        if (Math.hypot(r.mounds[i].x - ix, r.mounds[i].y - iy) < 85) {
+                                            excavateMound(i);
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (r && r.chests) {
+                                    for (const ch of r.chests) {
+                                        if (!ch.opened && Math.hypot(ch.x - ix, ch.y - iy) < 85) {
+                                            ch.opened = true;
+                                            sfx.play('levelup');
+                                            addParticles(ch.x, ch.y, '#fbbf24', 24, 170, 5);
+                                            for (let c = 0; c < 4; c++) spawnLootDrop(ch.x + (c - 1.5) * 15, ch.y + 15, 'coin', 12);
+                                            break;
+                                        }
+                                    }
                                 }
                             }
                         } else if (msg.action === 'change_weapon') {
                             if (msg.data.weaponId && WEAPON_ARSENAL[msg.data.weaponId]) {
-                                coopPartner.weapon = WEAPON_ARSENAL[msg.data.weaponId];
+                                actor.weapon = WEAPON_ARSENAL[msg.data.weaponId];
                                 sfx.play('swing');
-                                addFloatingText(coopPartner.x, coopPartner.y - 20, `PARTNER: ${coopPartner.weapon.name}`, "#f59e0b", 12);
                             }
                         } else if (msg.action === 'dash') {
                             sfx.play('dash');
-                            addParticles(coopPartner.x, coopPartner.y, '#94a3b8', 12, 120, 4);
+                            addParticles(actor.x, actor.y, '#94a3b8', 12, 120, 4);
                         } else if (msg.action === 'deflect') {
                             sfx.play('deflect');
-                            addParticles(coopPartner.x, coopPartner.y, '#f59e0b', 16, 160, 5);
+                            addParticles(actor.x, actor.y, '#f59e0b', 16, 160, 5);
                         } else if (msg.action === 'revived') {
                             sfx.play('levelup');
-                            coopPartner.isDowned = false;
-                            coopPartner.hp = Math.round(coopPartner.maxHp * 0.5);
-                            addParticles(coopPartner.x, coopPartner.y, '#34d399', 24, 180, 5);
+                            actor.isDowned = false;
+                            actor.hp = Math.round(actor.maxHp * 0.5);
+                            addParticles(actor.x, actor.y, '#34d399', 24, 180, 5);
+                        }
+                        break;
+
+                    case 'world_snapshot':
+                        // LOCKSTEP AUTHORITATIVE RECONCILIATION FOR PEERS
+                        if (MultiplayerManager.isHost) return;
+                        const snap = msg.snapshot;
+                        if (!snap) return;
+
+                        // Room and Depth sync
+                        if (snap.depth !== game.depth || snap.curX !== game.curX || snap.curY !== game.curY) {
+                            if (snap.depth !== game.depth) {
+                                game.depth = snap.depth;
+                                generateDungeonFloor(game.depth);
+                            }
+                            enterRoom(snap.curX, snap.curY, null);
+                        }
+
+                        const curR = currentRoom();
+                        if (curR) {
+                            curR.cleared = snap.roomCleared;
+                            curR.portalActive = snap.portalActive;
+                            if (snap.mounds) curR.mounds = snap.mounds;
+                            if (snap.pits) curR.pits = snap.pits;
+                            if (snap.chests && curR.chests) {
+                                curR.chests.forEach((c, idx) => {
+                                    if (snap.chests[idx]) c.opened = snap.chests[idx].opened;
+                                });
+                            }
+                        }
+
+                        // Reconcile drops
+                        if (snap.drops) {
+                            drops = snap.drops.map(d => ({ x: d.x, y: d.y, type: d.type, value: d.value, bob: 0 }));
+                        }
+
+                        // Reconcile projectiles
+                        if (snap.projectiles) {
+                            projectiles = snap.projectiles;
+                        }
+
+                        // Reconcile Enemies perfectly
+                        const snapFoes = snap.enemies || [];
+                        while (enemies.length < snapFoes.length) {
+                            const sf = snapFoes[enemies.length];
+                            enemies.push({
+                                type: sf.type,
+                                x: sf.x,
+                                y: sf.y,
+                                targetX: sf.x,
+                                targetY: sf.y,
+                                hp: sf.hp,
+                                maxHp: sf.maxHp,
+                                vx: sf.vx,
+                                vy: sf.vy,
+                                facing: sf.facing,
+                                flash: sf.flash ? 0.12 : 0,
+                                burrowed: sf.burrowed,
+                                isElite: sf.isElite,
+                                isBoss: sf.isBoss,
+                                animFrame: sf.animFrame || 0,
+                                radius: sf.type === 'wraith' ? 18 : 16
+                            });
+                        }
+                        while (enemies.length > snapFoes.length) {
+                            const deadFoe = enemies.pop();
+                            addParticles(deadFoe.x, deadFoe.y, '#94a3b8', 10, 120, 4);
+                        }
+                        for (let i = 0; i < snapFoes.length; i++) {
+                            const sf = snapFoes[i];
+                            const ef = enemies[i];
+                            ef.type = sf.type;
+                            ef.targetX = sf.x;
+                            ef.targetY = sf.y;
+                            ef.x += (sf.x - ef.x) * 0.6;
+                            ef.y += (sf.y - ef.y) * 0.6;
+                            ef.hp = sf.hp;
+                            ef.maxHp = sf.maxHp;
+                            ef.facing = sf.facing;
+                            ef.flash = sf.flash ? 0.12 : 0;
+                            ef.burrowed = sf.burrowed;
+                            ef.isElite = sf.isElite;
+                            ef.isBoss = sf.isBoss;
+                            ef.animFrame = sf.animFrame;
                         }
                         break;
 
@@ -5562,18 +5136,20 @@ func rpc_trigger_pit_kill(enemy_id: int):
                             generateDungeonFloor(game.depth);
                         }
                         enterRoom(msg.curX, msg.curY, msg.dir || null);
-                        // Position partner by entrance door
-                        const offDist = 35;
-                        coopPartner.x = player.x + (msg.dir === 'E' ? -offDist : (msg.dir === 'W' ? offDist : 0));
-                        coopPartner.y = player.y + (msg.dir === 'S' ? -offDist : (msg.dir === 'N' ? offDist : 30));
-                        coopPartner.targetX = coopPartner.x;
-                        coopPartner.targetY = coopPartner.y;
-                        addFloatingText(ROOM_W / 2, ROOM_H / 2 - 30, "ROOM TRANSITION", "#34d399", 16);
+                        addFloatingText(ROOM_W / 2, ROOM_H / 2 - 30, "SQUAD TRANSITION", "#34d399", 16);
                         break;
 
                     case 'partner_left':
-                        coopPartner.isRemotePlayer = false;
-                        addFloatingText(player.x, player.y - 30, "PARTNER LEFT (AI ACTIVE)", "#ef4444", 14);
+                        squadPeers.delete(msg.peerId);
+                        this.updateSquadUI();
+                        addFloatingText(player.x, player.y - 30, `P${msg.playerIndex} LEFT SQUAD`, "#ef4444", 14);
+                        break;
+
+                    case 'promoted_to_host':
+                        this.isHost = true;
+                        this.playerIndex = 1;
+                        this.updateSquadUI();
+                        addFloatingText(player.x, player.y - 30, "👑 YOU ARE EXPEDITION LEADER!", "#f59e0b", 18);
                         break;
 
                     case 'error':
@@ -5585,6 +5161,7 @@ func rpc_trigger_pit_kill(enemy_id: int):
 
 
         window.onload = function () {
+            SettingsManager.init();
             AdManager.init();
             MultiplayerManager.init();
             resizeCanvas();

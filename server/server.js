@@ -8,6 +8,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT_DIR = path.resolve(__dirname, '..');
 const PORT = process.env.PORT || 3000;
+const MAX_SQUAD_SIZE = 6;
 
 // MIME types dictionary for static file serving
 const MIME_TYPES = {
@@ -25,7 +26,6 @@ const MIME_TYPES = {
 
 // HTTP Static Server
 const server = http.createServer((req, res) => {
-    // Add permissive CORS for development
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
 
@@ -43,7 +43,6 @@ const server = http.createServer((req, res) => {
     const safePath = path.normalize(reqUrl).replace(/^(\.\.[\/\\])+/, '');
     let filePath = path.join(ROOT_DIR, safePath);
 
-    // Fallback if index.html doesn't exist yet, try fix_ankh_badge_typo.html
     if (reqUrl === '/index.html' && !fs.existsSync(filePath)) {
         filePath = path.join(ROOT_DIR, 'fix_ankh_badge_typo.html');
     }
@@ -64,7 +63,7 @@ const server = http.createServer((req, res) => {
     });
 });
 
-// WebSocket Multiplayer Server
+// WebSocket Multiplayer Server (Up to 6 Players per Expedition Room)
 const wss = new WebSocketServer({ server });
 
 /**
@@ -72,8 +71,8 @@ const wss = new WebSocketServer({ server });
  * {
  *   code: string,
  *   seed: number,
- *   host: WebSocket,
- *   peer: WebSocket | null,
+ *   maxPlayers: number (6),
+ *   clients: Map<string, { id: string, playerIndex: number, ws: WebSocket, isHost: boolean }>,
  *   created: number
  * }
  */
@@ -88,9 +87,20 @@ function generateRoomCode() {
     return code;
 }
 
+function broadcastToRoom(room, senderWs, data) {
+    const raw = JSON.stringify(data);
+    for (const client of room.clients.values()) {
+        if (client.ws !== senderWs && client.ws.readyState === WebSocket.OPEN) {
+            client.ws.send(raw);
+        }
+    }
+}
+
 wss.on('connection', (ws) => {
     ws.isAlive = true;
+    ws.clientId = 'P_' + Math.random().toString(36).substring(2, 7);
     ws.roomCode = null;
+    ws.playerIndex = 1;
     ws.isHost = false;
 
     ws.on('pong', () => {
@@ -117,6 +127,7 @@ wss.on('connection', (ws) => {
     // Welcome handshake
     ws.send(JSON.stringify({
         type: 'connected',
+        clientId: ws.clientId,
         serverTime: Date.now(),
         activeRooms: rooms.size
     }));
@@ -125,7 +136,6 @@ wss.on('connection', (ws) => {
 function handleMessage(ws, msg) {
     switch (msg.type) {
         case 'create_room': {
-            // Clean up any old room this client was in
             handleDisconnect(ws);
 
             let code = msg.roomCode || generateRoomCode();
@@ -136,22 +146,35 @@ function handleMessage(ws, msg) {
             const room = {
                 code,
                 seed: msg.seed || Math.floor(Math.random() * 1000000),
-                host: ws,
-                peer: null,
+                maxPlayers: MAX_SQUAD_SIZE,
+                clients: new Map(),
                 created: Date.now()
             };
 
-            rooms.set(code, room);
             ws.roomCode = code;
             ws.isHost = true;
+            ws.playerIndex = 1;
+
+            room.clients.set(ws.clientId, {
+                id: ws.clientId,
+                playerIndex: 1,
+                ws,
+                isHost: true
+            });
+
+            rooms.set(code, room);
 
             ws.send(JSON.stringify({
                 type: 'room_created',
                 roomCode: code,
                 seed: room.seed,
-                isHost: true
+                playerId: ws.clientId,
+                playerIndex: 1,
+                isHost: true,
+                maxPlayers: MAX_SQUAD_SIZE,
+                players: [{ id: ws.clientId, playerIndex: 1, isHost: true }]
             }));
-            console.log(`[Multiplayer] Room created: ${code}`);
+            console.log(`[Multiplayer] Room created: ${code} by ${ws.clientId} (Max: ${MAX_SQUAD_SIZE})`);
             break;
         }
 
@@ -162,93 +185,129 @@ function handleMessage(ws, msg) {
             if (!room) {
                 ws.send(JSON.stringify({
                     type: 'error',
-                    message: `Room "${code}" not found. Verify code and try again.`
+                    message: `Expedition "${code}" not found. Check the code and try again.`
                 }));
                 return;
             }
 
-            if (room.peer && room.peer.readyState === WebSocket.OPEN) {
+            if (room.clients.size >= room.maxPlayers) {
                 ws.send(JSON.stringify({
                     type: 'error',
-                    message: `Room "${code}" is already full (2/2 players).`
+                    message: `Expedition "${code}" is full (${room.clients.size}/${room.maxPlayers} Keepers).`
                 }));
                 return;
             }
 
-            // Bind peer
-            room.peer = ws;
+            // Assign lowest available player index (2 to 6)
+            const usedIndices = new Set(Array.from(room.clients.values()).map(c => c.playerIndex));
+            let assignedIndex = 2;
+            for (let i = 2; i <= MAX_SQUAD_SIZE; i++) {
+                if (!usedIndices.has(i)) {
+                    assignedIndex = i;
+                    break;
+                }
+            }
+
             ws.roomCode = code;
             ws.isHost = false;
+            ws.playerIndex = assignedIndex;
 
-            // Notify peer
+            room.clients.set(ws.clientId, {
+                id: ws.clientId,
+                playerIndex: assignedIndex,
+                ws,
+                isHost: false
+            });
+
+            // Send full squad info to joiner
+            const playersList = Array.from(room.clients.values()).map(c => ({
+                id: c.id,
+                playerIndex: c.playerIndex,
+                isHost: c.isHost
+            }));
+
             ws.send(JSON.stringify({
                 type: 'room_joined',
                 roomCode: code,
                 seed: room.seed,
-                isHost: false
+                playerId: ws.clientId,
+                playerIndex: assignedIndex,
+                isHost: false,
+                maxPlayers: MAX_SQUAD_SIZE,
+                players: playersList
             }));
 
-            // Notify host
-            if (room.host && room.host.readyState === WebSocket.OPEN) {
-                room.host.send(JSON.stringify({
-                    type: 'peer_joined',
-                    roomCode: code
-                }));
-            }
-            console.log(`[Multiplayer] Peer joined room: ${code}`);
+            // Notify everyone else in the room
+            broadcastToRoom(room, ws, {
+                type: 'peer_joined',
+                peerId: ws.clientId,
+                playerIndex: assignedIndex,
+                roomCode: code,
+                totalPlayers: room.clients.size
+            });
+
+            console.log(`[Multiplayer] Player ${ws.clientId} joined room ${code} as P${assignedIndex} (${room.clients.size}/${MAX_SQUAD_SIZE})`);
             break;
         }
 
         case 'sync_player': {
-            // Relay position, orientation, health, weapon, animation to partner
             if (!ws.roomCode) return;
             const room = rooms.get(ws.roomCode);
             if (!room) return;
 
-            const target = ws.isHost ? room.peer : room.host;
-            if (target && target.readyState === WebSocket.OPEN) {
-                target.send(JSON.stringify({
-                    type: 'partner_sync',
-                    state: msg.state,
-                    t: msg.t || Date.now()
-                }));
-            }
+            broadcastToRoom(room, ws, {
+                type: 'partner_sync',
+                peerId: ws.clientId,
+                playerIndex: ws.playerIndex,
+                state: msg.state,
+                t: msg.t || Date.now()
+            });
+            break;
+        }
+
+        case 'sync_world_snapshot': {
+            // Authoritative Host World State Broadcast (Enemies, Objects, Drops, Pits, Mounds)
+            if (!ws.roomCode) return;
+            const room = rooms.get(ws.roomCode);
+            if (!room || !ws.isHost) return;
+
+            broadcastToRoom(room, ws, {
+                type: 'world_snapshot',
+                snapshot: msg.snapshot,
+                t: Date.now()
+            });
             break;
         }
 
         case 'player_action': {
-            // Relay attacks, dashes, deflections, digs, revives
             if (!ws.roomCode) return;
             const room = rooms.get(ws.roomCode);
             if (!room) return;
 
-            const target = ws.isHost ? room.peer : room.host;
-            if (target && target.readyState === WebSocket.OPEN) {
-                target.send(JSON.stringify({
-                    type: 'partner_action',
-                    action: msg.action,
-                    data: msg.data
-                }));
-            }
+            broadcastToRoom(room, ws, {
+                type: 'partner_action',
+                peerId: ws.clientId,
+                playerIndex: ws.playerIndex,
+                action: msg.action,
+                data: msg.data
+            });
             break;
         }
 
         case 'room_transition': {
-            // Sync when host/peer changes room or depth
             if (!ws.roomCode) return;
             const room = rooms.get(ws.roomCode);
             if (!room) return;
 
-            const target = ws.isHost ? room.peer : room.host;
-            if (target && target.readyState === WebSocket.OPEN) {
-                target.send(JSON.stringify({
-                    type: 'sync_room_transition',
-                    curX: msg.curX,
-                    curY: msg.curY,
-                    depth: msg.depth,
-                    dir: msg.dir || null
-                }));
-            }
+            broadcastToRoom(room, ws, {
+                type: 'sync_room_transition',
+                peerId: ws.clientId,
+                playerIndex: ws.playerIndex,
+                curX: msg.curX,
+                curY: msg.curY,
+                depth: msg.depth,
+                dir: msg.dir || null
+            });
             break;
         }
 
@@ -264,27 +323,33 @@ function handleDisconnect(ws) {
     const room = rooms.get(ws.roomCode);
     if (!room) return;
 
-    if (ws.isHost) {
-        // Host left - notify peer and tear down room
-        if (room.peer && room.peer.readyState === WebSocket.OPEN) {
-            room.peer.send(JSON.stringify({
-                type: 'partner_left',
-                message: 'Host has left the expedition.'
-            }));
-            room.peer.roomCode = null;
-        }
+    room.clients.delete(ws.clientId);
+    console.log(`[Multiplayer] Player ${ws.clientId} (P${ws.playerIndex}) left room ${ws.roomCode}. Remaining: ${room.clients.size}`);
+
+    if (room.clients.size === 0) {
         rooms.delete(ws.roomCode);
-        console.log(`[Multiplayer] Host disconnected. Room closed: ${ws.roomCode}`);
-    } else if (room.peer === ws) {
-        // Peer left - notify host
-        room.peer = null;
-        if (room.host && room.host.readyState === WebSocket.OPEN) {
-            room.host.send(JSON.stringify({
-                type: 'partner_left',
-                message: 'Companion disconnected. AI Partner will take over if enabled.'
-            }));
+        console.log(`[Multiplayer] Room closed (empty): ${ws.roomCode}`);
+    } else {
+        // If host left, elect next player as host
+        if (ws.isHost) {
+            const nextClient = room.clients.values().next().value;
+            if (nextClient) {
+                nextClient.isHost = true;
+                nextClient.ws.isHost = true;
+                nextClient.ws.send(JSON.stringify({
+                    type: 'promoted_to_host',
+                    message: 'Host has left. You are now Expedition Leader!'
+                }));
+            }
         }
-        console.log(`[Multiplayer] Peer disconnected from room: ${ws.roomCode}`);
+
+        broadcastToRoom(room, ws, {
+            type: 'partner_left',
+            peerId: ws.clientId,
+            playerIndex: ws.playerIndex,
+            totalPlayers: room.clients.size,
+            message: `Keeper P${ws.playerIndex} disconnected.`
+        });
     }
     ws.roomCode = null;
 }
@@ -304,7 +369,7 @@ wss.on('close', () => {
 
 server.listen(PORT, () => {
     console.log(`=======================================================`);
-    console.log(` Crypt Keeper: Rogue Shovel Web & Multiplayer Server`);
+    console.log(` Crypt Keeper Web Server • 6-Player Co-Op Hub Ready`);
     console.log(` HTTP & WebSocket Server running at: http://localhost:${PORT}`);
     console.log(` WebSocket URL: ws://localhost:${PORT}`);
     console.log(`=======================================================`);

@@ -2152,6 +2152,46 @@ const clientManagersJS = `
 
             showRewardedAd(onSuccess) {
                 this.onRewardSuccess = onSuccess;
+
+                // 1. Google AdSense for Games (H5 Ad Placement API)
+                if (typeof window.adBreak === 'function') {
+                    window.adBreak({
+                        type: 'reward',
+                        name: 'revive_or_souls',
+                        beforeReward: (showAdFn) => { showAdFn(); },
+                        adDismissed: () => {},
+                        adViewed: () => {
+                            if (this.onRewardSuccess) this.onRewardSuccess();
+                        }
+                    });
+                    return;
+                }
+
+                // 2. CrazyGames HTML5 SDK v2 / v3
+                if (window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.ad) {
+                    window.CrazyGames.SDK.ad.requestAd("rewarded", {
+                        adStarted: () => {},
+                        adFinished: () => {
+                            if (this.onRewardSuccess) this.onRewardSuccess();
+                        },
+                        adError: (err) => {
+                            console.warn('[CrazyGames Ad Error]', err);
+                            // Fallback to granting reward if ad failed to fill
+                            if (this.onRewardSuccess) this.onRewardSuccess();
+                        }
+                    });
+                    return;
+                }
+
+                // 3. Poki Web SDK
+                if (window.PokiSDK && typeof window.PokiSDK.rewardedBreak === 'function') {
+                    window.PokiSDK.rewardedBreak().then((success) => {
+                        if (success && this.onRewardSuccess) this.onRewardSuccess();
+                    });
+                    return;
+                }
+
+                // 4. Default Simulation Mode (High-Fidelity Dev & Playtest Sandbox)
                 const modal = document.getElementById('rewarded-ad-modal');
                 const cd = document.getElementById('ad-countdown');
                 const bar = document.getElementById('ad-progress-bar');

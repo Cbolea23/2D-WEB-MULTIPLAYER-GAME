@@ -245,7 +245,8 @@ function handleMessage(ws, msg) {
                     type: 'sync_room_transition',
                     curX: msg.curX,
                     curY: msg.curY,
-                    depth: msg.depth
+                    depth: msg.depth,
+                    dir: msg.dir || null
                 }));
             }
             break;

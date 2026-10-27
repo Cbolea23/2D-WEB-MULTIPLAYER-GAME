@@ -12,7 +12,7 @@ html = html.replace(
     `#game-container {\n            position: relative;\n            flex: 1;\n            width: 100%;\n            height: calc(100vh - 54px - 50px);\n            overflow: hidden;\n            background-color: var(--bg-dark);\n            transition: height 0.2s ease;\n        }\n        #game-container.banner-hidden {\n            height: calc(100vh - 54px);\n        }`
 );
 
-// 2. Add Ad Banner HTML
+// 2. Add Ad Banner HTML and Rewarded Modal
 const adBannerHtml = `
     <!-- BOTTOM AD BANNER BAR -->
     <footer id="ad-banner-container" class="w-full pixel-panel px-3 py-1 flex items-center justify-between gap-3 z-30 border-b-0 border-x-0 rounded-none bg-[#090d16] text-[8px] font-pixel shrink-0 h-[50px] transition-all duration-200">
@@ -111,7 +111,259 @@ html = html.replace(
     `<!-- TAB 1: CO-OP SESSION LOBBY -->\n            <div id="tab-content-lobby" class="space-y-3 overflow-y-auto pr-1 flex-1">\n${coOpNetControls}`
 );
 
-// 6. Inject the AdManager and MultiplayerManager modules right before window.onload
+// 6. Enhance coopPartner state object with interpolation and remote flag
+html = html.replace(
+    `let coopPartner = {`,
+    `let coopPartner = {\n            isRemotePlayer: false,\n            targetX: ROOM_W / 2 - 40,\n            targetY: ROOM_H / 2 + 70,\n            targetAngle: 0,\n            targetFacing: 1,\n            comboStep: 0,`
+);
+
+// 7. Fix updateCoopPartner so that when isRemotePlayer is true, AI logic is completely disabled to eliminate shaking!
+const updateCoopPartnerPatch = `        function updateCoopPartner(dt) {
+            if (!coopPartner.active) return;
+            const p = coopPartner;
+
+            if (p.isDowned) {
+                // Downed partner can be revived if player stands nearby and presses E
+                if (Math.hypot(player.x - p.x, player.y - p.y) < 70) {
+                    p.reviveTimer += dt;
+                    if (p.reviveTimer >= 2.0) {
+                        p.isDowned = false;
+                        p.hp = Math.round(p.maxHp * 0.5);
+                        p.reviveTimer = 0;
+                        sfx.play('levelup');
+                        addParticles(p.x, p.y, '#34d399', 24, 180, 5);
+                        addFloatingText(p.x, p.y - 25, "✨ PARTNER REVIVED!", "#34d399", 16);
+                        if (typeof MultiplayerManager !== 'undefined' && MultiplayerManager.isConnected) {
+                            MultiplayerManager.sendAction('revived');
+                        }
+                    }
+                } else {
+                    p.reviveTimer = Math.max(0, p.reviveTimer - dt * 0.5);
+                }
+                return;
+            }
+
+            // SMOOTH NETWORK INTERPOLATION FOR REMOTE HUMAN PLAYER (NO AI SHAKING!)
+            if (p.isRemotePlayer) {
+                const lerpFactor = Math.min(1.0, dt * 18);
+                p.x += (p.targetX - p.x) * lerpFactor;
+                p.y += (p.targetY - p.y) * lerpFactor;
+                p.angle = p.targetAngle !== undefined ? p.targetAngle : p.angle;
+                p.facing = p.targetFacing !== undefined ? p.targetFacing : p.facing;
+
+                if (Math.hypot(p.targetX - p.x, p.targetY - p.y) > 2) {
+                    p.animTimer += dt;
+                    if (p.animTimer >= 0.14) {
+                        p.animTimer = 0;
+                        p.animFrame = (p.animFrame + 1) % 2;
+                    }
+                }
+
+                if (p.swingTimer > 0) p.swingTimer = Math.max(0, p.swingTimer - dt);
+                if (p.attackCd > 0) p.attackCd = Math.max(0, p.attackCd - dt);
+                if (p.dashTimer > 0) p.dashTimer = Math.max(0, p.dashTimer - dt);
+                return; // Stop here! Do NOT run AI combat or pathfinding on remote player!
+            }`;
+html = html.replace(
+    /function updateCoopPartner\(dt\) \{[\s\S]*?if \(p\.isDowned\) \{[\s\S]*?return;\s*\}/,
+    updateCoopPartnerPatch
+);
+
+// 8. Add Seeded Pseudo-Random Number Generator for Dungeon Floors
+const prngCode = `
+        // Deterministic Pseudo-Random Generator for Synchronized Procedural Stages
+        let _seedRngVal = 1234567;
+        function seedDungeonRng(s) { _seedRngVal = (s >>> 0) || 1234567; }
+        function seededRandom() {
+            let t = _seedRngVal += 0x6D2B79F5;
+            t = Math.imul(t ^ (t >>> 15), t | 1);
+            t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+            return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        }
+        function dRand() {
+            if (game.multiplayerSeed) return seededRandom();
+            return Math.random();
+        }
+`;
+html = html.replace('function generateDungeonFloor(depth) {', `${prngCode}\n        function generateDungeonFloor(depth) {\n            seedDungeonRng((game.multiplayerSeed || 1337) + depth * 7919);`);
+
+// Replace Math.random inside generateDungeonFloor room layout loop
+html = html.replace(
+    `const base = visited[Math.floor(Math.random() * visited.length)];\n                const d = dirs[Math.floor(Math.random() * dirs.length)];`,
+    `const base = visited[Math.floor(dRand() * visited.length)];\n                const d = dirs[Math.floor(dRand() * dirs.length)];`
+);
+
+// 9. Sync attack swings in performAttack
+html = html.replace(
+    `player.swingDuration = (isFinisher ? 0.25 : 0.18) / wep.speedMult;\n            player.swingTimer = player.swingDuration;`,
+    `player.swingDuration = (isFinisher ? 0.25 : 0.18) / wep.speedMult;\n            player.swingTimer = player.swingDuration;\n            if (typeof MultiplayerManager !== 'undefined' && MultiplayerManager.isConnected) {\n                MultiplayerManager.sendAction('swing', {\n                    angle: +(player.angle.toFixed(3)),\n                    facing: player.facing,\n                    comboStep: player.comboStep,\n                    weaponId: player.weapon.id,\n                    x: Math.round(player.x),\n                    y: Math.round(player.y)\n                });\n            }`
+);
+
+// 10. Sync weapon changes in Arsenal modal
+html = html.replace(
+    `player.weapon = w;\n                    metaSave.selectedWeapon = w.id;`,
+    `player.weapon = w;\n                    metaSave.selectedWeapon = w.id;\n                    if (typeof MultiplayerManager !== 'undefined' && MultiplayerManager.isConnected) {\n                        MultiplayerManager.sendAction('change_weapon', { weaponId: w.id });\n                    }`
+);
+
+// 11. Sync room changes in changeRoom(dir)
+html = html.replace(
+    `enterRoom(targetX, targetY, dir);\n            return true;`,
+    `enterRoom(targetX, targetY, dir);\n            if (typeof MultiplayerManager !== 'undefined' && MultiplayerManager.isConnected) {\n                MultiplayerManager.sendRoomTransition(targetX, targetY, dir, game.depth);\n            }\n            return true;`
+);
+
+// 12. Sync floor portal transitions
+html = html.replace(
+    `game.depth++;\n                generateDungeonFloor(game.depth);`,
+    `game.depth++;\n                generateDungeonFloor(game.depth);\n                if (typeof MultiplayerManager !== 'undefined' && MultiplayerManager.isConnected) {\n                    MultiplayerManager.sendRoomTransition(2, 2, null, game.depth);\n                }`
+);
+
+// 13. Reusable Weapon and Attack Slash Renderer
+const weaponRendererCode = `
+        function renderCharacterWeapon(ctx, entity, isPlayer = false) {
+            const wep = entity.weapon || WEAPON_ARSENAL.rusty_spade;
+            const comboStep = entity.comboStep || 0;
+            const isFinisher = comboStep === 0;
+
+            if (entity.swingTimer > 0) {
+                const dur = entity.swingDuration || (0.2 / (wep.speedMult || 1));
+                const prog = 1 - (entity.swingTimer / dur);
+                const dir = comboStep % 2 === 0 ? 1 : -1;
+                const startA = entity.angle - 1.35 * dir;
+                const endA = entity.angle + 1.35 * dir;
+                const curA = startA + (endA - startA) * prog;
+                const reach = (wep.reach || 42) * (isFinisher ? 1.15 : 1.0);
+
+                // Swing Arc Trail
+                ctx.strokeStyle = wep.trailColor || '#fbbf24';
+                ctx.lineWidth = isFinisher ? 9 : 6;
+                ctx.beginPath();
+                ctx.arc(0, 0, reach - 8, Math.min(startA, curA), Math.max(startA, curA));
+                ctx.stroke();
+
+                if (wep.id === 'twin_trowels') {
+                    ctx.strokeStyle = '#67e8f9';
+                    ctx.lineWidth = 4;
+                    ctx.beginPath();
+                    ctx.arc(0, 0, reach - 18, Math.max(startA, curA), Math.min(startA, curA));
+                    ctx.stroke();
+                }
+
+                ctx.save();
+                ctx.rotate(curA);
+                drawWeaponBladeGraphic(ctx, wep, reach);
+                ctx.restore();
+            } else {
+                // Idle Held Weapon Stance
+                ctx.save();
+                ctx.rotate((entity.angle || 0) + 0.38);
+                drawWeaponIdleGraphic(ctx, wep);
+                ctx.restore();
+            }
+        }
+
+        function drawWeaponBladeGraphic(ctx, wep, reach) {
+            if (wep.id === 'rusty_spade') {
+                ctx.fillStyle = '#78350f';
+                ctx.fillRect(8, -3, reach - 22, 6);
+                ctx.fillStyle = '#cbd5e1';
+                ctx.fillRect(reach - 18, -10, 16, 20);
+                ctx.fillStyle = '#94a3b8';
+                ctx.fillRect(reach - 10, -8, 6, 16);
+            } else if (wep.id === 'great_shovel') {
+                ctx.fillStyle = '#1e1b4b';
+                ctx.fillRect(8, -4, reach - 26, 8);
+                ctx.fillStyle = '#ef4444';
+                ctx.fillRect(reach - 26, -14, 24, 28);
+                ctx.fillStyle = '#7f1d1d';
+                ctx.fillRect(reach - 20, -11, 14, 22);
+                ctx.fillStyle = '#fca5a5';
+                ctx.fillRect(reach - 4, -12, 4, 6);
+                ctx.fillRect(reach - 4, 6, 4, 6);
+            } else if (wep.id === 'twin_trowels') {
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(6, -8, reach - 20, 4);
+                ctx.fillRect(6, 4, reach - 20, 4);
+                ctx.fillStyle = '#22d3ee';
+                ctx.fillRect(reach - 16, -11, 14, 10);
+                ctx.fillRect(reach - 16, 1, 14, 10);
+            } else if (wep.id === 'soulreaper_scythe') {
+                ctx.fillStyle = '#3b0764';
+                ctx.fillRect(8, -3, reach - 16, 6);
+                ctx.strokeStyle = '#c084fc';
+                ctx.lineWidth = 5;
+                ctx.beginPath();
+                ctx.arc(reach - 16, 12, 28, -Math.PI * 0.7, Math.PI * 0.3);
+                ctx.stroke();
+                ctx.fillStyle = '#e879f9';
+                ctx.fillRect(reach - 18, -8, 8, 16);
+            } else if (wep.id === 'lantern_flail') {
+                ctx.strokeStyle = '#f59e0b';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(8, 0);
+                ctx.lineTo(reach - 16, 0);
+                ctx.stroke();
+                ctx.fillStyle = '#d97706';
+                ctx.fillRect(reach - 16, -9, 14, 18);
+                ctx.fillStyle = '#fef08a';
+                ctx.fillRect(reach - 13, -6, 8, 12);
+            }
+        }
+
+        function drawWeaponIdleGraphic(ctx, wep) {
+            if (wep.id === 'rusty_spade') {
+                ctx.fillStyle = '#78350f';
+                ctx.fillRect(8, -2, 24, 5);
+                ctx.fillStyle = '#cbd5e1';
+                ctx.fillRect(30, -7, 12, 15);
+            } else if (wep.id === 'great_shovel') {
+                ctx.fillStyle = '#1e1b4b';
+                ctx.fillRect(8, -3, 30, 7);
+                ctx.fillStyle = '#ef4444';
+                ctx.fillRect(36, -12, 18, 24);
+                ctx.fillStyle = '#7f1d1d';
+                ctx.fillRect(40, -9, 10, 18);
+            } else if (wep.id === 'twin_trowels') {
+                ctx.fillStyle = '#22d3ee';
+                ctx.fillRect(10, -8, 16, 6);
+                ctx.fillRect(10, 3, 16, 6);
+            } else if (wep.id === 'soulreaper_scythe') {
+                ctx.fillStyle = '#3b0764';
+                ctx.fillRect(8, -2, 26, 5);
+                ctx.strokeStyle = '#c084fc';
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.arc(32, 10, 20, -Math.PI * 0.6, Math.PI * 0.2);
+                ctx.stroke();
+            } else if (wep.id === 'lantern_flail') {
+                ctx.strokeStyle = '#f59e0b';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                ctx.moveTo(8, 0);
+                ctx.lineTo(24, 8);
+                ctx.stroke();
+                ctx.fillStyle = '#d97706';
+                ctx.fillRect(24, 4, 12, 14);
+            }
+        }
+`;
+
+// Replace existing player weapon drawing in render() with renderCharacterWeapon
+html = html.replace(
+    /const wep = player\.weapon \|\| WEAPON_ARSENAL\.rusty_spade;[\s\S]*?ctx\.fillRect\(24, 4, 12, 14\);\s*\}\s*ctx\.restore\(\);\s*\}/,
+    `renderCharacterWeapon(ctx, player, true);`
+);
+
+// Inject renderCharacterWeapon into coopPartner rendering
+html = html.replace(
+    `ctx.fillText('P2 CO-OP', 0, -22);\n                    }`,
+    `renderCharacterWeapon(ctx, coopPartner, false);\n                        ctx.font = '800 8px Inter';\n                        ctx.textAlign = 'center';\n                        ctx.fillStyle = '#34d399';\n                        ctx.fillText('P2 CO-OP', 0, -22);\n                    }`
+);
+
+// Insert weaponRendererCode before render()
+html = html.replace('function render() {', `${weaponRendererCode}\n        function render() {`);
+
+// 14. Inject the enhanced AdManager and MultiplayerManager modules right before window.onload
 const jsModules = `
         /**
          * ============================================================================
@@ -122,7 +374,7 @@ const jsModules = `
          */
         const AdManager = {
             config: {
-                mode: 'simulated', // Switch to 'poki', 'crazygames', or 'adsense' when deploying
+                mode: 'simulated', // 'simulated' | 'poki' | 'crazygames' | 'adsense'
                 bannerEnabled: true,
                 bannerVisible: true,
                 adsenseClientId: 'ca-pub-XXXXXXXXXXXXXXXX',
@@ -376,12 +628,14 @@ const jsModules = `
 
                 this.ws.onclose = () => {
                     this.isConnected = false;
+                    coopPartner.isRemotePlayer = false;
                     this.updateNetUI('offline', 'OFFLINE (AI Companion active)');
                     if (this.syncInterval) clearInterval(this.syncInterval);
                 };
 
                 this.ws.onerror = () => {
                     this.isConnected = false;
+                    coopPartner.isRemotePlayer = false;
                     this.updateNetUI('offline', 'OFFLINE (AI Companion active)');
                 };
             },
@@ -438,12 +692,13 @@ const jsModules = `
                 }));
             },
 
-            sendRoomTransition(curX, curY, depth) {
+            sendRoomTransition(curX, curY, dir, depth) {
                 if (!this.isConnected || !this.roomCode) return;
                 this.ws.send(JSON.stringify({
                     type: 'room_transition',
                     curX,
                     curY,
+                    dir,
                     depth
                 }));
             },
@@ -458,6 +713,7 @@ const jsModules = `
                         state: {
                             x: Math.round(player.x),
                             y: Math.round(player.y),
+                            angle: +(player.angle.toFixed(3)),
                             facing: player.facing,
                             animFrame: player.animFrame,
                             hp: player.hp,
@@ -468,7 +724,7 @@ const jsModules = `
                             curY: game.curY
                         }
                     }));
-                }, 40); // 25 Hz state broadcast
+                }, 35); // ~30 Hz state broadcast for responsive syncing
             },
 
             handleMessage(msg) {
@@ -485,6 +741,9 @@ const jsModules = `
                         this.roomCode = msg.roomCode;
                         this.isHost = true;
                         game.multiplayer.roomCode = msg.roomCode;
+                        game.multiplayerSeed = msg.seed;
+                        // Synchronize initial stage with room seed
+                        generateDungeonFloor(game.depth);
                         document.getElementById('coop-room-code').textContent = msg.roomCode;
                         sfx.play('coin');
                         addFloatingText(player.x, player.y - 30, \`EXPEDITION \${msg.roomCode} CREATED!\`, "#f59e0b", 16);
@@ -494,8 +753,12 @@ const jsModules = `
                         this.roomCode = msg.roomCode;
                         this.isHost = false;
                         game.multiplayer.roomCode = msg.roomCode;
+                        game.multiplayerSeed = msg.seed;
+                        // Generate identical stage layout using host seed
+                        generateDungeonFloor(game.depth);
                         document.getElementById('coop-room-code').textContent = msg.roomCode;
                         coopPartner.active = true;
+                        coopPartner.isRemotePlayer = true;
                         updateCoopPartnerStatus();
                         sfx.play('levelup');
                         addFloatingText(player.x, player.y - 30, \`JOINED \${msg.roomCode}!\`, "#34d399", 16);
@@ -503,6 +766,7 @@ const jsModules = `
 
                     case 'peer_joined':
                         coopPartner.active = true;
+                        coopPartner.isRemotePlayer = true;
                         updateCoopPartnerStatus();
                         sfx.play('levelup');
                         addFloatingText(player.x, player.y - 30, "🤝 PARTNER JOINED YOUR EXPEDITION!", "#34d399", 18);
@@ -514,12 +778,13 @@ const jsModules = `
                             coopPartner.active = true;
                             updateCoopPartnerStatus();
                         }
+                        coopPartner.isRemotePlayer = true;
                         const s = msg.state;
-                        // Smooth interpolation towards partner position
-                        coopPartner.x += (s.x - coopPartner.x) * 0.45;
-                        coopPartner.y += (s.y - coopPartner.y) * 0.45;
-                        coopPartner.facing = s.facing || coopPartner.facing;
-                        coopPartner.animFrame = s.animFrame || 0;
+                        // Set target positions for smooth interpolation (NO SHAKING)
+                        coopPartner.targetX = s.x;
+                        coopPartner.targetY = s.y;
+                        coopPartner.targetAngle = s.angle !== undefined ? s.angle : coopPartner.targetAngle;
+                        coopPartner.targetFacing = s.facing || coopPartner.targetFacing;
                         coopPartner.hp = s.hp !== undefined ? s.hp : coopPartner.hp;
                         coopPartner.maxHp = s.maxHp || coopPartner.maxHp;
                         coopPartner.isDowned = !!s.isDowned;
@@ -530,9 +795,43 @@ const jsModules = `
 
                     case 'partner_action':
                         if (msg.action === 'swing') {
+                            const d = msg.data || {};
+                            if (d.weaponId && WEAPON_ARSENAL[d.weaponId]) {
+                                coopPartner.weapon = WEAPON_ARSENAL[d.weaponId];
+                            }
+                            coopPartner.comboStep = d.comboStep !== undefined ? d.comboStep : 0;
+                            coopPartner.angle = d.angle !== undefined ? d.angle : coopPartner.angle;
+                            coopPartner.facing = d.facing !== undefined ? d.facing : coopPartner.facing;
+                            const isFinisher = coopPartner.comboStep === 0;
+                            coopPartner.swingDuration = (isFinisher ? 0.25 : 0.18) / (coopPartner.weapon.speedMult || 1);
                             coopPartner.swingTimer = coopPartner.swingDuration;
+
                             sfx.play('swing');
-                            addParticles(coopPartner.x + coopPartner.facing * 20, coopPartner.y, '#22d3ee', 8, 90, 3);
+                            const reach = (coopPartner.weapon.reach || 42) * (isFinisher ? 1.15 : 1.0);
+                            const slashX = coopPartner.x + Math.cos(coopPartner.angle) * (reach * 0.7);
+                            const slashY = coopPartner.y + Math.sin(coopPartner.angle) * (reach * 0.7);
+                            addParticles(slashX, slashY, coopPartner.weapon.trailColor || '#22d3ee', isFinisher ? 16 : 8, 140, 4);
+
+                            // Partner damage check on local enemies
+                            for (let i = enemies.length - 1; i >= 0; i--) {
+                                const foe = enemies[i];
+                                if (!foe.burrowed && Math.hypot(foe.x - coopPartner.x, foe.y - coopPartner.y) < reach + 20) {
+                                    foe.hp -= 28;
+                                    foe.flash = 0.12;
+                                    const kb = Math.atan2(foe.y - coopPartner.y, foe.x - coopPartner.x);
+                                    foe.vx = Math.cos(kb) * 220;
+                                    foe.vy = Math.sin(kb) * 220;
+                                    addParticles(foe.x, foe.y, '#22d3ee', 6, 110, 3);
+                                    addFloatingText(foe.x, foe.y - 12, "-28", "#67e8f9", 12);
+                                    if (foe.hp <= 0) killEnemy(i);
+                                }
+                            }
+                        } else if (msg.action === 'change_weapon') {
+                            if (msg.data.weaponId && WEAPON_ARSENAL[msg.data.weaponId]) {
+                                coopPartner.weapon = WEAPON_ARSENAL[msg.data.weaponId];
+                                sfx.play('swing');
+                                addFloatingText(coopPartner.x, coopPartner.y - 20, \`PARTNER: \${coopPartner.weapon.name}\`, "#f59e0b", 12);
+                            }
                         } else if (msg.action === 'dash') {
                             sfx.play('dash');
                             addParticles(coopPartner.x, coopPartner.y, '#94a3b8', 12, 120, 4);
@@ -552,10 +851,18 @@ const jsModules = `
                             game.depth = msg.depth;
                             generateDungeonFloor(game.depth);
                         }
-                        enterRoom(msg.curX, msg.curY, null);
+                        enterRoom(msg.curX, msg.curY, msg.dir || null);
+                        // Position partner by entrance door
+                        const offDist = 35;
+                        coopPartner.x = player.x + (msg.dir === 'E' ? -offDist : (msg.dir === 'W' ? offDist : 0));
+                        coopPartner.y = player.y + (msg.dir === 'S' ? -offDist : (msg.dir === 'N' ? offDist : 30));
+                        coopPartner.targetX = coopPartner.x;
+                        coopPartner.targetY = coopPartner.y;
+                        addFloatingText(ROOM_W / 2, ROOM_H / 2 - 30, "ROOM TRANSITION", "#34d399", 16);
                         break;
 
                     case 'partner_left':
+                        coopPartner.isRemotePlayer = false;
                         addFloatingText(player.x, player.y - 30, "PARTNER LEFT (AI ACTIVE)", "#ef4444", 14);
                         break;
 
@@ -573,30 +880,5 @@ html = html.replace(
     `${jsModules}\n\n        window.onload = function () {\n            AdManager.init();\n            MultiplayerManager.init();`
 );
 
-// Relay player actions to multiplayer server if online
-// Shovel attack hook
-html = html.replace(
-    `player.swingTimer = player.weapon.swingTime;`,
-    `player.swingTimer = player.weapon.swingTime;\n            if (typeof MultiplayerManager !== 'undefined' && MultiplayerManager.isConnected) MultiplayerManager.sendAction('swing', { facing: player.facing, weaponId: player.weapon.id });`
-);
-
-// Dash hook
-html = html.replace(
-    `player.dashTimer = player.dashDuration;\n            player.dashCd = player.dashMaxCd;`,
-    `player.dashTimer = player.dashDuration;\n            player.dashCd = player.dashMaxCd;\n            if (typeof MultiplayerManager !== 'undefined' && MultiplayerManager.isConnected) MultiplayerManager.sendAction('dash');`
-);
-
-// Deflect hook
-html = html.replace(
-    `sfx.play('deflect');`,
-    `sfx.play('deflect');\n            if (typeof MultiplayerManager !== 'undefined' && MultiplayerManager.isConnected) MultiplayerManager.sendAction('deflect');`
-);
-
-// Interstitial hook on entering new floor
-html = html.replace(
-    `function generateDungeonFloor(depth) {`,
-    `function generateDungeonFloor(depth) {\n            if (typeof AdManager !== 'undefined') AdManager.showInterstitial('depth_' + depth);`
-);
-
 fs.writeFileSync(destPath, html, 'utf8');
-console.log('Successfully compiled index.html with AdManager & MultiplayerManager!');
+console.log('Successfully compiled index.html with complete sync enhancements!');

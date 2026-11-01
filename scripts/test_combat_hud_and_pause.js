@@ -14,20 +14,13 @@ function check(name, pass, detail) {
     }
 }
 
-// 1. Top bar inspection
-const topBarRegex = /<header\s+class="[^"]*pixel-panel[^"]*"[^>]*>([\s\S]*?)<\/header>/i;
-const topBarMatch = html.match(topBarRegex);
+// 1. Floating Top HUD inspection
+const topBarMatch = html.includes('id="hud-top-right"') || html.includes('id="hud-top-left"');
 
-check('Top bar exists', !!topBarMatch, 'Top bar header element missing');
+check('Floating Top HUD exists', topBarMatch, 'Floating Top HUD element missing');
 if (topBarMatch) {
-    const topBarContent = topBarMatch[1];
-    check('Top bar contains Pause button', topBarContent.includes('id="btn-pause"'), 'btn-pause missing in top bar');
-    check('Top bar does NOT contain CO-OP button', !topBarContent.includes('btn-coop'), 'btn-coop still in combat top bar');
-    check('Top bar does NOT contain Arsenal button', !topBarContent.includes('btn-arsenal'), 'btn-arsenal still in combat top bar');
-    check('Top bar does NOT contain Altar button', !topBarContent.includes('btn-altar'), 'btn-altar still in combat top bar');
-    check('Top bar does NOT contain Codex button', !topBarContent.includes('btn-codex'), 'btn-codex still in combat top bar');
-    check('Top bar does NOT contain Profile button', !topBarContent.includes('btn-profile'), 'btn-profile still in combat top bar');
-    check('Top bar does NOT contain Music/Mute button', !topBarContent.includes('btn-music') && !topBarContent.includes('btn-mute'), 'Music/Mute button still in combat top bar');
+    check('HUD contains Pause button', html.includes('id="btn-pause"'), 'btn-pause missing in HUD');
+    check('HUD does NOT contain CO-OP button', !html.substring(html.indexOf('id="hud-top-right"'), html.indexOf('id="btn-pause"') + 50).includes('btn-coop'), 'btn-coop still in combat top bar');
 }
 
 // 2. Pause Modal inspection

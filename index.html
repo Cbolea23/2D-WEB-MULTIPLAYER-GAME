@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Official CrazyGames SDK v3 (Web Game Portal Monetization & Test Harness) -->
     <script src="https://sdk.crazygames.com/crazygames-sdk-v3.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Inter:wght@400;600;800&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Press+Start+2P&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-dark: #05070b;
@@ -238,7 +238,7 @@
             <div class="pixel-panel px-3 py-2 rounded-lg flex items-center gap-3 pointer-events-auto border-slate-700/80 shadow-2xl">
                 <!-- Heart & HP Bar -->
                 <div class="flex items-center gap-2">
-                    <span class="text-red-400 text-sm font-black animate-pulse">❤️</span>
+                    <svg class="w-4 h-4 text-rose-500 animate-pulse" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                     <div class="flex flex-col">
                         <div class="flex items-center justify-between text-[11px] font-pixel text-slate-200 leading-none mb-1">
                             <span class="text-red-400">HEALTH</span>
@@ -256,7 +256,7 @@
                     <div class="flex flex-col">
                         <div class="flex items-center justify-between text-[11px] font-pixel leading-none mb-1">
                             <span id="lvl-badge" class="text-cyan-400 font-bold">LV.1</span>
-                            <span id="xp-text" class="text-cyan-300/80 text-[10px] ml-2">0/50 XP</span>
+                            <span id="xp-text" class="text-cyan-300/80 text-[10px] ml-2">0/70 XP</span>
                         </div>
                         <div class="w-24 md:w-28 h-3.5 bg-slate-950 overflow-hidden rounded border border-cyan-950">
                             <div id="xp-bar" class="h-full bg-gradient-to-r from-cyan-600 to-teal-400 transition-all duration-200 rounded" style="width: 0%;"></div>
@@ -269,13 +269,13 @@
             <div class="flex items-center gap-2 flex-wrap">
                 <!-- Gold Coins -->
                 <div class="pixel-panel px-2.5 py-1 rounded-md flex items-center gap-1.5 pointer-events-auto border-amber-900/60" title="Gold Coins Collected This Run">
-                    <span class="text-amber-400 text-xs">🪙</span>
+                    <svg class="w-3.5 h-3.5 text-amber-400" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M9 9h6M9 15h6" stroke="#000" stroke-width="1.5"/></svg>
                     <span id="coin-count" class="font-pixel text-amber-300 text-xs font-bold">40</span>
                 </div>
 
                 <!-- Persistent Soul Shards -->
                 <div class="pixel-panel px-2.5 py-1 rounded-md flex items-center gap-1.5 pointer-events-auto border-purple-900/60" title="Persistent Soul Shards for Permanent Upgrades">
-                    <span class="text-purple-400 text-xs">🔮</span>
+                    <svg class="w-3.5 h-3.5 text-purple-400" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4 9l8 13 8-13-8-7zm0 3.5L17.2 9 12 17.5 6.8 9 12 5.5z"/></svg>
                     <span id="soul-count" class="font-pixel text-purple-300 text-xs font-bold">0</span>
                 </div>
 
@@ -296,7 +296,7 @@
 
                 <!-- Ankh Cheat Death Badge -->
                 <div id="ankh-badge" class="hidden items-center gap-1 pixel-panel px-2 py-1 rounded-md border-yellow-500 pointer-events-auto" title="Ankh of Rebirth Active">
-                    <span class="text-yellow-400 text-xs">☥</span>
+                    <svg class="w-3.5 h-3.5 text-amber-300" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a4 4 0 0 0-4 4c0 2.21 1.79 4 4 4a4 4 0 0 0 4-4c0-2.21-1.79-4-4-4zm-1 9V9h2v2h4v2h-4v9h-2v-9H7v-2h4z"/></svg>
                     <span class="font-pixel text-yellow-300 text-[10px] font-bold">REBIRTH</span>
                 </div>
             </div>
@@ -314,7 +314,7 @@
             <!-- Boss Health Bar -->
             <div id="boss-hud" class="hidden w-80 md:w-96 pixel-panel border-2 border-red-600 rounded-lg p-2.5 shadow-2xl">
                 <div class="flex items-center justify-between text-[11px] font-pixel mb-1.5">
-                    <span id="boss-name" class="text-red-400 font-black">💀 MALAKOR, THE BONE TITAN</span>
+                    <span id="boss-name" class="text-red-400 font-black">MALAKOR, THE BONE TITAN</span>
                     <span id="boss-phase-badge" class="px-1.5 py-0.5 bg-red-950 text-amber-300 border border-red-500 rounded text-[9px] font-bold">PHASE 1</span>
                     <span id="boss-hp-text" class="text-slate-300 text-[10px]">800 / 800</span>
                 </div>
@@ -344,7 +344,7 @@
 
             <!-- Quick Pause Button -->
             <button id="btn-pause" class="pixel-button-gold text-amber-100 font-pixel text-xs px-3.5 py-2.5 rounded-lg flex items-center gap-1.5 shadow-xl pointer-events-auto border-amber-400" title="Pause Game [ESC]">
-                <span class="text-sm">⏸️</span>
+                <svg class="w-3.5 h-3.5 text-amber-200" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
                 <span>PAUSE</span>
             </button>
         </div>
@@ -355,7 +355,7 @@
 
         <!-- SYNERGY EVOLUTION TOAST BANNER -->
         <div id="synergy-banner" class="hidden absolute top-20 left-1/2 -translate-x-1/2 z-30 pixel-panel-gold px-5 py-3 rounded-lg text-center shadow-2xl pointer-events-none animate-bounce border-amber-400">
-            <div class="text-[10px] font-pixel text-amber-300 uppercase tracking-widest font-black">⚡ RELIC SYNERGY FORGED ⚡</div>
+            <div class="text-[10px] font-pixel text-amber-300 uppercase tracking-widest font-black">RELIC SYNERGY FORGED</div>
             <div id="synergy-title" class="font-gothic text-base text-white font-black mt-0.5">TEMPEST CRESCENT</div>
             <div id="synergy-desc" class="text-xs font-pixel text-cyan-300 mt-0.5">Finisher waves electrify and stun all enemies in their path!</div>
         </div>
@@ -363,7 +363,7 @@
         <!-- CONTEXT INTERACTION BANNER -->
         <div id="context-banner" class="hidden absolute bottom-24 left-1/2 -translate-x-1/2 z-20 pixel-panel-gold rounded-full px-5 py-2 shadow-2xl pointer-events-none border-amber-400 animate-pulse">
             <div id="context-text" class="text-xs font-pixel text-amber-200 font-bold flex items-center gap-2">
-                <span>⛏️</span> <span>Press [E] or Space to Excavate Dirt Mound</span>
+                 <span>Press [E] or Space to Excavate Dirt Mound</span>
             </div>
         </div>
 
@@ -378,27 +378,27 @@
             <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-950/90 backdrop-blur-md border border-slate-700/80 shadow-2xl pointer-events-auto">
                 <!-- Weapon Attack Slot -->
                 <button id="act-swing" class="group relative flex items-center justify-center w-11 h-11 rounded-lg bg-gradient-to-b from-amber-950/70 to-slate-900 border border-amber-600/80 hover:border-amber-400 active:scale-95 transition-all shadow-lg" title="Primary Strike [LMB / Space]">
-                    <span id="hud-weapon-icon" class="text-xl group-hover:scale-110 transition-transform">⛏️</span>
+                    <svg id="hud-weapon-icon" class="w-6 h-6 text-amber-400 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="currentColor"><path d="M14.5 2.5l2 2L6 15l-3.5.5.5-3.5L14.5 2.5zM19 7l2.5-2.5-2-2L17 5l2 2z"/></svg>
                     <span class="absolute -bottom-1 -right-1 px-1 py-0.2 bg-slate-950 border border-amber-500/70 text-[8px] font-pixel text-amber-300 rounded font-bold shadow">LMB</span>
                 </button>
 
                 <!-- Phantom Dash Slot -->
                 <button id="act-dash" class="group relative flex items-center justify-center w-11 h-11 rounded-lg bg-gradient-to-b from-cyan-950/70 to-slate-900 border border-cyan-600/80 hover:border-cyan-400 active:scale-95 transition-all shadow-lg overflow-hidden" title="Phantom Dash [Shift / RMB]">
                     <div id="cd-dash" class="absolute inset-0 bg-slate-950/90 origin-bottom scale-y-0 transition-transform"></div>
-                    <span class="text-xl group-hover:scale-110 transition-transform relative z-10">💨</span>
+                    <svg class="w-6 h-6 text-cyan-300 group-hover:scale-110 transition-transform relative z-10" viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8v-2H3v2zm0-4h12V7H3v2zm0 8h4v-2H3v2zm16-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
                     <span class="absolute -bottom-1 -right-1 px-1 py-0.2 bg-slate-950 border border-cyan-500/70 text-[8px] font-pixel text-cyan-300 rounded font-bold shadow relative z-10">SHIFT</span>
                 </button>
 
                 <!-- Excavate / Interact Slot -->
                 <button id="act-dig" class="group relative flex items-center justify-center w-11 h-11 rounded-lg bg-gradient-to-b from-emerald-950/70 to-slate-900 border border-emerald-600/80 hover:border-emerald-400 active:scale-95 transition-all shadow-lg" title="Excavate Mound [E]">
-                    <span class="text-xl group-hover:scale-110 transition-transform">🪦</span>
+                    <svg class="w-6 h-6 text-emerald-400 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="currentColor"><path d="M6 3a6 6 0 0 1 12 0v17H6V3zm3 4v3h6V7H9zm0 5v2h6v-2H9z"/></svg>
                     <span class="absolute -bottom-1 -right-1 px-1 py-0.2 bg-slate-950 border border-emerald-500/70 text-[8px] font-pixel text-emerald-300 rounded font-bold shadow">E</span>
                 </button>
 
                 <!-- Relic Ultimate Ability Slot -->
                 <button id="act-ult" class="group relative flex items-center justify-center w-11 h-11 rounded-lg bg-gradient-to-b from-purple-950/70 to-slate-900 border border-purple-600/80 hover:border-purple-400 active:scale-95 transition-all shadow-lg overflow-hidden" title="Ultimate Earthquake [Q]">
                     <div id="cd-ult" class="absolute inset-0 bg-slate-950/90 origin-bottom scale-y-0 transition-transform"></div>
-                    <span class="text-xl group-hover:scale-110 transition-transform relative z-10">⚡</span>
+                    <svg class="w-6 h-6 text-purple-300 group-hover:scale-110 transition-transform relative z-10" viewBox="0 0 24 24" fill="currentColor"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
                     <span class="absolute -bottom-1 -right-1 px-1 py-0.2 bg-slate-950 border border-purple-500/70 text-[8px] font-pixel text-purple-300 rounded font-bold shadow relative z-10">Q</span>
                 </button>
             </div>
@@ -408,21 +408,21 @@
         <div id="mobile-radial-controls" class="md:hidden absolute bottom-5 right-5 z-20 pointer-events-auto select-none">
             <div class="relative w-44 h-44">
                 <button id="mob-strike" class="absolute bottom-0 right-0 w-20 h-20 rounded-full pixel-button-gold flex flex-col items-center justify-center shadow-2xl border-2 border-amber-300">
-                    <span id="mob-weapon-icon" class="text-2xl">⛏️</span>
+                    <svg id="mob-weapon-icon" class="w-7 h-7 text-amber-300" viewBox="0 0 24 24" fill="currentColor"><path d="M14.5 2.5l2 2L6 15l-3.5.5.5-3.5L14.5 2.5zM19 7l2.5-2.5-2-2L17 5l2 2z"/></svg>
                     <span class="text-[9px] font-pixel text-amber-100 font-bold mt-0.5">STRIKE</span>
                 </button>
                 <button id="mob-dash" class="absolute top-4 right-1 w-14 h-14 rounded-full pixel-button-cyan flex flex-col items-center justify-center shadow-xl relative overflow-hidden border-2 border-cyan-300">
                     <div id="cd-dash-mob" class="absolute inset-0 bg-slate-950/85 origin-bottom scale-y-0 transition-transform"></div>
-                    <span class="text-lg relative z-10">💨</span>
+                    <svg class="w-5 h-5 text-cyan-200 relative z-10" viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8v-2H3v2zm0-4h12V7H3v2zm0 8h4v-2H3v2zm16-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
                     <span class="text-[8px] font-pixel text-cyan-100 font-bold relative z-10">DASH</span>
                 </button>
                 <button id="mob-dig" class="absolute bottom-1 left-2 w-14 h-14 rounded-full pixel-button flex flex-col items-center justify-center shadow-xl border-2 border-emerald-400">
-                    <span class="text-lg">🪦</span>
+                    <svg class="w-5 h-5 text-emerald-300" viewBox="0 0 24 24" fill="currentColor"><path d="M6 3a6 6 0 0 1 12 0v17H6V3zm3 4v3h6V7H9zm0 5v2h6v-2H9z"/></svg>
                     <span class="text-[8px] font-pixel text-emerald-200 font-bold">DIG</span>
                 </button>
                 <button id="mob-ult" class="absolute top-6 left-8 w-14 h-14 rounded-full pixel-button flex flex-col items-center justify-center shadow-xl relative overflow-hidden border-2 border-purple-400">
                     <div id="cd-ult-mob" class="absolute inset-0 bg-slate-950/85 origin-bottom scale-y-0 transition-transform"></div>
-                    <span class="text-lg relative z-10">⚡</span>
+                    <svg class="w-5 h-5 text-purple-200 relative z-10" viewBox="0 0 24 24" fill="currentColor"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
                     <span id="mob-ult-txt" class="text-[8px] font-pixel text-purple-200 font-bold relative z-10">QUAKE</span>
                 </button>
             </div>
@@ -441,11 +441,16 @@
         <div class="relative z-10 max-w-lg w-full text-center space-y-6">
             <div class="space-y-2">
                 <div class="flex items-center justify-center gap-3 mb-1">
-                    <span class="text-4xl animate-bounce">⚰️</span>
+                    <div class="flex items-center gap-3">
+                    <svg class="w-8 h-8 md:w-10 md:h-10 text-amber-500 drop-shadow-[0_0_12px_rgba(245,158,11,0.6)]" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12c0 3.31 1.61 6.24 4.09 8.04l.41.3V22h11v-1.66l.41-.3A9.96 9.96 0 0 0 22 12c0-5.52-4.48-10-10-10zm-3 12c-.83 0-1.5-.67-1.5-1.5S8.17 11 9 11s1.5.67 1.5 1.5S9.83 14 9 14zm6 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+                    </svg>
                     <h1 class="font-gothic text-3xl md:text-5xl text-amber-400 tracking-wider font-black drop-shadow-[0_4px_20px_rgba(245,158,11,0.5)]">
                         CRYPT KEEPER
                     </h1>
-                    <span class="text-4xl animate-bounce">⛏️</span>
+                    <svg class="w-8 h-8 md:w-10 md:h-10 text-cyan-400 drop-shadow-[0_0_12px_rgba(6,182,212,0.6)]" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M14.5 2.5l2 2L6 15l-3.5.5.5-3.5L14.5 2.5zM19 7l2.5-2.5-2-2L17 5l2 2z"/>
+                    </svg>
                 </div>
                 <div class="font-gothic text-sm md:text-base text-cyan-300 tracking-widest uppercase font-semibold">
                     ROGUE SHOVEL • 2D ACTION DUNGEON CRAWLER
@@ -457,26 +462,24 @@
 
             <!-- Primary Action Buttons -->
             <div class="space-y-3 max-w-sm mx-auto">
-                <button id="btn-home-solo" class="pixel-button-gold w-full py-3.5 rounded-xl font-pixel text-sm text-amber-100 tracking-wider shadow-2xl flex items-center justify-center gap-2.5 border-amber-400">
-                    <span class="text-lg">⚔️</span> <span>START EXPEDITION</span>
+                <button id="btn-home-solo" class="pixel-button-gold w-full py-3.5 rounded-xl font-pixel text-xs md:text-sm text-amber-100 tracking-wider shadow-2xl flex items-center justify-center gap-2.5 border-amber-400">
+                    <svg class="w-5 h-5 text-amber-300" viewBox="0 0 24 24" fill="currentColor"><path d="M14.5 2.5l2 2L6 15l-3.5.5.5-3.5L14.5 2.5zM19 7l2.5-2.5-2-2L17 5l2 2z"/></svg>
+                    <span>START EXPEDITION</span>
                 </button>
-                <button id="btn-home-coop" class="pixel-button-cyan w-full py-3 rounded-xl font-pixel text-xs text-cyan-100 tracking-wider shadow-xl flex items-center justify-center gap-2 border-cyan-400">
-                    <span class="text-base">🌐</span> <span>CO-OP SQUAD (UP TO 6 PLAYERS)</span>
+                <button id="btn-home-coop" class="pixel-button-cyan w-full py-3 rounded-xl font-pixel text-[11px] md:text-xs text-cyan-100 tracking-wider shadow-xl flex items-center justify-center gap-2 border-cyan-400">
+                    <svg class="w-4 h-4 text-cyan-300" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                    <span>CO-OP SQUAD (UP TO 6 PLAYERS)</span>
                 </button>
 
-                <!-- Hub Quick-Access Grid -->
+                <!-- Hub Quick-Access Grid (Arsenal & Altar are accessed in Sanctuary) -->
                 <div class="grid grid-cols-2 gap-2.5 pt-1">
-                    <button id="btn-home-arsenal" class="pixel-button py-2.5 rounded-lg font-pixel text-xs text-amber-300 flex items-center justify-center gap-2 border-amber-700/60 hover:border-amber-400">
-                        <span>⛏️</span> <span>ARSENAL</span>
+                    <button id="btn-home-codex" class="pixel-button py-2.5 rounded-lg font-pixel text-[10px] md:text-xs text-slate-200 flex items-center justify-center gap-2 border-slate-700 hover:border-cyan-400">
+                        <svg class="w-4 h-4 text-cyan-400" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg>
+                        <span>CODEX</span>
                     </button>
-                    <button id="btn-home-altar" class="pixel-button py-2.5 rounded-lg font-pixel text-xs text-purple-300 flex items-center justify-center gap-2 border-purple-700/60 hover:border-purple-400">
-                        <span>🔮</span> <span>SOUL ALTAR</span>
-                    </button>
-                    <button id="btn-home-codex" class="pixel-button py-2.5 rounded-lg font-pixel text-xs text-slate-200 flex items-center justify-center gap-2 border-slate-700 hover:border-cyan-400">
-                        <span>📜</span> <span>CODEX</span>
-                    </button>
-                    <button id="btn-home-settings" class="pixel-button py-2.5 rounded-lg font-pixel text-xs text-cyan-300 flex items-center justify-center gap-2 border-cyan-700/60 hover:border-cyan-400">
-                        <span>⚙️</span> <span>SETTINGS</span>
+                    <button id="btn-home-settings" class="pixel-button py-2.5 rounded-lg font-pixel text-[10px] md:text-xs text-cyan-300 flex items-center justify-center gap-2 border-cyan-700/60 hover:border-cyan-400">
+                        <svg class="w-4 h-4 text-amber-400" viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                        <span>SETTINGS</span>
                     </button>
                 </div>
             </div>
@@ -494,9 +497,9 @@
 
             <!-- Player Meta Stats Preview -->
             <div class="pixel-panel p-2.5 rounded-lg flex items-center justify-around text-xs font-pixel text-slate-200 max-w-sm mx-auto bg-slate-950/80 border-slate-800">
-                <div>🔮 SOULS: <span id="home-souls" class="text-purple-400 font-black">0</span></div>
-                <div>⛏️ WEAPON: <span id="home-weapon" class="text-amber-400 font-black">RUSTY SPADE</span></div>
-                <div>🏆 BEST: <span id="home-depth" class="text-cyan-400 font-black">DEPTH 1</span></div>
+                <div><svg class="w-3.5 h-3.5 inline mr-1 text-purple-400" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4 9l8 13 8-13-8-7zm0 3.5L17.2 9 12 17.5 6.8 9 12 5.5z"/></svg>SOULS: <span id="home-souls" class="text-purple-400 font-black">0</span></div>
+                <div>WEAPON: <span id="home-weapon" class="text-amber-400 font-black">RUSTY SPADE</span></div>
+                <div><svg class="w-3.5 h-3.5 inline mr-1 text-amber-400" viewBox="0 0 24 24" fill="currentColor"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V18H9v2h6v-2h-2v-2.1a5.01 5.01 0 0 0 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg>BEST: <span id="home-depth" class="text-cyan-400 font-black">DEPTH 1</span></div>
             </div>
 
             <div class="text-[10px] font-pixel text-slate-500 flex items-center justify-center gap-4">
@@ -507,11 +510,11 @@
     </div>
 
     <!-- MODAL: GAME SETTINGS -->
-    <div id="settings-modal" class="hidden fixed inset-0 bg-slate-950/95 backdrop-blur-md z-50 flex items-center justify-center p-4 select-none">
+    <div id="settings-modal" class="hidden fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[60] flex items-center justify-center p-4 select-none">
         <div class="pixel-panel max-w-md w-full p-5 rounded-xl space-y-4 border-slate-700">
             <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
                 <div class="flex items-center gap-2">
-                    <span class="text-xl">⚙️</span>
+                    <svg class="w-5 h-5 text-amber-400" viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
                     <h2 class="font-gothic text-base font-black text-amber-400">EXPEDITION SETTINGS</h2>
                 </div>
                 <button id="close-settings" class="pixel-button text-slate-200 px-3 py-1 rounded font-pixel text-xs">✕</button>
@@ -580,20 +583,20 @@
                     <span>▶</span> RESUME GAME
                 </button>
                 <button id="btn-pause-altar" class="pixel-button-purple w-full py-2 rounded font-pixel text-[8px] text-purple-200 flex items-center justify-center gap-2">
-                    <span>🔮</span> SOUL ALTAR UPGRADES
+                    <svg class="w-5 h-5 text-purple-400 inline mr-2" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4 9l8 13 8-13-8-7zm0 3.5L17.2 9 12 17.5 6.8 9 12 5.5z"/></svg> SOUL ALTAR UPGRADES
                 </button>
                 <button id="btn-pause-codex" class="pixel-button w-full py-2 rounded font-pixel text-[8px] text-slate-300 flex items-center justify-center gap-2">
-                    <span>📖</span> RELICS & BEAST CODEX
+                    <svg class="w-4 h-4 inline mr-1 text-cyan-300" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg> RELICS & BEAST CODEX
                 </button>
                 <button id="btn-pause-settings" class="pixel-button w-full py-2 rounded font-pixel text-[8px] text-cyan-300 flex items-center justify-center gap-2">
-                    <span>⚙️</span> AUDIO & CONTROLS SETTINGS
+                    <svg class="w-4 h-4 inline mr-1 text-amber-300" viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg> AUDIO & CONTROLS
                 </button>
                 <button id="btn-pause-ad-souls" class="pixel-button-cyan w-full py-2 rounded font-pixel text-[8px] text-cyan-100 flex items-center justify-center gap-2">
-                    <span>🎬</span> FREE +50 SOULS (SHORT AD)
+                    <svg class="w-4 h-4 inline mr-1 text-purple-300" viewBox="0 0 24 24" fill="currentColor"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12zm-11-2l6-4-6-4v8z"/></svg> FREE +50 SOULS (SHORT AD)
                 </button>
                 <div class="pt-2 border-t border-slate-800">
                     <button id="btn-pause-abandon" class="pixel-button-red w-full py-2 rounded font-pixel text-[8px] text-red-300 flex items-center justify-center gap-2">
-                        <span>🏠</span> ABANDON RUN & RETURN TO TITLE
+                        <svg class="w-4 h-4 inline mr-1 text-rose-400" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg> ABANDON RUN & RETURN TO TITLE
                     </button>
                 </div>
             </div>
@@ -601,11 +604,11 @@
     </div>
 
     <!-- MODAL 1: SANCTUARY SOUL ALTAR (PERMANENT META-UPGRADES) -->
-    <div id="altar-modal" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md z-40 flex items-center justify-center p-4">
+    <div id="altar-modal" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[60] flex items-center justify-center p-4">
         <div class="pixel-panel-purple max-w-lg w-full p-5 rounded">
             <div class="flex items-center justify-between border-b-2 border-purple-900 pb-3 mb-3">
                 <div class="flex items-center gap-2.5">
-                    <span class="text-3xl">🔮</span>
+                    <svg class="w-8 h-8 text-purple-400" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4 9l8 13 8-13-8-7zm0 3.5L17.2 9 12 17.5 6.8 9 12 5.5z"/></svg>
                     <div>
                         <h2 class="font-pixel text-xs md:text-sm font-black text-purple-300">SANCTUARY SOUL ALTAR</h2>
                         <p class="text-[8px] font-pixel text-slate-400 mt-1">Bind persistent Soul Shards into permanent bloodline power.</p>
@@ -615,7 +618,7 @@
             </div>
             <div class="flex items-center justify-between pixel-panel px-3 py-2 rounded mb-3 text-[9px] font-pixel">
                 <span class="text-slate-400">Banked Soul Shards:</span>
-                <span class="text-purple-300">🔮 <span id="altar-souls-count">0</span></span>
+                <span class="text-purple-300 flex items-center gap-1"><svg class="w-3.5 h-3.5 text-purple-400" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4 9l8 13 8-13-8-7zm0 3.5L17.2 9 12 17.5 6.8 9 12 5.5z"/></svg><span id="altar-souls-count">0</span> SOULS</span>
             </div>
             <div id="altar-upgrades" class="space-y-2.5 max-h-[60vh] overflow-y-auto pr-1"></div>
             <div class="mt-3 p-2 rounded pixel-panel border-purple-800 bg-purple-950/30 flex items-center justify-between text-[8px] font-pixel">
@@ -626,11 +629,11 @@
     </div>
 
     <!-- MODAL 2: SHOVEL ARSENAL RACK -->
-    <div id="arsenal-modal" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md z-40 flex items-center justify-center p-4">
+    <div id="arsenal-modal" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[60] flex items-center justify-center p-4">
         <div class="pixel-panel-gold max-w-2xl w-full p-5 rounded">
             <div class="flex items-center justify-between border-b-2 border-amber-950 pb-3 mb-4">
                 <div class="flex items-center gap-2.5">
-                    <span class="text-3xl">⛏️</span>
+                    <svg class="w-8 h-8 text-amber-400" viewBox="0 0 24 24" fill="currentColor"><path d="M14.5 2.5l2 2L6 15l-3.5.5.5-3.5L14.5 2.5zM19 7l2.5-2.5-2-2L17 5l2 2z"/></svg>
                     <div>
                         <h2 class="font-pixel text-xs md:text-sm font-black text-amber-400">KEEPER'S SHOVEL ARSENAL</h2>
                         <p class="text-[8px] font-pixel text-slate-400 mt-1">Select your primary excavation & combat implement.</p>
@@ -643,16 +646,16 @@
     </div>
 
     <!-- MODAL 3: RELIC DRAFTING (WITH REROLL DICE & SYNERGY TAGS) -->
-    <div id="draft-modal" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md z-40 flex items-center justify-center p-4">
+    <div id="draft-modal" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[60] flex items-center justify-center p-4">
         <div class="pixel-panel-cyan max-w-3xl w-full p-5 text-center rounded">
             <div class="inline-block px-3 py-1 rounded bg-cyan-950 border border-cyan-500 text-cyan-300 text-[8px] font-pixel uppercase tracking-widest mb-2">
-                ✨ SOUL ASCENSION — CHOOSE A CURSED RELIC ✨
+                SOUL ASCENSION — CHOOSE A CURSED RELIC
             </div>
             <h2 class="font-pixel text-sm md:text-lg font-black text-white mb-1">THE CRYPT OFFERS THREE BOONS</h2>
             <div class="flex items-center justify-center gap-3 mb-4">
                 <span class="text-[8px] font-pixel text-slate-400">Combine matching relics to unlock Evolved Synergies!</span>
                 <button id="btn-reroll-draft" class="pixel-button-gold px-2.5 py-1 rounded text-[8px] font-pixel text-amber-200">
-                    🎲 REROLL (<span id="reroll-dice-left">1</span>)
+                    REROLL (<span id="reroll-dice-left">1</span>)
                 </button>
             </div>
             <div id="draft-cards" class="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-left"></div>
@@ -660,11 +663,11 @@
     </div>
 
     <!-- MODAL 4: CHARON'S BLACK MARKET SHOP -->
-    <div id="shop-modal" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md z-40 flex items-center justify-center p-4">
+    <div id="shop-modal" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[60] flex items-center justify-center p-4">
         <div class="pixel-panel-gold max-w-2xl w-full p-5 rounded">
             <div class="flex items-center justify-between border-b-2 border-amber-950 pb-3 mb-3">
                 <div class="flex items-center gap-3">
-                    <span class="text-3xl">🕯️</span>
+                    <svg class="w-8 h-8 text-amber-400" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M9 9h6M9 15h6" stroke="#000" stroke-width="1.5"/></svg>
                     <div>
                         <h2 class="font-pixel text-xs md:text-base font-black text-amber-400">CHARON'S BLACK MARKET</h2>
                         <p class="text-[8px] font-pixel text-slate-400 mt-1">Trade unearthed gold & souls for forbidden tools.</p>
@@ -676,7 +679,7 @@
                 <div class="flex items-center gap-4">
                     <span class="text-slate-400">Coffers:</span>
                     <span class="text-amber-400">🪙 <span id="shop-gold">0</span></span>
-                    <span class="text-purple-300">🔮 <span id="shop-souls">0</span></span>
+                    <span class="text-purple-300 flex items-center gap-1"><svg class="w-3.5 h-3.5 text-purple-400" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4 9l8 13 8-13-8-7zm0 3.5L17.2 9 12 17.5 6.8 9 12 5.5z"/></svg><span id="shop-souls">0</span> SOULS</span>
                 </div>
                 <span class="text-[8px] text-emerald-400">Tip: Knock enemies into open pits for instant kills!</span>
             </div>
@@ -685,15 +688,15 @@
     </div>
 
     <!-- MODAL 5: GRAVE ROGUE'S CODEX -->
-    <div id="codex-modal" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md z-40 flex items-center justify-center p-4">
+    <div id="codex-modal" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[60] flex items-center justify-center p-4">
         <div class="pixel-panel-cyan max-w-lg w-full p-5 rounded">
-            <h2 class="font-pixel text-sm font-black text-cyan-300 mb-2">📜 GRAVE ROGUE'S CODEX</h2>
+            <h2 class="font-pixel text-sm font-black text-cyan-300 mb-2 flex items-center gap-1.5"><svg class="w-4 h-4 text-cyan-400" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg> GRAVE ROGUE'S CODEX</h2>
             <div class="space-y-2.5 text-[8px] font-pixel text-slate-300 pixel-panel p-3.5 rounded mb-4 leading-relaxed">
-                <div><strong class="text-amber-400">⛏️ Shovel Combat & Deflection:</strong> Swing (<kbd class="text-amber-300">LMB/Space</kbd>) for a 3-hit combo. Striking enemy magic orbs deflects them back for <span class="text-amber-300">300% damage</span>!</div>
-                <div><strong class="text-emerald-400">🕳️ Grave Pit Traps:</strong> Press <kbd class="text-emerald-300">E</kbd> on Dirt Mounds to unearth loot and create an <strong>Open Grave Pit</strong>. Knocking foes into pits triggers an instant <em>Buried Alive</em> kill!</div>
-                <div><strong class="text-cyan-400">🛡️ Enemy Mechanics:</strong> <span class="text-slate-200">Gargoyle Wardens</span> block frontal hits (dash behind them or knock them into pits!). <span class="text-emerald-300">Plague Toads</span> explode into toxic gas. <span class="text-purple-300">Crypt Spiders</span> burrow underground to ambush you.</div>
-                <div><strong class="text-purple-400">⚡ Relic Synergies:</strong> Pair <em>Spectral Edge + Stormcaller Rod</em> for <strong>Tempest Crescent</strong>, or <em>Vampiric Spade + Warding Lantern</em> for <strong>Bloodfire Halo</strong>!</div>
-                <div><strong class="text-red-400">💀 Malakor Phase 2:</strong> Below 50% HP, Malakor performs bull charges. Bait him into crashing into <span class="text-amber-300">Stone Pillars</span> to stun him for 3 seconds and deal 200% crits!</div>
+                <div><strong class="text-amber-400">Shovel Combat & Deflection:</strong> Swing (<kbd class="text-amber-300">LMB/Space</kbd>) for a 3-hit combo. Striking enemy magic orbs deflects them back for <span class="text-amber-300">300% damage</span>!</div>
+                <div><strong class="text-emerald-400">Grave Pit Traps:</strong> Press <kbd class="text-emerald-300">E</kbd> on Dirt Mounds to unearth loot and create an <strong>Open Grave Pit</strong>. Knocking foes into pits triggers an instant <em>Buried Alive</em> kill!</div>
+                <div><strong class="text-cyan-400">Enemy Mechanics:</strong> <span class="text-slate-200">Gargoyle Wardens</span> block frontal hits (dash behind them or knock them into pits!). <span class="text-emerald-300">Plague Toads</span> explode into toxic gas. <span class="text-purple-300">Crypt Spiders</span> burrow underground to ambush you.</div>
+                <div><strong class="text-purple-400">Relic Synergies:</strong> Pair <em>Spectral Edge + Stormcaller Rod</em> for <strong>Tempest Crescent</strong>, or <em>Vampiric Spade + Warding Lantern</em> for <strong>Bloodfire Halo</strong>!</div>
+                <div><strong class="text-red-400">Malakor Boss Fight:</strong> Below 50% HP, Malakor performs bull charges. Bait him into crashing into <span class="text-amber-300">Stone Pillars</span> to stun him for 3 seconds and deal 200% crits!</div>
             </div>
             <button id="close-codex" class="pixel-button-cyan w-full py-2.5 rounded font-pixel text-[9px] uppercase tracking-wider text-cyan-200">
                 RETURN TO THE CATACOMBS
@@ -702,11 +705,11 @@
     </div>
 
     <!-- MODAL 7: MULTIPLAYER CO-OP & GODOT ENGINE EXPORT HUB -->
-    <div id="coop-modal" class="hidden fixed inset-0 bg-slate-950/95 backdrop-blur-md z-40 flex items-center justify-center p-4">
+    <div id="coop-modal" class="hidden fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[60] flex items-center justify-center p-4">
         <div class="pixel-panel-cyan max-w-2xl w-full p-6 rounded-2xl max-h-[90vh] flex flex-col border-cyan-500/80 shadow-[0_0_40px_rgba(6,182,212,0.25)]">
             <div class="flex items-center justify-between border-b-2 border-cyan-900 pb-3 mb-4">
                 <div class="flex items-center gap-3">
-                    <span class="text-3xl">🌐</span>
+                    <svg class="w-8 h-8 text-cyan-300" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
                     <div>
                         <h2 class="font-gothic text-base md:text-lg font-black text-cyan-300">CRYPT CO-OP EXPEDITION LOBBY</h2>
                         <p class="text-xs font-pixel text-slate-300 mt-0.5">Explore catacombs together with up to 6 players in real-time online co-op.</p>
@@ -725,10 +728,10 @@
                                 <span class="text-slate-300">SESSION ROOM:</span>
                                 <span id="coop-room-code" class="text-amber-300 bg-slate-950 px-2.5 py-1 rounded border border-amber-500 font-black tracking-widest text-sm">KEEPER-7X9</span>
                                 <button id="btn-copy-code" class="pixel-button text-[10px] px-2.5 py-1 text-cyan-300 hover:text-cyan-100 rounded" title="Copy Room Code">
-                                    📋 COPY
+                                    COPY
                                 </button>
                                 <button id="btn-copy-invite-link" class="pixel-button-cyan text-[10px] px-2.5 py-1 text-cyan-100 rounded" title="Copy One-Click Join Link">
-                                    🔗 SHARE LINK
+                                    SHARE LINK
                                 </button>
                             </div>
                             <div class="text-[10px] font-pixel text-slate-400 mt-1" id="net-status-text">
@@ -798,7 +801,7 @@
                     <div class="flex gap-2">
                         <input id="input-coop-code" type="text" placeholder="ENTER ROOM CODE..." class="flex-1 bg-slate-950 border border-slate-700 px-3 py-2.5 rounded-lg font-pixel text-xs text-cyan-300 uppercase tracking-widest outline-none focus:border-cyan-400">
                         <button id="btn-join-session" class="pixel-button-gold px-5 py-2.5 rounded-lg font-pixel text-xs text-amber-100 font-bold shrink-0">
-                            🔗 JOIN SQUAD
+                            JOIN SQUAD
                         </button>
                     </div>
                 </div>
@@ -806,10 +809,10 @@
                 <!-- Launch or Ready Action Bar -->
                 <div class="flex gap-2.5 pt-2">
                     <button id="btn-launch-expedition" class="pixel-button-gold flex-1 py-3.5 rounded-xl font-pixel text-sm text-amber-100 tracking-wider shadow-xl flex items-center justify-center gap-2.5">
-                        <span>🚀</span> START EXPEDITION (ENTER DUNGEON)
+                        <svg class="w-4 h-4 inline mr-1 text-cyan-300" viewBox="0 0 24 24" fill="currentColor"><path d="M14.5 2.5l2 2L6 15l-3.5.5.5-3.5L14.5 2.5zM19 7l2.5-2.5-2-2L17 5l2 2z"/></svg> START EXPEDITION (ENTER DUNGEON)
                     </button>
                     <button id="btn-leave-coop-lobby" class="pixel-button text-slate-300 px-5 py-3.5 rounded-xl font-pixel text-xs hover:text-red-400">
-                        ✕ LEAVE
+                        LEAVE
                     </button>
                 </div>
             </div>
@@ -824,7 +827,7 @@
                 <span id="ad-countdown" class="text-amber-400 font-bold">5s</span>
             </div>
             <div class="py-6 space-y-2 bg-slate-950/80 rounded border border-slate-800">
-                <div class="text-3xl animate-pulse">🎬</div>
+                <div class="flex justify-center mb-2"><svg class="w-10 h-10 text-amber-400 animate-pulse" viewBox="0 0 24 24" fill="currentColor"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12zm-11-2l6-4-6-4v8z"/></svg></div>
                 <div class="font-pixel text-[10px] text-amber-300 font-black">CRYPT KEEPER PARTNER NETWORK</div>
                 <p class="text-[7px] font-pixel text-slate-400 px-4">Watching commercial break. Your in-game reward will unlock once the timer completes!</p>
                 <div class="w-3/4 mx-auto bg-slate-800 h-1.5 rounded-full overflow-hidden mt-3">
@@ -840,19 +843,19 @@
     <!-- FLOATING GHOST SPECTATOR HUD OVERLAY -->
     <div id="ghost-spectator-hud" class="hidden fixed top-16 left-1/2 -translate-x-1/2 z-40 flex flex-col sm:flex-row items-center gap-2 p-2 rounded-lg bg-slate-950/90 border border-cyan-500/60 shadow-[0_0_20px_rgba(6,182,212,0.35)] backdrop-blur-md select-none pointer-events-auto">
         <div class="flex items-center gap-2 px-2 text-cyan-300 font-pixel text-[9px] font-bold">
-            <span class="animate-pulse text-base">👻</span>
+            <svg class="w-4 h-4 text-cyan-300 inline mr-1" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
             <span>GHOST SPECTATOR MODE</span>
             <span class="text-[7px] text-slate-400 hidden sm:inline">(Noclip Flight: WASD / Arrow Keys)</span>
         </div>
         <div class="flex items-center gap-2">
             <button id="btn-spectator-ad-revive" class="pixel-button-gold px-3 py-1.5 rounded font-pixel text-[8px] text-amber-200 flex items-center gap-1.5 border-amber-400 shadow hover:border-amber-300">
-                <span>📺</span> WATCH AD TO REVIVE
+                <svg class="w-4 h-4 text-amber-300 inline mr-1" viewBox="0 0 24 24" fill="currentColor"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12zm-11-2l6-4-6-4v8z"/></svg> WATCH AD TO REVIVE
             </button>
             <button id="btn-spectator-snap" class="pixel-button-cyan px-2.5 py-1.5 rounded font-pixel text-[8px] text-cyan-200 flex items-center gap-1 border-cyan-500 shadow hover:border-cyan-400">
-                <span>👥</span> TO SQUAD
+                <svg class="w-4 h-4 inline mr-1 text-cyan-300" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg> TO SQUAD
             </button>
             <button id="btn-spectator-menu" class="pixel-button px-2.5 py-1.5 rounded font-pixel text-[8px] text-slate-300 flex items-center gap-1 border-slate-700 hover:border-slate-500">
-                <span>🏠</span> MENU
+                <svg class="w-4 h-4 inline mr-1 text-slate-300" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg> MENU
             </button>
         </div>
     </div>
@@ -860,27 +863,27 @@
     <!-- MODAL 6: GAME OVER / EXPEDITION SUMMARY -->
     <div id="gameover-modal" class="hidden fixed inset-0 bg-slate-950/95 backdrop-blur-md z-50 flex items-center justify-center p-4">
         <div class="pixel-panel border-2 border-red-600 max-w-md w-full p-5 text-center rounded">
-            <div class="text-4xl mb-2">⚰️</div>
+            <div class="flex justify-center mb-2"><svg class="w-12 h-12 text-rose-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 3.31 1.61 6.24 4.09 8.04l.41.3V22h11v-1.66l.41-.3A9.96 9.96 0 0 0 22 12c0-5.52-4.48-10-10-10zm-3 12c-.83 0-1.5-.67-1.5-1.5S8.17 11 9 11s1.5.67 1.5 1.5S9.83 14 9 14zm6 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg></div>
             <h2 id="gameover-title" class="font-pixel text-base md:text-lg font-black text-red-500 mb-1">BURIED BENEATH</h2>
             <p id="gameover-desc" class="text-[8px] font-pixel text-slate-400 mb-4">Your shovel rests beside an unmarked stone, but your Soul Shards endure.</p>
             <div id="gameover-stats" class="pixel-panel rounded p-3 mb-4 text-[9px] space-y-1.5 text-left font-pixel text-slate-300"></div>
             
             
                 <button id="btn-gameover-claim" class="pixel-button-gold px-2.5 py-1.5 rounded text-[8px] text-amber-200 shrink-0 font-bold">
-                    💾 SAVE TO ACCOUNT
+                    <svg class="w-4 h-4 inline mr-1 text-cyan-300" viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg> SAVE TO ACCOUNT
                 </button>
             </div>
 
             <div class="space-y-2.5 mt-2">
                 <button id="btn-gameover-ad-revive" class="pixel-button-gold w-full py-2.5 rounded font-pixel text-[9px] text-amber-200 tracking-wider shadow-lg flex items-center justify-center gap-2 border-amber-400 hover:border-amber-300">
-                    <span>📺</span> WATCH ADS TO REVIVE (50% HP)
+                    <svg class="w-4 h-4 inline mr-1 text-amber-300" viewBox="0 0 24 24" fill="currentColor"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12zm-11-2l6-4-6-4v8z"/></svg> WATCH ADS TO REVIVE (50% HP)
                 </button>
                 <div class="grid grid-cols-2 gap-2">
                     <button id="btn-gameover-spectate" class="pixel-button-cyan w-full py-2.5 rounded font-pixel text-[9px] text-cyan-200 tracking-wider shadow-lg flex items-center justify-center gap-2 border-cyan-400 hover:border-cyan-300">
-                        <span>👻</span> SPECTATE AS GHOST
+                        <svg class="w-4 h-4 inline mr-1 text-cyan-300" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg> SPECTATE AS GHOST
                     </button>
                     <button id="btn-gameover-menu" class="pixel-button w-full py-2.5 rounded font-pixel text-[9px] text-slate-300 tracking-wider shadow-lg flex items-center justify-center gap-2 border-slate-700 hover:border-slate-500">
-                        <span>🏠</span> MAIN MENU
+                        <svg class="w-4 h-4 inline mr-1 text-slate-300" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg> MAIN MENU
                     </button>
                 </div>
                 <button id="btn-gameover-altar" class="hidden"></button>
@@ -1747,7 +1750,7 @@
             rusty_spade: {
                 id: 'rusty_spade',
                 name: 'Rusty Spade',
-                icon: '⛏️',
+                icon: '[PICK]',
                 desc: 'Balanced 3-hit combo with steel sweeping finisher. High deflection angle and solid pit-knockback.',
                 dmgMult: 1.0,
                 speedMult: 1.0,
@@ -1759,7 +1762,7 @@
             great_shovel: {
                 id: 'great_shovel',
                 name: "Executioner's Great-Shovel",
-                icon: '🪓',
+                icon: '[AXE]',
                 desc: 'Colossal two-handed blood shovel. Massive reach, heavy crimson cleaves, +110% knockback and shockwaves.',
                 dmgMult: 1.55,
                 speedMult: 0.76,
@@ -1771,7 +1774,7 @@
             twin_trowels: {
                 id: 'twin_trowels',
                 name: 'Twin Grave Trowels',
-                icon: '🗡️',
+                icon: '[DAGGER]',
                 desc: 'Dual-wielded high-speed daggers. Criss-cross flurry strikes that inflict stacking Bleed and reduce Dash CD.',
                 dmgMult: 0.74,
                 speedMult: 1.52,
@@ -1783,7 +1786,7 @@
             lantern_flail: {
                 id: 'lantern_flail',
                 name: 'Sanctified Lantern Flail',
-                icon: '🏮',
+                icon: '[LANTERN]',
                 desc: 'Swings an energized holy lantern on a chain. Wide circular strike zone leaving persistent holy fire puddles.',
                 dmgMult: 1.12,
                 speedMult: 0.95,
@@ -1795,7 +1798,7 @@
             soulreaper_scythe: {
                 id: 'soulreaper_scythe',
                 name: 'Soulreaper War-Scythe',
-                icon: '💀',
+                icon: '[REAPER]',
                 desc: 'Colossal two-handed scythe with full 360° sweeping cleaves. Instantly executes non-bosses below 20% HP and pulls souls!',
                 dmgMult: 1.35,
                 speedMult: 0.88,
@@ -1807,17 +1810,17 @@
         };
 
         const RELIC_POOL = [
-            { id: 'spectral_wave', icon: '🌊', name: 'Spectral Edge', desc: 'Every 3rd shovel combo swing launches a piercing crescent wave of ectoplasm.', synergyWith: 'Stormcaller Rod' },
-            { id: 'grave_lightning', icon: '⚡', name: 'Stormcaller Rod', desc: 'Swinging your shovel calls chain lightning onto nearby enemies (electrifies water puddles!).', synergyWith: 'Spectral Edge' },
+            { id: 'spectral_wave', icon: '[WAVE]', name: 'Spectral Edge', desc: 'Every 3rd shovel combo swing launches a piercing crescent wave of ectoplasm.', synergyWith: 'Stormcaller Rod' },
+            { id: 'grave_lightning', icon: '[LIGHTNING]', name: 'Stormcaller Rod', desc: 'Swinging your shovel calls chain lightning onto nearby enemies (electrifies water puddles!).', synergyWith: 'Spectral Edge' },
             { id: 'vampire_spade', icon: '🩸', name: 'Vampiric Spade', desc: 'Slaying undead or knocking them into open grave pits restores +4 HP.', synergyWith: 'Warding Soul Lantern' },
-            { id: 'iron_lantern', icon: '🏮', name: 'Warding Soul Lantern', desc: 'Radiates a holy aura around you that burns nearby enemies for 18 DPS.', synergyWith: 'Vampiric Spade' },
-            { id: 'necromancy_bell', icon: '🔔', name: 'Necromancer’s Bell', desc: 'Unearthing dirt mounds summons a friendly Skeleton Ally to fight beside you.' },
-            { id: 'phantom_afterimage', icon: '💥', name: 'Volatile Shroud', desc: 'Phantom Dash leaves behind a soul bomb that detonates for 60 AoE damage.' },
-            { id: 'titanic_knockback', icon: '🔨', name: 'Gravedigger’s Might', desc: '+25% Shovel Damage and +65% Knockback force for effortless Pit Kills.', synergyWith: 'Brimstone Censer' },
-            { id: 'quicksilver_boots', icon: '👢', name: 'Haste Greaves', desc: '+22% Movement Speed and -25% Phantom Dash cooldown.' },
-            { id: 'ankh_rebirth', icon: '☥', name: 'Ankh of Rebirth', desc: 'Defy death once per expedition: resurrect with 60 HP and blast all nearby foes for 90 holy damage!' },
+            { id: 'iron_lantern', icon: '[LANTERN]', name: 'Warding Soul Lantern', desc: 'Radiates a holy aura around you that burns nearby enemies for 18 DPS.', synergyWith: 'Vampiric Spade' },
+            { id: 'necromancy_bell', icon: '[BELL]', name: 'Necromancer’s Bell', desc: 'Unearthing dirt mounds summons a friendly Skeleton Ally to fight beside you.' },
+            { id: 'phantom_afterimage', icon: '[SHROUD]', name: 'Volatile Shroud', desc: 'Phantom Dash leaves behind a soul bomb that detonates for 60 AoE damage.' },
+            { id: 'titanic_knockback', icon: '[MIGHT]', name: 'Gravedigger’s Might', desc: '+25% Shovel Damage and +65% Knockback force for effortless Pit Kills.', synergyWith: 'Brimstone Censer' },
+            { id: 'quicksilver_boots', icon: '[BOOTS]', name: 'Haste Greaves', desc: '+22% Movement Speed and -25% Phantom Dash cooldown.' },
+            { id: 'ankh_rebirth', icon: '[ANKH]', name: 'Ankh of Rebirth', desc: 'Defy death once per expedition: resurrect with 60 HP and blast all nearby foes for 90 holy damage!' },
             { id: 'chrono_hourglass', icon: '⏳', name: 'Chrono Hourglass', desc: 'Performing a Perfect Dodge slows time by 75% for 1.8 seconds, granting 100% crit chance.', synergyWith: 'Spectral Edge' },
-            { id: 'brimstone_censer', icon: '🔥', name: 'Brimstone Censer', desc: 'Open Grave Pits ignite with brimstone hellfire, dealing continuous burning damage and exploding on pit kills.', synergyWith: 'Gravedigger’s Might' }
+            { id: 'brimstone_censer', icon: '[CENSER]', name: 'Brimstone Censer', desc: 'Open Grave Pits ignite with brimstone hellfire, dealing continuous burning damage and exploding on pit kills.', synergyWith: 'Gravedigger’s Might' }
         ];
 
         /**
@@ -1909,7 +1912,7 @@
         let player = {
             isGhost: false,
             x: ROOM_W / 2, y: ROOM_H / 2 + 70, radius: 18, speed: 220,
-            hp: 100, maxHp: 100, lvl: 1, xp: 0, nextXp: 50,
+            hp: 100, maxHp: 100, lvl: 1, xp: 0, nextXp: 70,
             gold: 40, souls: metaSave.souls || 0,
             weapon: WEAPON_ARSENAL[metaSave.selectedWeapon] || WEAPON_ARSENAL.rusty_spade,
             angle: 0, facing: 1, animTimer: 0, animFrame: 0, dustTimer: 0,
@@ -1977,7 +1980,7 @@
         function checkAndUnlockSynergies() {
             if (!game.synergies.tempestCrescent && player.relics.spectral_wave && player.relics.grave_lightning) {
                 game.synergies.tempestCrescent = true;
-                showSynergyBanner('⚡ TEMPEST CRESCENT ⚡', 'Finisher waves electrify enemies and conduct through water!');
+                showSynergyBanner('TEMPEST CRESCENT', 'Finisher waves electrify enemies and conduct through water!');
             }
             if (!game.synergies.bloodfireHalo && player.relics.vampire_spade && player.relics.iron_lantern) {
                 game.synergies.bloodfireHalo = true;
@@ -1989,7 +1992,7 @@
             }
             if (!game.synergies.hellfireChasm && player.relics.brimstone_censer && player.relics.titanic_knockback) {
                 game.synergies.hellfireChasm = true;
-                showSynergyBanner('🔥 HELLFIRE CHASM 🔥', 'Open Grave Pits suck nearby enemies into brimstone infernos!');
+                showSynergyBanner('HELLFIRE CHASM', 'Open Grave Pits suck nearby enemies into brimstone infernos!');
             }
         }
 
@@ -2049,11 +2052,11 @@
         function getRoomBadgeInfo(room) {
             if (!room) return { icon: '❓', label: 'UNKNOWN', color: '#94a3b8' };
             switch (room.type) {
-                case 'boss': return { icon: '💀', label: 'BOSS', color: '#f87171' };
-                case 'treasure': return { icon: '🎁', label: 'VAULT', color: '#fbbf24' };
+                case 'boss': return { icon: '[B]', label: 'BOSS', color: '#f87171' };
+                case 'treasure': return { icon: '[V]', label: 'VAULT', color: '#fbbf24' };
                 case 'shop': return { icon: '🪙', label: 'SHOP', color: '#fbbf24' };
-                case 'shrine': return { icon: '✨', label: 'SHRINE', color: '#22d3ee' };
-                case 'start': return { icon: '🕯️', label: 'SANCTUARY', color: '#34d399' };
+                case 'shrine': return { icon: '[S]', label: 'SHRINE', color: '#22d3ee' };
+                case 'start': return { icon: '[SANCTUARY]', label: 'SANCTUARY', color: '#34d399' };
                 default: return room.cleared ? { icon: '✓', label: 'CLEAR', color: '#34d399' } : { icon: '⚔️', label: 'FIGHT', color: '#cbd5e1' };
             }
         }
@@ -2353,13 +2356,13 @@
             const eliteMult = eliteRoll ? 2.1 : 1.0;
 
             const templates = {
-                skeleton: { hp: 65, speed: 175, radius: 18, dmg: 18, xp: 16, gold: 8, sprite: 'skeleton' },
-                zombie: { hp: 140, speed: 95, radius: 21, dmg: 28, xp: 25, gold: 12, sprite: 'zombie', heavyPoise: true },
-                wraith: { hp: 55, speed: 215, radius: 17, dmg: 20, xp: 22, gold: 10, sprite: 'wraith' },
-                necro: { hp: 80, speed: 110, radius: 19, dmg: 18, xp: 30, gold: 15, sprite: 'necro' },
-                gargoyle: { hp: 160, speed: 115, radius: 22, dmg: 28, xp: 36, gold: 18, sprite: 'gargoyle', shielded: true },
-                toad: { hp: 75, speed: 140, radius: 19, dmg: 22, xp: 24, gold: 12, sprite: 'toad', explodes: true },
-                spider: { hp: 68, speed: 185, radius: 17, dmg: 18, xp: 22, gold: 10, sprite: 'spider', burrowCd: 2.2 },
+                skeleton: { hp: 65, speed: 175, radius: 18, dmg: 18, xp: 4, gold: 8, sprite: 'skeleton' },
+                zombie: { hp: 140, speed: 95, radius: 21, dmg: 28, xp: 7, gold: 12, sprite: 'zombie', heavyPoise: true },
+                wraith: { hp: 55, speed: 215, radius: 17, dmg: 20, xp: 6, gold: 10, sprite: 'wraith' },
+                necro: { hp: 80, speed: 110, radius: 19, dmg: 18, xp: 10, gold: 15, sprite: 'necro' },
+                gargoyle: { hp: 160, speed: 115, radius: 22, dmg: 28, xp: 12, gold: 18, sprite: 'gargoyle', shielded: true },
+                toad: { hp: 75, speed: 140, radius: 19, dmg: 22, xp: 6, gold: 12, sprite: 'toad', explodes: true },
+                spider: { hp: 68, speed: 185, radius: 17, dmg: 18, xp: 5, gold: 10, sprite: 'spider', burrowCd: 2.2 },
                 dummy: { hp: 9999, speed: 0, radius: 18, dmg: 0, xp: 15, gold: 10, sprite: 'dummy', isDummy: true }
             };
             const t = templates[type] || templates.skeleton;
@@ -2388,7 +2391,7 @@
 
         function spawnBoss() {
             const diff = getDifficultyMultiplier();
-            const maxHp = Math.round((1150 + (game.depth - 1) * 650) * Math.min(2.5, diff * 0.85));
+            const maxHp = Math.round((2800 + (game.depth - 1) * 1400) * Math.min(2.5, diff * 0.9));
             const bossSpeed = Math.round(105 + (game.depth - 1) * 20);
             enemies.push({
                 type: 'boss',
@@ -2397,7 +2400,7 @@
                 x: ROOM_W / 2, y: ROOM_H / 2 - 90,
                 hp: maxHp, maxHp, speed: bossSpeed, radius: 36,
                 dmg: Math.round(28 * (1 + (game.depth - 1) * 0.35)),
-                xp: 220 + game.depth * 50, gold: 120 + game.depth * 30, sprite: 'boss',
+                xp: 75 + game.depth * 25, gold: 120 + game.depth * 30, sprite: 'boss',
                 vx: 0, vy: 0, flash: 0,
                 shootCd: Math.max(1.3, 2.4 - (game.depth - 1) * 0.4),
                 summonCd: Math.max(4.5, 6.8 - (game.depth - 1) * 0.8),
@@ -2417,7 +2420,7 @@
                 hp: 65, speed: 155, radius: 15, dmg: 16 + player.lvl * 3, hitCd: 0
             });
             addParticles(player.x, player.y, '#22d3ee', 12, 110, 4);
-            addFloatingText(player.x, player.y - 24, "💀 ALLY RISEN!", "#22d3ee", 13);
+            addFloatingText(player.x, player.y - 24, "[ALLY RISEN]", "#22d3ee", 13);
         }
 
         /**
@@ -2456,7 +2459,7 @@
             player.comboStep = (player.comboStep + 1) % 3;
             const isFinisher = player.comboStep === 0;
 
-            player.swingDuration = (isFinisher ? 0.25 : 0.18) / wep.speedMult;
+            player.swingDuration = (isFinisher ? 0.28 : 0.22) / wep.speedMult;
             player.swingTimer = player.swingDuration;
             player.swingCooldown = (isFinisher ? 0.28 : 0.19) / wep.speedMult;
 
@@ -2482,7 +2485,7 @@
                 if (isFinisher) {
                     sfx.play('quake');
                     triggerJuice(0.07, 12, 35);
-                    addFloatingText(player.x, player.y - 30, "💥 TITAN CLEAVE!", "#f87171", 16);
+                    addFloatingText(player.x, player.y - 30, "[TITAN CLEAVE]", "#f87171", 16);
                 }
             } else if (wep.id === 'twin_trowels') {
                 addParticles(player.x + Math.cos(player.angle) * 25, player.y + Math.sin(player.angle) * 25, '#22d3ee', 6, 120, 3);
@@ -2490,7 +2493,7 @@
                 addParticles(player.x + Math.cos(player.angle) * 45, player.y + Math.sin(player.angle) * 45, '#c084fc', isFinisher ? 18 : 9, 160, 5);
                 if (isFinisher) {
                     sfx.play('hit');
-                    addFloatingText(player.x, player.y - 28, "💀 HARVEST WAVE!", "#c084fc", 16);
+                    addFloatingText(player.x, player.y - 28, "[HARVEST WAVE]", "#c084fc", 16);
                 }
             } else if (wep.id === 'lantern_flail') {
                 addParticles(player.x + Math.cos(player.angle) * 45, player.y + Math.sin(player.angle) * 45, '#f59e0b', 8, 110, 4);
@@ -2536,12 +2539,12 @@
                         p.friendly = true;
                         p.vx = Math.cos(player.angle) * 490;
                         p.vy = Math.sin(player.angle) * 490;
-                        p.dmg *= 3;
+                        p.dmg = Math.min(32, Math.round(p.dmg * 1.5));
                         p.color = '#fbbf24';
                         p.life = 1.6;
                         sfx.play('deflect');
                         triggerJuice(0.05, 9, 30);
-                        addFloatingText(p.x, p.y - 14, "⚡ 300% DEFLECTED!", "#fbbf24", 15);
+                        addFloatingText(p.x, p.y - 14, "[DEFLECTED]", "#fbbf24", 15);
                         if (game.provingGroundsStep === 3) {
                             game.provingGroundsStep = 4;
                             updateProvingGroundsUI();
@@ -2589,7 +2592,7 @@
                     if (diff < hitCone || dist < 50) {
                         // Soulreaper Scythe Execute Mechanic: Instant kill non-bosses below 20% HP!
                         if (wep.id === 'soulreaper_scythe' && !e.isBoss && !e.isDummy && e.hp <= e.maxHp * 0.22) {
-                            addFloatingText(e.x, e.y - 24, "💀 REAPED!", "#c084fc", 17);
+                            addFloatingText(e.x, e.y - 24, "[REAPED]", "#c084fc", 17);
                             sfx.play('hit');
                             triggerJuice(0.06, 12, 35);
                             addParticles(e.x, e.y, '#c084fc', 20, 180, 5);
@@ -2606,14 +2609,18 @@
                                 e.vx = Math.cos(angToE) * 190 * player.knockbackMult;
                                 e.vy = Math.sin(angToE) * 190 * player.knockbackMult;
                                 addParticles(e.x, e.y, '#cbd5e1', 8, 120, 4);
-                                addFloatingText(e.x, e.y - 18, "🛡️ SHIELD BLOCKED!", "#94a3b8", 13);
+                                addFloatingText(e.x, e.y - 18, "[DEFLECTED]", "#94a3b8", 13);
                                 continue;
                             }
                         }
 
                         const stunMult = (e.isBoss && e.stunTimer > 0) ? 2.0 : 1.0;
                         const critMult = player.critBoostTimer > 0 ? 1.75 : 1.0;
-                        const finalDmg = e.isDummy ? 0 : Math.round(dmg * stunMult * critMult);
+                        let finalDmg = e.isDummy ? 0 : Math.round(dmg * stunMult * critMult);
+                        if (e.isBoss) {
+                            finalDmg = Math.min(finalDmg, Math.round(e.maxHp * 0.05));
+                            if (e.invulnTimer > 0) finalDmg = 0;
+                        }
                         e.hp -= finalDmg;
 
                         const baseKb = e.isBoss ? 75 : (e.type === 'zombie' || e.type === 'gargoyle' ? 95 : 175);
@@ -2631,7 +2638,7 @@
 
                         addParticles(e.x, e.y, wep.trailColor || '#f8fafc', 10, 150, 4);
                         if (!e.isDummy) {
-                            const label = critMult > 1 ? `💥PERFECT CRIT -${finalDmg}!` : (stunMult > 1 ? `💥STUN CRIT -${finalDmg}!` : (isFinisher ? `CRIT -${finalDmg}!` : `-${finalDmg}`));
+                            const label = critMult > 1 ? `PERFECT CRIT -${finalDmg}!` : (stunMult > 1 ? `STUN CRIT -${finalDmg}!` : (isFinisher ? `CRIT -${finalDmg}!` : `-${finalDmg}`));
                             addFloatingText(e.x, e.y - 16, label, critMult > 1 ? "#38bdf8" : (stunMult > 1 ? "#22d3ee" : (isFinisher ? wep.trailColor : "#f87171")), isFinisher || stunMult > 1 || critMult > 1 ? 16 : 13);
                         } else {
                             addFloatingText(e.x, e.y - 16, "KNOCKBACK!", "#34d399", 13);
@@ -2657,7 +2664,7 @@
                         target.hp -= boltDmg;
                         target.flash = 0.12;
                         addParticles(target.x, target.y, '#38bdf8', 8, 140, 4);
-                        addFloatingText(target.x, target.y - 18, `⚡-${boltDmg}`, "#38bdf8", 14);
+                        addFloatingText(target.x, target.y - 18, `-${boltDmg}`, "#38bdf8", 14);
                         if (target.hp <= 0) killEnemy(enemies.indexOf(target));
                     });
                 }
@@ -2671,7 +2678,7 @@
                         if (!e.burrowed && Math.hypot(e.x - pud.x, e.y - pud.y) < pud.r + e.radius) {
                             e.hp -= boltDmg;
                             e.stunTimer = Math.max(e.stunTimer, 1.0);
-                            addFloatingText(e.x, e.y - 22, `⚡CONDUCTED -${boltDmg}!`, "#38bdf8", 14);
+                            addFloatingText(e.x, e.y - 22, `[CONDUCTED] -${boltDmg}!`, "#38bdf8", 14);
                             if (e.hp <= 0) killEnemy(i);
                         }
                     }
@@ -2689,7 +2696,7 @@
 
             if (u.kind === 'explosive_urn') {
                 addParticles(u.x, u.y, '#ef4444', 24, 190, 5);
-                addFloatingText(u.x, u.y - 18, "💥 URN BLAST!", "#f87171", 15);
+                addFloatingText(u.x, u.y - 18, "[URN BLAST]", "#f87171", 15);
                 for (let i = enemies.length - 1; i >= 0; i--) {
                     const e = enemies[i];
                     if (!e.burrowed && Math.hypot(e.x - u.x, e.y - u.y) < 120) {
@@ -2702,7 +2709,7 @@
                 }
             } else {
                 addParticles(u.x, u.y, '#22d3ee', 22, 170, 5);
-                addFloatingText(u.x, u.y - 18, "🔮 SOUL BARREL!", "#22d3ee", 15);
+                addFloatingText(u.x, u.y - 18, "[SOUL BARREL]", "#22d3ee", 15);
                 spawnLootDrop(u.x - 10, u.y, 'soul', 1);
                 spawnLootDrop(u.x + 10, u.y, 'xp', 25);
             }
@@ -2732,7 +2739,7 @@
                     }
                     spawnLootDrop(m.x, m.y - 12, 'coin', 15);
                     spawnLootDrop(m.x + 10, m.y - 12, 'soul', 2);
-                    addFloatingText(m.x, m.y - 20, "🕳️ PIT OPENED! KNOCK SKELETON IN!", "#34d399", 16);
+                    addFloatingText(m.x, m.y - 20, "[PIT OPENED! KNOCK FOE IN]", "#34d399", 16);
                     updateProvingGroundsUI();
                     return;
                 }
@@ -2744,21 +2751,21 @@
                 if (m.rich || roll < 0.32) {
                     for (let c = 0; c < 3; c++) spawnLootDrop(m.x + (c - 1) * 14, m.y, 'coin', Math.max(4, 8 - (game.depth - 1)));
                     spawnLootDrop(m.x, m.y - 10, 'soul', 1);
-                    addFloatingText(m.x, m.y - 18, "✨ RELIC CACHE!", "#fbbf24", 15);
+                    addFloatingText(m.x, m.y - 18, "[RELIC CACHE]", "#fbbf24", 15);
                 } else if (roll < 0.65) {
                     spawnLootDrop(m.x, m.y, 'coin', Math.max(6, 10 - game.depth));
                     spawnLootDrop(m.x + 12, m.y, 'xp', 18 + game.depth * 4);
                     addFloatingText(m.x, m.y - 18, "🪦 EXCAVATED!", "#34d399", 14);
                 } else if (roll < 0.65 + potionChance) {
                     spawnLootDrop(m.x, m.y, 'heart', 25);
-                    addFloatingText(m.x, m.y - 18, "❤️ TONIC!", "#f43f5e", 14);
+                    addFloatingText(m.x, m.y - 18, "[HEALTH TONIC]", "#f43f5e", 14);
                 } else {
                     spawnEnemy(m.x, m.y, null, Math.random() < 0.35);
-                    addFloatingText(m.x, m.y - 18, "💀 GRAVE AMBUSH!", "#ef4444", 15);
+                    addFloatingText(m.x, m.y - 18, "[AMBUSH]", "#ef4444", 15);
                 }
                 if (player.relics.necromancy_bell) spawnFriendlyMinion();
             } else {
-                addFloatingText(m.x, m.y - 12, "⛏️ DIG...", "#f59e0b", 12);
+                addFloatingText(m.x, m.y - 12, "[EXCAVATING...]", "#f59e0b", 12);
             }
         }
 
@@ -2784,12 +2791,12 @@
                         if (roll < 0.50) {
                             for (let c = 0; c < 4; c++) spawnLootDrop(s.x + (c - 1.5) * 16, s.y + 12, 'coin', 15);
                             spawnLootDrop(s.x, s.y, 'soul', 2);
-                            addFloatingText(s.x, s.y - 24, "👑 PHARAOH'S HOARD!", "#fbbf24", 17);
+                            addFloatingText(s.x, s.y - 24, "[PHARAOH HOARD]", "#fbbf24", 17);
                         } else if (roll < 0.80) {
-                            addFloatingText(s.x, s.y - 24, "💀 TOMB GUARDIAN RISES!", "#ef4444", 17);
+                            addFloatingText(s.x, s.y - 24, "[TOMB GUARDIAN]", "#ef4444", 17);
                             spawnEnemy(s.x, s.y + 20, 'zombie', true);
                         } else {
-                            addFloatingText(s.x, s.y - 24, "✨ FORBIDDEN RELIC!", "#22d3ee", 17);
+                            addFloatingText(s.x, s.y - 24, "[FORBIDDEN RELIC]", "#22d3ee", 17);
                             openRelicDraft();
                         }
                         return;
@@ -2841,7 +2848,7 @@
                 player.hp = player.maxHp;
                 sfx.play('levelup');
                 addParticles(ROOM_W / 2, ROOM_H / 2, '#22d3ee', 26, 160, 5);
-                addFloatingText(player.x, player.y - 30, "✨ FULL HP + BLESSING!", "#22d3ee", 16);
+                addFloatingText(player.x, player.y - 30, "[FOUNTAIN BLESSING]", "#22d3ee", 16);
                 openRelicDraft();
                 updateHUD();
                 return;
@@ -2928,7 +2935,7 @@
                 const slowMoDur = player.relics.chrono_hourglass ? 1.8 : 0.18;
                 triggerJuice(slowMoDur, 10, 45);
                 sfx.play('deflect');
-                addFloatingText(player.x, player.y - 32, "✨ PERFECT DODGE! (100% CRIT)", "#38bdf8", 16);
+                addFloatingText(player.x, player.y - 32, "[PERFECT DODGE! CRIT BOOST]", "#38bdf8", 16);
                 addParticles(player.x, player.y, '#38bdf8', 18, 180, 5);
 
                 if (game.synergies.temporalReaping) {
@@ -2968,7 +2975,7 @@
                     const e = enemies[i];
                     if (!e.burrowed && Math.hypot(e.x - player.x, e.y - player.y) < 120) {
                         e.hp -= bombDmg;
-                        addFloatingText(e.x, e.y - 16, `💥-${bombDmg}`, "#f43f5e", 15);
+                        addFloatingText(e.x, e.y - 16, `-${bombDmg}`, "#f43f5e", 15);
                         if (e.hp <= 0) killEnemy(i);
                     }
                 }
@@ -2985,7 +2992,7 @@
 
             const room = currentRoom();
             addParticles(player.x, player.y, '#c084fc', 40, 260, 6);
-            addFloatingText(player.x, player.y - 36, "⚡ CRYPT EARTHQUAKE! ⚡", "#c084fc", 19);
+            addFloatingText(player.x, player.y - 36, "CRYPT EARTHQUAKE!", "#c084fc", 19);
 
             for (let i = room.mounds.length - 1; i >= 0; i--) {
                 room.mounds[i].hp = 0;
@@ -3030,7 +3037,7 @@
             const curMult = rankMults[player.styleRank] || 1.0;
 
             if (player.comboStreak >= 3 && player.comboStreak % 5 === 0) {
-                addFloatingText(player.x, player.y - 42, `🔥 ${player.styleRank} RANK (${player.comboStreak}x)!`, "#f59e0b", 17);
+                addFloatingText(player.x, player.y - 42, `${player.styleRank} RANK (${player.comboStreak}x)!`, "#f59e0b", 17);
             }
 
             if (e.isDummy && game.provingGroundsStep === 2) {
@@ -3053,7 +3060,7 @@
                     life: 3.5, friendly: false
                 });
                 addParticles(e.x, e.y, '#22c55e', 14, 120, 4);
-                addFloatingText(e.x, e.y - 18, "☣️ TOXIC BILE!", "#22c55e", 13);
+                addFloatingText(e.x, e.y - 18, "[TOXIC BILE]", "#22c55e", 13);
             }
 
             // Brimstone Hellfire Pit Exploder
@@ -3061,7 +3068,7 @@
                 sfx.play('explosion');
                 triggerJuice(0.06, 12, 35);
                 addParticles(e.x, e.y, '#f97316', 25, 200, 6);
-                addFloatingText(e.x, e.y - 28, "🔥 BRIMSTONE ERUPTION!", "#f97316", 17);
+                addFloatingText(e.x, e.y - 28, "[BRIMSTONE ERUPTION]", "#f97316", 17);
                 for (let j = enemies.length - 1; j >= 0; j--) {
                     const foe = enemies[j];
                     if (!foe.burrowed && Math.hypot(foe.x - e.x, foe.y - e.y) < 140) {
@@ -3074,7 +3081,7 @@
             if (player.relics.vampire_spade) {
                 const heal = 4 * player.relics.vampire_spade;
                 player.hp = Math.min(player.maxHp, player.hp + heal);
-                addFloatingText(e.x, e.y - 20, `+${heal}🩸`, "#f43f5e", 12);
+                addFloatingText(e.x, e.y - 20, `+${heal} HP`, "#f43f5e", 12);
             }
 
             const scaledXp = Math.round(e.xp * curMult);
@@ -3088,7 +3095,7 @@
             if (e.isBoss) {
                 document.getElementById('boss-hud').classList.add('hidden');
                 currentRoom().portalActive = true;
-                addFloatingText(e.x, e.y - 30, "🏆 CRYPT LORD VANQUISHED!", "#fbbf24", 20);
+                addFloatingText(e.x, e.y - 30, "[CRYPT LORD VANQUISHED]", "#fbbf24", 20);
                 openRelicDraft();
             }
 
@@ -3098,7 +3105,7 @@
                 game.clearedRooms++;
                 sfx.play('levelup');
                 sfx.setBgmMode('explore');
-                addFloatingText(player.x, player.y - 35, "🔓 SECTOR CLEARED — GATES UNSEALED!", "#34d399", 17);
+                addFloatingText(player.x, player.y - 35, "[SECTOR CLEARED — GATES OPEN]", "#34d399", 17);
                 drawMinimap();
             }
             updateHUD();
@@ -3113,7 +3120,7 @@
             if (player.xp >= player.nextXp) {
                 player.xp -= player.nextXp;
                 player.lvl++;
-                player.nextXp = Math.round(player.nextXp * 1.35);
+                player.nextXp = Math.round(70 * Math.pow(1.5, player.lvl - 1));
                 player.maxHp += 15;
                 player.hp = Math.min(player.maxHp, player.hp + 30);
                 player.baseDmg += 4;
@@ -3154,7 +3161,7 @@
                         </div>
                         <h3 class="font-pixel text-xs font-black text-amber-400 mb-1.5">${relic.name}</h3>
                         <p class="text-[8px] font-pixel text-slate-300 leading-relaxed">${relic.desc}</p>
-                        ${currentRank > 0 ? `<div class="mt-2 text-[7px] font-pixel text-emerald-400">✨ Stacking this increases potency by +40%!</div>` : ''}
+                        ${currentRank > 0 ? `<div class="mt-2 text-[7px] font-pixel text-emerald-400"> Stacking this increases potency by +40%!</div>` : ''}
                     </div>
                     <button class="mt-4 pixel-button-cyan w-full py-2 rounded font-pixel text-[8px] uppercase tracking-wider text-cyan-200">
                         ${currentRank > 0 ? `UPGRADE TO TIER ${nextRank}` : 'CLAIM BOON'}
@@ -3206,7 +3213,7 @@
                 player.critBoostTimer += 1.5;
             }
             
-            addFloatingText(player.x, player.y - 32, `⚡ ${relic.name} TIER ${count}!`, "#38bdf8", 16);
+            addFloatingText(player.x, player.y - 32, `[UPGRADED] ${relic.name} TIER ${count}`, "#38bdf8", 16);
             updateHUD();
         }
 
@@ -3231,19 +3238,19 @@
             const upg = metaSave.upgrades;
             const list = [
                 {
-                    key: 'vitality', name: 'Graveborn Vitality', icon: '❤️',
+                    key: 'vitality', name: 'Graveborn Vitality', icon: '[HP]',
                     rank: upg.vitality, cost: 2 + upg.vitality * 2,
                     desc: '+20 Max HP permanently at the start of every expedition.',
                     apply: () => { upg.vitality++; player.maxHp += 20; player.hp += 20; }
                 },
                 {
-                    key: 'forgedEdge', name: 'Forged Tempered Edge', icon: '⚔️',
+                    key: 'forgedEdge', name: 'Forged Tempered Edge', icon: '[DMG]',
                     rank: upg.forgedEdge, cost: 3 + upg.forgedEdge * 2,
                     desc: '+10% Base Shovel Damage across all weapons permanently.',
                     apply: () => { upg.forgedEdge++; player.baseDmg = Math.round(28 * (1 + upg.forgedEdge * 0.10)); }
                 },
                 {
-                    key: 'rerolls', name: 'Relic Attunement Dice', icon: '🎲',
+                    key: 'rerolls', name: 'Relic Attunement Dice', icon: '[REROLL]',
                     rank: upg.rerolls, cost: 3 + upg.rerolls * 3,
                     desc: '+1 Relic Draft Reroll Die per expedition.',
                     apply: () => { upg.rerolls++; player.rerollsLeft++; }
@@ -3269,7 +3276,7 @@
                         </div>
                     </div>
                     <button ${!canAfford ? 'disabled' : ''} class="${canAfford ? 'pixel-button-cyan text-cyan-200' : 'pixel-button text-slate-600 cursor-not-allowed'} px-3 py-2 rounded font-pixel text-[8px] shrink-0">
-                        BIND (${item.cost} 🔮)
+                        BIND (${item.cost} SOULS)
                     </button>
                 `;
                 row.querySelector('button').addEventListener('click', () => {
@@ -3313,7 +3320,7 @@
                         <p class="text-[8px] font-pixel text-slate-300 leading-relaxed mb-3">${w.desc}</p>
                     </div>
                     <button class="${equipped ? 'pixel-button-gold text-amber-200' : 'pixel-button text-slate-200'} w-full py-2 rounded font-pixel text-[8px] uppercase">
-                        ${equipped ? '✓ EQUIPPED' : 'EQUIP WEAPON'}
+                        ${equipped ? '[EQUIPPED]' : 'EQUIP WEAPON'}
                     </button>
                 `;
                 card.querySelector('button').addEventListener('click', () => {
@@ -3340,10 +3347,10 @@
             const container = document.getElementById('shop-items');
             container.innerHTML = '';
             const stock = [
-                { name: 'Sharpened Spade', icon: '⛏️', desc: '+12 Base Shovel Damage.', cost: 35, curr: 'gold', act: () => { player.baseDmg += 12; } },
-                { name: 'Crimson Vial', icon: '🧪', desc: '+60 HP & +20 Max HP.', cost: 25, curr: 'gold', act: () => { player.maxHp += 20; player.hp = Math.min(player.maxHp, player.hp + 60); } },
-                { name: 'Mystery Cursed Relic', icon: '🎁', desc: 'Open Cursed Relic Draft.', cost: 3, curr: 'souls', act: () => { document.getElementById('shop-modal').classList.add('hidden'); openRelicDraft(); } },
-                { name: 'Skeleton Mercenary', icon: '💀', desc: 'Summon friendly Skeleton Ally.', cost: 2, curr: 'souls', act: () => { spawnFriendlyMinion(); } }
+                { name: 'Sharpened Spade', icon: '[ATK]', desc: '+12 Base Shovel Damage.', cost: 35, curr: 'gold', act: () => { player.baseDmg += 12; } },
+                { name: 'Crimson Vial', icon: '[POTION]', desc: '+60 HP & +20 Max HP.', cost: 25, curr: 'gold', act: () => { player.maxHp += 20; player.hp = Math.min(player.maxHp, player.hp + 60); } },
+                { name: 'Mystery Cursed Relic', icon: '[RELIC]', desc: 'Open Cursed Relic Draft.', cost: 3, curr: 'souls', act: () => { document.getElementById('shop-modal').classList.add('hidden'); openRelicDraft(); } },
+                { name: 'Skeleton Mercenary', icon: '[REAPER]', desc: 'Summon friendly Skeleton Ally.', cost: 2, curr: 'souls', act: () => { spawnFriendlyMinion(); } }
             ];
             stock.forEach(item => {
                 const canBuy = item.curr === 'gold' ? player.gold >= item.cost : player.souls >= item.cost;
@@ -3358,7 +3365,7 @@
                         </div>
                     </div>
                     <button ${!canBuy ? 'disabled' : ''} class="${canBuy ? 'pixel-button-gold text-amber-200' : 'pixel-button text-slate-500 cursor-not-allowed'} w-full py-2 rounded font-pixel text-[8px] uppercase">
-                        BUY (${item.cost} ${item.curr === 'gold' ? '🪙' : '🔮'})
+                        BUY (${item.cost} ${item.curr === 'gold' ? 'GOLD' : 'SOULS'})
                     </button>
                 `;
                 el.querySelector('button').addEventListener('click', () => {
@@ -3394,7 +3401,7 @@
                         p.reviveTimer = 0;
                         sfx.play('levelup');
                         addParticles(p.x, p.y, '#34d399', 24, 180, 5);
-                        addFloatingText(p.x, p.y - 25, "✨ KEEPER REVIVED!", "#34d399", 16);
+                        addFloatingText(p.x, p.y - 25, "[KEEPER REVIVED]", "#34d399", 16);
                         if (typeof MultiplayerManager !== 'undefined' && MultiplayerManager.isConnected) {
                             MultiplayerManager.sendAction('revived');
                         }
@@ -3971,7 +3978,7 @@
                             e.isTelegraphing = true;
                             e.telegraphTimer = 0.30;
                             e.flash = 0.30;
-                            addFloatingText(e.x, e.y - 18, "⚠️ LUNGE!", "#ef4444", 12);
+                            addFloatingText(e.x, e.y - 18, "[LUNGE!]", "#ef4444", 12);
                         }
                     }
                 } else if (e.type === 'spider') {
@@ -4025,13 +4032,26 @@
                         e.telegraphTimer = 0;
                     }
                 } else if (e.isBoss) {
-                    // Check Phase 2 Transition (<50% HP)
-                    if (e.phase === 1 && e.hp <= e.maxHp * 0.5) {
+                    // 3-Stage Boss Gated Combat
+                    if (e.invulnTimer > 0) {
+                        e.invulnTimer -= dt;
+                        addParticles(e.x, e.y, '#fbbf24', 2, 80, 3);
+                    }
+                    if (e.phase === 1 && e.hp <= e.maxHp * 0.65) {
                         e.phase = 2;
+                        e.invulnTimer = 1.2;
                         sfx.play('quake');
                         triggerJuice(0.12, 16, 50);
-                        addFloatingText(e.x, e.y - 40, "🔥 PHASE 2: TITAN FRENZY! 🔥", "#f59e0b", 19);
+                        addFloatingText(e.x, e.y - 40, "[PHASE 2: TITAN FRENZY]", "#f59e0b", 19);
                         document.getElementById('boss-phase-badge').textContent = 'PHASE 2: FRENZY';
+                    } else if (e.phase === 2 && e.hp <= e.maxHp * 0.30) {
+                        e.phase = 3;
+                        e.invulnTimer = 1.2;
+                        e.speed = Math.round(e.speed * 1.25);
+                        sfx.play('quake');
+                        triggerJuice(0.14, 18, 55);
+                        addFloatingText(e.x, e.y - 40, "[PHASE 3: BLOOD TITAN]", "#ef4444", 20);
+                        document.getElementById('boss-phase-badge').textContent = 'PHASE 3: ENRAGED';
                     }
 
                     if (e.isCharging) {
@@ -4051,7 +4071,7 @@
                                 sfx.play('explosion');
                                 triggerJuice(0.14, 20, 55);
                                 addParticles(ob.x, ob.y, '#fbbf24', 32, 220, 6);
-                                addFloatingText(e.x, e.y - 36, "💫 PILLAR CRASH! STUNNED 3.2s (200% CRITS)!", "#22d3ee", 17);
+                                addFloatingText(e.x, e.y - 36, "[PILLAR CRASH! STUNNED]", "#22d3ee", 17);
                                 updateBossHUD();
                                 break;
                             }
@@ -4126,7 +4146,7 @@
                     let buried = false;
                     for (const pit of room.pits) {
                         if (Math.abs(e.x - pit.x) < pit.w / 2 + 6 && Math.abs(e.y - pit.y) < pit.h / 2 + 6) {
-                            addFloatingText(e.x, e.y - 18, "⚰️ BURIED ALIVE!", "#34d399", 16);
+                            addFloatingText(e.x, e.y - 18, "[BURIED ALIVE]", "#34d399", 16);
                             killEnemy(i, true);
                             buried = true;
                             break;
@@ -4157,7 +4177,13 @@
                     for (let j = enemies.length - 1; j >= 0; j--) {
                         const e = enemies[j];
                         if (!e.burrowed && Math.hypot(e.x - p.x, e.y - p.y) < e.radius + p.radius) {
-                            if (!e.isDummy) e.hp -= p.dmg;
+                            let pDmg = p.dmg;
+                            if (e.isBoss) {
+                                pDmg = Math.min(24, Math.round(pDmg * 0.45));
+                                pDmg = Math.min(pDmg, Math.round(e.maxHp * 0.03));
+                                if (e.invulnTimer > 0) pDmg = 0;
+                            }
+                            if (!e.isDummy) e.hp -= pDmg;
                             e.flash = 0.12;
                             if (p.electrifies) e.stunTimer = Math.max(e.stunTimer, 0.8);
                             addParticles(e.x, e.y, p.color, 8, 120, 4);
@@ -4190,17 +4216,17 @@
                         player.gold += d.value;
                         game.stats.goldEarned += d.value;
                         sfx.play('coin');
-                        addFloatingText(d.x, d.y - 10, `+${d.value}🪙`, "#fbbf24", 13);
+                        addFloatingText(d.x, d.y - 10, `+${d.value} GOLD`, "#fbbf24", 13);
                     } else if (d.type === 'soul') {
                         player.souls += d.value;
                         metaSave.souls = player.souls;
                         saveMeta();
                         sfx.play('coin');
-                        addFloatingText(d.x, d.y - 10, `+${d.value}🔮`, "#c084fc", 13);
+                        addFloatingText(d.x, d.y - 10, `+${d.value} SOULS`, "#c084fc", 13);
                     } else if (d.type === 'heart') {
                         player.hp = Math.min(player.maxHp, player.hp + d.value);
                         sfx.play('coin');
-                        addFloatingText(d.x, d.y - 10, `+${d.value}❤️`, "#f43f5e", 13);
+                        addFloatingText(d.x, d.y - 10, `+${d.value} HP`, "#f43f5e", 13);
                     } else if (d.type === 'xp') {
                         gainXp(d.value);
                     }
@@ -4267,7 +4293,7 @@
 
             if (room.sarcophagi) {
                 for (const s of room.sarcophagi) {
-                    if (!s.opened && Math.hypot(s.x - player.x, s.y - player.y) < 80) { msg = "⚰️ Press [E] to Open Ancient Tomb"; break; }
+                    if (!s.opened && Math.hypot(s.x - player.x, s.y - player.y) < 80) { msg = "Press [E] to Open Ancient Tomb"; break; }
                 }
             }
             if (!msg && room.bloodChalice && !room.bloodChalice.used) {
@@ -4275,16 +4301,16 @@
             }
             if (!msg) {
                 for (const m of room.mounds) {
-                    if (Math.hypot(m.x - player.x, m.y - player.y) < 75) { msg = "⛏️ Press [E] or Strike to Excavate Mound"; break; }
+                    if (Math.hypot(m.x - player.x, m.y - player.y) < 75) { msg = "Press [E] or Strike to Excavate Mound"; break; }
                 }
             }
             if (!msg && room.type === 'start') {
                 if (room.altarPos && Math.hypot(room.altarPos.x - player.x, room.altarPos.y - player.y) < 85) msg = "🔮 Press [E] to Commune with Soul Altar";
-                else if (room.rackPos && Math.hypot(room.rackPos.x - player.x, room.rackPos.y - player.y) < 85) msg = "⛏️ Press [E] to Open Weapon Arsenal";
+                else if (room.rackPos && Math.hypot(room.rackPos.x - player.x, room.rackPos.y - player.y) < 85) msg = "Press [E] to Open Weapon Arsenal";
             }
             if (!msg) {
                 for (const ch of room.chests) {
-                    if (!ch.opened && Math.hypot(ch.x - player.x, ch.y - player.y) < 80) { msg = "🎁 Press [E] to Open Vault Chest"; break; }
+                    if (!ch.opened && Math.hypot(ch.x - player.x, ch.y - player.y) < 80) { msg = "Press [E] to Open Vault Chest"; break; }
                 }
             }
             if (!msg && room.type === 'shrine' && !room.shrineUsed && Math.hypot(ROOM_W / 2 - player.x, ROOM_H / 2 - player.y) < 85) msg = "✨ Press [E] to Commune with Soul Shrine";
@@ -4295,7 +4321,7 @@
                 if (nearDoor) {
                     const neighbor = getNeighborRoom(room, nearDoor);
                     const info = getRoomBadgeInfo(neighbor);
-                    msg = `🚪 Walk through or Press [E] to enter ${nearDoor} Gate (${info.icon} ${info.label})`;
+                    msg = `Walk through or Press [E] to enter ${nearDoor} Gate [${info.label}]`;
                 }
             }
 
@@ -4342,7 +4368,7 @@
                     sfx.play('levelup');
                     triggerJuice(0.18, 22, 60);
                     addParticles(player.x, player.y, '#fbbf24', 45, 260, 7);
-                    addFloatingText(player.x, player.y - 36, `☥ REBIRTH TRIGGERED! (${player.reviveCharges} REMAINING) ☥`, "#fbbf24", 18);
+                    addFloatingText(player.x, player.y - 36, `[REBIRTH TRIGGERED] (${player.reviveCharges} REMAINING) `, "#fbbf24", 18);
 
                     for (let i = enemies.length - 1; i >= 0; i--) {
                         const e = enemies[i];
@@ -4413,7 +4439,7 @@
                     ctx.fillRect(8, -3, 24, 6);
                     ctx.fillStyle = wep.id === 'hallowed_shovel' ? '#f59e0b' : '#94a3b8';
                     ctx.fillRect(32, -8, 14, 16);
-                } else if (wep.id === 'executioner_spade') {
+                } else if (wep.id === 'great_shovel' || wep.id === 'executioner_spade') {
                     ctx.fillStyle = '#1e1b4b';
                     ctx.fillRect(8, -3, 30, 7);
                     ctx.fillStyle = '#ef4444';
@@ -4453,7 +4479,7 @@
                     ctx.fillRect(8, -3, 24, 6);
                     ctx.fillStyle = wep.id === 'hallowed_shovel' ? '#f59e0b' : '#94a3b8';
                     ctx.fillRect(32, -8, 14, 16);
-                } else if (wep.id === 'executioner_spade') {
+                } else if (wep.id === 'great_shovel' || wep.id === 'executioner_spade') {
                     ctx.fillStyle = '#1e1b4b';
                     ctx.fillRect(8, -3, 30, 7);
                     ctx.fillStyle = '#ef4444';
@@ -4625,11 +4651,11 @@
                     ctx.fillRect(matX + 4, matY + 4, matW - 8, 4); ctx.fillRect(matX + 4, matY + matH - 8, matW - 8, 4);
                     ctx.fillRect(matX + 4, matY + 4, 4, matH - 8); ctx.fillRect(matX + matW - 8, matY + 4, 4, matH - 8);
 
-                    ctx.font = '900 18px Inter'; ctx.textAlign = 'center';
+                    ctx.font = 'bold 18px "Press Start 2P", monospace'; ctx.textAlign = 'center';
                     ctx.fillStyle = '#090d16'; ctx.fillText(arrowChar, arrowX + 2, arrowY + 2);
                     ctx.fillStyle = '#22d3ee'; ctx.fillText(arrowChar, arrowX, arrowY);
 
-                    ctx.font = '800 10px Inter';
+                    ctx.font = 'bold 10px "Press Start 2P", monospace';
                     ctx.fillStyle = '#090d16'; ctx.fillText(`${info.icon} ${info.label}`, labelX + 1, labelY + 1);
                     ctx.fillStyle = info.color; ctx.fillText(`${info.icon} ${info.label}`, labelX, labelY);
                 } else {
@@ -4672,8 +4698,8 @@
                         ctx.fillRect(matX + 12, matY, 5, matH);
                         ctx.fillRect(matX + matW - 16, matY, 5, matH);
                     }
-                    ctx.font = '800 9px Inter'; ctx.textAlign = 'center';
-                    ctx.fillStyle = '#fecaca'; ctx.fillText(`🔒 ${enemies.length}`, labelX, labelY);
+                    ctx.font = 'bold 9px "Press Start 2P", monospace'; ctx.textAlign = 'center';
+                    ctx.fillStyle = '#fecaca'; ctx.fillText(`LOCKED (${enemies.length})`, labelX, labelY);
                     ctx.restore();
                 }
                 ctx.restore();
@@ -4702,7 +4728,7 @@
                     const spr = atlas.sprites[s.opened ? 'sarcophagus_open' : 'sarcophagus_closed'];
                     if (spr) ctx.drawImage(spr, Math.round(s.x - spr.width / 2), Math.round(s.y - spr.height / 2));
                     if (!s.opened) {
-                        ctx.font = '800 8px Inter'; ctx.textAlign = 'center'; ctx.fillStyle = '#fde047';
+                        ctx.font = 'bold 8px "Press Start 2P", monospace'; ctx.textAlign = 'center'; ctx.fillStyle = '#fde047';
                         ctx.fillText('ANCIENT TOMB [E]', s.x, s.y - 30);
                     }
                 }
@@ -4712,7 +4738,7 @@
             if (room.bloodChalice && !room.bloodChalice.used) {
                 const chaliceSpr = atlas.sprites['blood_chalice'];
                 if (chaliceSpr) ctx.drawImage(chaliceSpr, Math.round(room.bloodChalice.x - chaliceSpr.width / 2), Math.round(room.bloodChalice.y - chaliceSpr.height / 2));
-                ctx.font = '900 9px Inter'; ctx.textAlign = 'center'; ctx.fillStyle = '#ef4444';
+                ctx.font = 'bold 9px "Press Start 2P", monospace'; ctx.textAlign = 'center'; ctx.fillStyle = '#ef4444';
                 ctx.fillText('🩸 BLOOD PACT [E]', room.bloodChalice.x, room.bloodChalice.y - 30 + bounce);
             }
 
@@ -4721,7 +4747,7 @@
                 const mSpr = atlas.sprites[m.rich ? 'mound_rich' : 'mound_normal'];
                 if (mSpr) ctx.drawImage(mSpr, Math.round(m.x - mSpr.width / 2), Math.round(m.y - mSpr.height / 2));
                 if (m.isTutorialMound && game.provingGroundsStep === 1) {
-                    ctx.font = '900 14px Inter';
+                    ctx.font = 'bold 14px "Press Start 2P", monospace';
                     ctx.textAlign = 'center';
                     ctx.fillStyle = '#fbbf24';
                     ctx.fillText('▼ DIG HERE [E]', m.x, m.y - 30 + bounce);
@@ -4733,20 +4759,20 @@
                 if (room.altarPos && atlas.sprites['meta_altar']) {
                     const s = atlas.sprites['meta_altar'];
                     ctx.drawImage(s, Math.round(room.altarPos.x - s.width / 2), Math.round(room.altarPos.y - s.height / 2));
-                    ctx.font = '800 9px Inter'; ctx.textAlign = 'center'; ctx.fillStyle = '#c084fc';
-                    ctx.fillText('🔮 SOUL ALTAR', room.altarPos.x, room.altarPos.y - 28);
+                    ctx.font = 'bold 9px "Press Start 2P", monospace'; ctx.textAlign = 'center'; ctx.fillStyle = '#c084fc';
+                    ctx.fillText('SOUL ALTAR', room.altarPos.x, room.altarPos.y - 28);
                 }
                 if (room.rackPos && atlas.sprites['weapon_rack']) {
                     const s = atlas.sprites['weapon_rack'];
                     ctx.drawImage(s, Math.round(room.rackPos.x - s.width / 2), Math.round(room.rackPos.y - s.height / 2));
-                    ctx.font = '800 9px Inter'; ctx.textAlign = 'center'; ctx.fillStyle = '#fbbf24';
-                    ctx.fillText('⛏️ ARSENAL RACK', room.rackPos.x, room.rackPos.y - 28);
+                    ctx.font = 'bold 9px "Press Start 2P", monospace'; ctx.textAlign = 'center'; ctx.fillStyle = '#fbbf24';
+                    ctx.fillText('ARSENAL RACK', room.rackPos.x, room.rackPos.y - 28);
                 }
                 if (game.provingGroundsStep === 3 && atlas.sprites['shrine']) {
                     const s = atlas.sprites['shrine'];
                     ctx.drawImage(s, Math.round(ROOM_W / 2 - s.width / 2), Math.round(WALL_T + 90 - s.height / 2));
-                    ctx.font = '800 10px Inter'; ctx.textAlign = 'center'; ctx.fillStyle = '#22d3ee';
-                    ctx.fillText('⚡ DEFLECT ORB OR DASH!', ROOM_W / 2, WALL_T + 55 + bounce);
+                    ctx.font = 'bold 10px "Press Start 2P", monospace'; ctx.textAlign = 'center'; ctx.fillStyle = '#22d3ee';
+                    ctx.fillText('DEFLECT OR DASH', ROOM_W / 2, WALL_T + 55 + bounce);
                 }
             }
 
@@ -4761,7 +4787,7 @@
                 const spr = atlas.sprites[ob.kind || 'headstone'] || atlas.sprites['headstone'];
                 if (spr) ctx.drawImage(spr, Math.round(ob.x - spr.width / 2), Math.round(ob.y - spr.height / 2));
                 if (ob.isPillar) {
-                    ctx.font = '800 8px Inter'; ctx.textAlign = 'center'; ctx.fillStyle = '#94a3b8';
+                    ctx.font = 'bold 8px "Press Start 2P", monospace'; ctx.textAlign = 'center'; ctx.fillStyle = '#94a3b8';
                     ctx.fillText('STONE PILLAR', ob.x, ob.y - 34);
                 }
             }
@@ -4778,16 +4804,16 @@
 
             if (room.type === 'shop') {
                 ctx.drawImage(atlas.sprites['necro_0'], ROOM_W / 2 - 24, ROOM_H / 2 - 24);
-                ctx.font = '800 10px Inter'; ctx.textAlign = 'center'; ctx.fillStyle = '#fbbf24';
-                ctx.fillText("🕯️ CHARON'S MARKET [E]", ROOM_W / 2, ROOM_H / 2 - 34);
+                ctx.font = 'bold 10px "Press Start 2P", monospace'; ctx.textAlign = 'center'; ctx.fillStyle = '#fbbf24';
+                ctx.fillText("CHARON'S MARKET [E]", ROOM_W / 2, ROOM_H / 2 - 34);
             }
 
             if (room.portalActive) {
                 ctx.save();
                 ctx.strokeStyle = '#c084fc'; ctx.lineWidth = 4;
                 ctx.beginPath(); ctx.arc(ROOM_W / 2, ROOM_H / 2, 34 + Math.sin(performance.now() * 0.006) * 4, 0, Math.PI * 2); ctx.stroke();
-                ctx.font = '800 11px Inter'; ctx.textAlign = 'center'; ctx.fillStyle = '#e879f9';
-                ctx.fillText('🌀 DESCEND [E]', ROOM_W / 2, ROOM_H / 2 - 44);
+                ctx.font = 'bold 11px "Press Start 2P", monospace'; ctx.textAlign = 'center'; ctx.fillStyle = '#e879f9';
+                ctx.fillText('DESCEND [E]', ROOM_W / 2, ROOM_H / 2 - 44);
                 ctx.restore();
             }
 
@@ -4846,10 +4872,10 @@
                     }
 
                     // Overhead ghost squad label
-                    ctx.font = '800 8px Inter';
+                    ctx.font = 'bold 8px "Press Start 2P", monospace';
                     ctx.textAlign = 'center';
                     ctx.fillStyle = '#38bdf8';
-                    ctx.fillText('👻 P' + (sp.playerIndex || 2) + ' (GHOST)', 0, -22);
+                    ctx.fillText('P' + (sp.playerIndex || 2) + ' (GHOST)', 0, -22);
 
                     ctx.restore();
                     ctx.restore();
@@ -4879,10 +4905,10 @@
                 }
 
                 // 3. OVERHEAD NAME TAG
-                ctx.font = '800 8px Inter';
+                ctx.font = 'bold 8px "Press Start 2P", monospace';
                 ctx.textAlign = 'center';
                 ctx.fillStyle = sp.isDowned ? '#f87171' : pColor;
-                ctx.fillText(sp.isDowned ? 'REVIVE [E]' : (sp.playerIndex === 1 ? '👑 P1 (HOST)' : ('P' + (sp.playerIndex || 2) + ' SQUAD')), 0, -22);
+                ctx.fillText(sp.isDowned ? 'REVIVE [E]' : (sp.playerIndex === 1 ? 'P1 [HOST]' : ('P' + (sp.playerIndex || 2) + ' SQUAD')), 0, -22);
 
                 ctx.restore();
             }
@@ -4906,10 +4932,10 @@
                             ctx.moveTo(e.x, e.y);
                             ctx.lineTo(pit.x, pit.y);
                             ctx.stroke();
-                            ctx.font = '800 9px Inter';
+                            ctx.font = 'bold 9px "Press Start 2P", monospace';
                             ctx.textAlign = 'center';
                             ctx.fillStyle = '#34d399';
-                            ctx.fillText('⚰️ PIT KILL!', pit.x, pit.y - 34);
+                            ctx.fillText('PIT EXECUTION!', pit.x, pit.y - 34);
                             ctx.restore();
                             break;
                         }
@@ -4924,7 +4950,7 @@
                     ctx.beginPath();
                     ctx.arc(e.x, e.y, 26 + Math.sin(performance.now() * 0.02) * 5, 0, Math.PI * 2);
                     ctx.stroke();
-                    ctx.font = '900 14px Inter';
+                    ctx.font = 'bold 14px "Press Start 2P", monospace';
                     ctx.textAlign = 'center';
                     ctx.fillStyle = '#ef4444';
                     ctx.fillText('! AMBUSH !', e.x, e.y - 28);
@@ -4953,7 +4979,7 @@
                     ctx.beginPath();
                     ctx.arc(0, 0, e.radius + 10, 0, Math.PI * 2);
                     ctx.stroke();
-                    ctx.font = '900 12px Inter';
+                    ctx.font = 'bold 12px "Press Start 2P", monospace';
                     ctx.textAlign = 'center';
                     ctx.fillStyle = '#ef4444';
                     ctx.fillText('!', 0, -e.radius - 12);
@@ -4975,10 +5001,10 @@
 
                 // Stun effect
                 if (e.stunTimer > 0) {
-                    ctx.font = '900 10px Inter';
+                    ctx.font = 'bold 10px "Press Start 2P", monospace';
                     ctx.textAlign = 'center';
                     ctx.fillStyle = '#38bdf8';
-                    ctx.fillText('💫 STUNNED', 0, -e.radius - 16);
+                    ctx.fillText('STUNNED', 0, -e.radius - 16);
                 }
 
                 // Frontal shield visual for Gargoyle Warden
@@ -5046,7 +5072,6 @@
                 ctx.lineWidth = 2.5;
                 ctx.stroke();
 
-                // Ghost sprite with translucent ethereal glow
                 const gSpr = atlas.sprites['ghost_' + (player.animFrame || 0)] || atlas.sprites['ghost_0'];
                 if (gSpr) {
                     ctx.save();
@@ -5056,37 +5081,33 @@
                     ctx.restore();
                 }
 
-                // Overhead "👻 GHOST SPECTATOR" label
-                ctx.font = '800 8px Inter';
+                ctx.font = '800 8px "Press Start 2P", monospace';
                 ctx.textAlign = 'center';
                 ctx.fillStyle = '#67e8f9';
-                ctx.shadowColor = 'rgba(6, 182, 212, 0.8)';
-                ctx.shadowBlur = 6;
-                ctx.fillText('👻 GHOST SPECTATOR', 0, -22);
-                ctx.shadowBlur = 0;
+                ctx.fillText('GHOST SPECTATOR', 0, -22);
 
                 ctx.restore();
             } else {
+                // 1. Draw Player Body Sprite
+                const pSpr = atlas.sprites['player_' + player.animFrame];
+                if (pSpr) {
+                    ctx.save();
+                    ctx.scale(player.facing, 1);
+                    if (player.invulnTimer > 0 && Math.floor(performance.now() / 60) % 2 === 0) ctx.globalAlpha = 0.55;
+                    ctx.drawImage(pSpr, Math.round(-pSpr.width / 2), Math.round(-pSpr.height / 2));
+                    ctx.restore();
+                }
+                // 2. Draw Weapon & Luminous Crescent Swing Arc on top so it is ALWAYS visible
                 renderCharacterWeapon(ctx, player, true);
-            }
-
-
-            const pSpr = atlas.sprites['player_' + player.animFrame];
-            if (pSpr && !player.isGhost) {
-                ctx.save();
-                ctx.scale(player.facing, 1);
-                if (player.invulnTimer > 0 && Math.floor(performance.now() / 60) % 2 === 0) ctx.globalAlpha = 0.55;
-                ctx.drawImage(pSpr, Math.round(-pSpr.width / 2), Math.round(-pSpr.height / 2));
-                ctx.restore();
             }
             // Overhead local player label
             if (!player.isGhost) {
-                ctx.font = '800 8px Inter';
+                ctx.font = 'bold 8px "Press Start 2P", monospace';
                 ctx.textAlign = 'center';
                 const myIdx = (typeof MultiplayerManager !== 'undefined' && MultiplayerManager.playerIndex) ? MultiplayerManager.playerIndex : 1;
                 ctx.fillStyle = SQUAD_COLORS[myIdx] || '#f59e0b';
                 if (typeof MultiplayerManager !== 'undefined' && MultiplayerManager.isConnected && MultiplayerManager.connectedPeers > 1) {
-                ctx.fillText(MultiplayerManager.isHost ? '👑 P1 (HOST / YOU)' : ('P' + myIdx + ' (YOU)'), 0, -22);
+                ctx.fillText(MultiplayerManager.isHost ? 'P1 [HOST / YOU]' : ('P' + myIdx + ' (YOU)'), 0, -22);
             }
             }
             ctx.restore();
@@ -5320,7 +5341,7 @@
         function updateBossHUD() {
             const boss = enemies.find(e => e.isBoss);
             if (!boss) { document.getElementById('boss-hud').classList.add('hidden'); return; }
-            document.getElementById('boss-name').textContent = `💀 ${boss.name}`;
+            document.getElementById('boss-name').textContent = boss.name;
             document.getElementById('boss-hp-text').textContent = `${Math.max(0, Math.ceil(boss.hp))} / ${boss.maxHp}`;
             document.getElementById('boss-hp-bar').style.width = `${Math.max(0, (boss.hp / boss.maxHp) * 100)}%`;
         }
@@ -5349,7 +5370,7 @@
                 <div>• Keeper Level: <span class="text-cyan-300">Lv.${player.lvl}</span> (${player.relicList.length} Relics)</div>
                 <div>• Undead Slain: <span class="text-white">${game.stats.kills}</span> (${game.stats.pitKills} Pit Kills)</div>
                 <div>• Graves Dug: <span class="text-emerald-400">${game.stats.moundsDug}</span></div>
-                <div>• Banked Souls: <span class="text-purple-300">🔮 ${player.souls}</span></div>
+                <div>• Banked Souls: <span class="text-purple-300">${player.souls} SOULS</span></div>
             `;
             document.getElementById('gameover-modal').classList.remove('hidden');
         }
@@ -5363,7 +5384,7 @@
             game.depth = 1;
             game.stats = { kills: 0, pitKills: 0, moundsDug: 0, goldEarned: 40 };
             game.synergies = { tempestCrescent: false, bloodfireHalo: false };
-            player.lvl = 1; player.xp = 0; player.nextXp = 50;
+            player.lvl = 1; player.xp = 0; player.nextXp = 70;
             player.dmgMult = 1.0; player.knockbackMult = 1.0; player.speed = 240; player.dashMaxCd = 1.0;
             player.relics = {}; player.relicList = []; allies = [];
             applyMetaBonusesToPlayer();
@@ -5395,7 +5416,7 @@
             else if (e.code === 'KeyQ') { performUltimate(); }
             else if (e.code === 'KeyM') {
                 sfx.init(); sfx.bgmMuted = !sfx.bgmMuted; sfx.setBgmMode(sfx.bgmMode);
-                document.getElementById('btn-music').textContent = sfx.bgmMuted ? '🔇' : '🎵';
+                document.getElementById('btn-music').innerHTML = sfx.bgmMuted ? '<svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>' : '<svg class="w-4 h-4 text-cyan-300" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>';
             } else if (e.code === 'Escape') {
                 const subModals = ['shop-modal', 'codex-modal', 'altar-modal', 'arsenal-modal', 'settings-modal'];
                 let closedAny = false;
@@ -5418,11 +5439,28 @@
         canvas.addEventListener('mousemove', (e) => {
             game.usingTouch = false;
             const rect = canvas.getBoundingClientRect();
+            mousePos.hasMoved = true;
             mousePos.x = e.clientX - rect.left;
             mousePos.y = e.clientY - rect.top;
+            mousePos.worldX = (mousePos.x - canvas.width / 2) / game.zoom + game.camera.x;
+            mousePos.worldY = (mousePos.y - canvas.height / 2) / game.zoom + game.camera.y;
+            if (game.running && !game.paused) {
+                player.angle = Math.atan2(mousePos.worldY - player.y, mousePos.worldX - player.x);
+                player.facing = Math.cos(player.angle) >= 0 ? 1 : -1;
+            }
         });
         canvas.addEventListener('mousedown', (e) => {
             game.usingTouch = false;
+            const rect = canvas.getBoundingClientRect();
+            mousePos.hasMoved = true;
+            mousePos.x = e.clientX - rect.left;
+            mousePos.y = e.clientY - rect.top;
+            mousePos.worldX = (mousePos.x - canvas.width / 2) / game.zoom + game.camera.x;
+            mousePos.worldY = (mousePos.y - canvas.height / 2) / game.zoom + game.camera.y;
+            if (game.running && !game.paused) {
+                player.angle = Math.atan2(mousePos.worldY - player.y, mousePos.worldX - player.x);
+                player.facing = Math.cos(player.angle) >= 0 ? 1 : -1;
+            }
             if (e.button === 0) { mousePos.down = true; performAttack(); }
             else if (e.button === 2) { e.preventDefault(); performDash(); }
         });
@@ -5503,7 +5541,7 @@
         miniCanvas.addEventListener('click', (e) => {
             if (!game.running || game.paused) return;
             const room = currentRoom();
-            if (!room.cleared) { addFloatingText(player.x, player.y - 28, "🔒 DEFEAT ENEMIES FIRST!", "#ef4444", 15); return; }
+            if (!room.cleared) { addFloatingText(player.x, player.y - 28, "DEFEAT ENEMIES FIRST!", "#ef4444", 15); return; }
             const rect = miniCanvas.getBoundingClientRect();
             const scale = miniCanvas.width / 120;
             const cell = Math.round(20 * scale), pad = Math.round(4 * scale), offset = Math.round(8 * scale);
@@ -5586,7 +5624,12 @@
 
         document.getElementById('close-coop')?.addEventListener('click', () => {
             document.getElementById('coop-modal')?.classList.add('hidden');
-            game.paused = false;
+            if (!game.running) {
+                document.getElementById('home-screen')?.classList.remove('hidden');
+                game.paused = true;
+            } else {
+                game.paused = false;
+            }
         });
         function renderGodotManifest() {}
 
@@ -5596,14 +5639,22 @@
         document.getElementById('close-altar')?.addEventListener('click', () => { document.getElementById('altar-modal').classList.add('hidden'); game.paused = false; });
         document.getElementById('close-shop')?.addEventListener('click', () => { document.getElementById('shop-modal').classList.add('hidden'); game.paused = false; });
         document.getElementById('btn-codex')?.addEventListener('click', () => { game.paused = true; document.getElementById('codex-modal').classList.remove('hidden'); });
-        document.getElementById('close-codex')?.addEventListener('click', () => { document.getElementById('codex-modal').classList.add('hidden'); game.paused = false; });
+        document.getElementById('close-codex')?.addEventListener('click', () => {
+            document.getElementById('codex-modal')?.classList.add('hidden');
+            if (!game.running) {
+                document.getElementById('home-screen')?.classList.remove('hidden');
+                game.paused = true;
+            } else {
+                game.paused = false;
+            }
+        });
         document.getElementById('btn-music')?.addEventListener('click', (e) => {
             sfx.init(); sfx.bgmMuted = !sfx.bgmMuted; sfx.setBgmMode(sfx.bgmMode);
-            e.currentTarget.textContent = sfx.bgmMuted ? '🔇' : '🎵';
+            e.currentTarget.innerHTML = sfx.bgmMuted ? '<svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>' : '<svg class="w-4 h-4 text-cyan-300" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>';
         });
         document.getElementById('btn-mute')?.addEventListener('click', (e) => {
             sfx.init(); sfx.muted = !sfx.muted; sfx.setBgmMode(sfx.bgmMode);
-            e.currentTarget.textContent = sfx.muted ? '🔇' : '🔊';
+            e.currentTarget.innerHTML = sfx.muted ? '<svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>' : '<svg class="w-4 h-4 text-amber-300" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>';
         });
         document.getElementById('btn-restart')?.addEventListener('click', restartRun);
         document.getElementById('btn-gameover-altar')?.addEventListener('click', () => {
@@ -6625,7 +6676,7 @@
                 sfx.play('levelup');
                 triggerJuice(0.18, 20, 60);
                 addParticles(player.x, player.y, '#22d3ee', 45, 240, 7);
-                addFloatingText(player.x, player.y - 30, "⚥ REBIRTH GRANTED!", "#22d3ee", 18);
+                addFloatingText(player.x, player.y - 30, "[REBIRTH GRANTED]", "#22d3ee", 18);
                 updateHUD();
 
                 if (typeof MultiplayerManager !== 'undefined' && MultiplayerManager.isConnected) {
@@ -6648,7 +6699,7 @@
                 sfx.play('dash');
                 triggerJuice(0.08, 10, 30);
                 addParticles(player.x, player.y, '#38bdf8', 35, 180, 5);
-                addFloatingText(player.x, player.y - 30, "👻 ENTERED GHOST SPECTATOR MODE", "#67e8f9", 16);
+                addFloatingText(player.x, player.y - 30, "[GHOST SPECTATOR MODE]", "#67e8f9", 16);
                 updateHUD();
 
                 if (typeof MultiplayerManager !== 'undefined' && MultiplayerManager.isConnected) {
@@ -6756,6 +6807,10 @@
                 if (btnLeave) {
                     btnLeave.addEventListener('click', () => {
                         document.getElementById('coop-modal').classList.add('hidden');
+                        if (!game.running) {
+                            document.getElementById('home-screen')?.classList.remove('hidden');
+                            game.paused = true;
+                        }
                     });
                 }
 
@@ -6889,7 +6944,7 @@
                     if (this.isHost) {
                         btnLaunch.disabled = false;
                         btnLaunch.className = 'pixel-button-gold flex-1 py-3 rounded font-pixel text-xs text-amber-200 tracking-wider shadow-lg flex items-center justify-center gap-2';
-                        btnLaunch.innerHTML = '<span>🚀</span> START EXPEDITION (ENTER DUNGEON)';
+                        btnLaunch.innerHTML = '<svg class="w-4 h-4 inline mr-1 text-cyan-300" viewBox="0 0 24 24" fill="currentColor"><path d="M14.5 2.5l2 2L6 15l-3.5.5.5-3.5L14.5 2.5zM19 7l2.5-2.5-2-2L17 5l2 2z"/></svg> START EXPEDITION (ENTER DUNGEON)';
                     } else {
                         btnLaunch.disabled = true;
                         btnLaunch.className = 'pixel-button flex-1 py-3 rounded font-pixel text-[9px] text-slate-400 cursor-not-allowed opacity-75';
@@ -7265,7 +7320,7 @@
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(text).then(() => {
                     const orig = btnElement.innerHTML;
-                    btnElement.innerHTML = '<span>✅</span> ' + successMsg;
+                    btnElement.innerHTML = '<svg class="w-4 h-4 inline mr-1 text-emerald-400" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> ' + successMsg;
                     setTimeout(() => { btnElement.innerHTML = orig; }, 1800);
                 });
             } else {
@@ -7276,7 +7331,7 @@
                 document.execCommand('copy');
                 document.body.removeChild(ta);
                 const orig = btnElement.innerHTML;
-                btnElement.innerHTML = '<span>✅</span> ' + successMsg;
+                btnElement.innerHTML = '<svg class="w-4 h-4 inline mr-1 text-emerald-400" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> ' + successMsg;
                 setTimeout(() => { btnElement.innerHTML = orig; }, 1800);
             }
         }
